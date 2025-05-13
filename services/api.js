@@ -34,10 +34,20 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Detailed error logging for debugging
+    console.error('API Error:', {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
     if (error.response && error.response.status === 401) {
       // Handle unauthorized access
       console.log('Unauthorized access. Redirecting to login...');
       // Clear token logic would go here
+      global.token = null;
     }
     return Promise.reject(error);
   }
@@ -50,7 +60,26 @@ const authAPI = {
       const response = await api.post('/auth/login', credentials);
       return response.data;
     } catch (error) {
-      throw error;
+      // Enhanced error handling
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        throw {
+          response: error.response,
+          message: error.response.data.message || 'Authentication failed'
+        };
+      } else if (error.request) {
+        // The request was made but no response was received
+        throw {
+          request: error.request,
+          message: 'No response from server. Please try again later.'
+        };
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        throw {
+          message: error.message || 'An error occurred during authentication'
+        };
+      }
     }
   },
   
@@ -59,6 +88,12 @@ const authAPI = {
       const response = await api.post('/auth/register', userData);
       return response.data;
     } catch (error) {
+      if (error.response && error.response.data) {
+        throw {
+          response: error.response,
+          message: error.response.data.message || 'Registration failed'
+        };
+      }
       throw error;
     }
   },
@@ -68,6 +103,12 @@ const authAPI = {
       const response = await api.post('/auth/forgot-password', { email });
       return response.data;
     } catch (error) {
+      if (error.response && error.response.data) {
+        throw {
+          response: error.response,
+          message: error.response.data.message || 'Failed to send reset link'
+        };
+      }
       throw error;
     }
   },
@@ -77,6 +118,12 @@ const authAPI = {
       const response = await api.post('/auth/reset-password', { token, password });
       return response.data;
     } catch (error) {
+      if (error.response && error.response.data) {
+        throw {
+          response: error.response,
+          message: error.response.data.message || 'Failed to reset password'
+        };
+      }
       throw error;
     }
   },
@@ -86,6 +133,12 @@ const authAPI = {
       const response = await api.post('/auth/logout');
       return response.data;
     } catch (error) {
+      if (error.response && error.response.data) {
+        throw {
+          response: error.response,
+          message: error.response.data.message || 'Logout failed'
+        };
+      }
       throw error;
     }
   }

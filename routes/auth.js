@@ -1,4 +1,4 @@
-// routes/auth.js - Authentication routes
+// Updated routes/auth.js file to handle the API login request
 
 const express = require('express');
 const router = express.Router();
@@ -32,7 +32,7 @@ router.get('/login', isLoggedOut, (req, res) => {
   });
 });
 
-// Process login
+// Process web form login
 router.post('/login', isLoggedOut, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -49,6 +49,39 @@ router.post('/login', isLoggedOut, async (req, res) => {
   } catch (err) {
     req.flash('error_msg', err.response?.data?.message || 'Invalid email or password');
     res.redirect('/auth/login');
+  }
+});
+
+// API login endpoint for REST clients
+router.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Email and password are required' 
+      });
+    }
+    
+    const response = await authAPI.login({ email, password });
+    
+    // Return JSON response with token and user info
+    return res.status(200).json({
+      success: true,
+      token: response.token,
+      user: {
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email,
+        role: response.user.role
+      }
+    });
+  } catch (err) {
+    return res.status(401).json({ 
+      success: false, 
+      message: err.response?.data?.message || 'Invalid email or password' 
+    });
   }
 });
 
