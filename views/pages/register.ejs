@@ -1,0 +1,722 @@
+<!-- views/pages/register.ejs - Part 1 -->
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<!-- Registration Section -->
+<section class="register-section py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="register-card bg-white p-4 p-md-5 rounded-3 shadow">
+                    <div class="text-center mb-4">
+                        <img src="/images/logo.png" alt="Organization Logo" class="img-fluid mb-4" style="height: 70px;">
+                        <h2 class="fw-bold">Buat Akun Baru</h2>
+                        <p class="text-muted">Lengkapi formulir pendaftaran untuk bergabung dengan Ikatan Dokter Indonesia</p>
+                    </div>
+                    
+                    <!-- Flash Messages -->
+                    <% if (success_msg && success_msg.length > 0) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <%= success_msg %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <% if (error_msg && error_msg.length > 0) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <%= error_msg %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <!-- Registration Form -->
+                    <form action="/auth/register" method="POST" id="registrationForm" class="needs-validation" novalidate>
+                        <div class="row">
+                            <!-- Personal Information Section -->
+                            <div class="col-12 mb-4">
+                                <h5 class="border-bottom pb-2 mb-3">Informasi Pribadi</h5>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama lengkap" required>
+                                    <div class="invalid-feedback">
+                                        Nama lengkap harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                                    <div class="invalid-feedback">
+                                        Email harus diisi dengan format yang benar.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Nomor Telepon <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="08xxxxxxxxxx" required>
+                                    <div class="invalid-feedback">
+                                        Nomor telepon harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="birthDate" class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                    <input type="date" class="form-control" id="birthDate" name="birthDate" required>
+                                    <div class="invalid-feedback">
+                                        Tanggal lahir harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                                    <select class="form-select" id="gender" name="gender" required>
+                                        <option value="" selected disabled>Pilih jenis kelamin</option>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Jenis kelamin harus dipilih.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="idNumber" class="form-label">Nomor KTP <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input type="text" class="form-control" id="idNumber" name="idNumber" placeholder="Masukkan nomor KTP" required>
+                                    <div class="invalid-feedback">
+                                        Nomor KTP harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- views/pages/register.ejs - Part 2 -->
+                            <!-- Professional Information Section -->
+                            <div class="col-12 mt-4 mb-4">
+                                <h5 class="border-bottom pb-2 mb-3">Informasi Profesional</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="medicalDegree" class="form-label">Gelar Kedokteran <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user-md"></i></span>
+                                    <select class="form-select" id="medicalDegree" name="medicalDegree" required>
+                                        <option value="" selected disabled>Pilih gelar</option>
+                                        <option value="dr.">dr. (Dokter Umum)</option>
+                                        <option value="drg.">drg. (Dokter Gigi)</option>
+                                        <option value="dr., Sp.PD">dr., Sp.PD (Dokter Spesialis Penyakit Dalam)</option>
+                                        <option value="dr., Sp.A">dr., Sp.A (Dokter Spesialis Anak)</option>
+                                        <option value="dr., Sp.OG">dr., Sp.OG (Dokter Spesialis Obstetri & Ginekologi)</option>
+                                        <option value="dr., Sp.B">dr., Sp.B (Dokter Spesialis Bedah)</option>
+                                        <option value="dr., Sp.JP">dr., Sp.JP (Dokter Spesialis Jantung)</option>
+                                        <option value="dr., Sp.S">dr., Sp.S (Dokter Spesialis Saraf)</option>
+                                        <option value="dr., Sp.KJ">dr., Sp.KJ (Dokter Spesialis Kejiwaan)</option>
+                                        <option value="dr., Sp.THT-KL">dr., Sp.THT-KL (Dokter Spesialis THT)</option>
+                                        <option value="dr., Sp.M">dr., Sp.M (Dokter Spesialis Mata)</option>
+                                        <option value="other">Lainnya</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Gelar kedokteran harus dipilih.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3" id="otherDegreeDiv" style="display: none;">
+                                <label for="otherDegree" class="form-label">Gelar Lainnya</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user-graduate"></i></span>
+                                    <input type="text" class="form-control" id="otherDegree" name="otherDegree" placeholder="Masukkan gelar kedokteran">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="sip" class="form-label">Nomor SIP <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-file-medical"></i></span>
+                                    <input type="text" class="form-control" id="sip" name="sip" placeholder="Masukkan nomor Surat Izin Praktik" required>
+                                    <div class="invalid-feedback">
+                                        Nomor SIP harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="str" class="form-label">Nomor STR <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                                    <input type="text" class="form-control" id="str" name="str" placeholder="Masukkan nomor Surat Tanda Registrasi" required>
+                                    <div class="invalid-feedback">
+                                        Nomor STR harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="university" class="form-label">Universitas <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-university"></i></span>
+                                    <input type="text" class="form-control" id="university" name="university" placeholder="Universitas tempat pendidikan kedokteran" required>
+                                    <div class="invalid-feedback">
+                                        Universitas harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="graduationYear" class="form-label">Tahun Lulus <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
+                                    <select class="form-select" id="graduationYear" name="graduationYear" required>
+                                        <option value="" selected disabled>Pilih tahun lulus</option>
+                                        <% 
+                                        const currentYear = new Date().getFullYear();
+                                        for (let year = currentYear; year >= currentYear - 50; year--) { 
+                                        %>
+                                            <option value="<%= year %>"><%= year %></option>
+                                        <% } %>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Tahun lulus harus dipilih.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <label for="workplace" class="form-label">Tempat Praktik</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-hospital"></i></span>
+                                    <input type="text" class="form-control" id="workplace" name="workplace" placeholder="Rumah sakit atau klinik tempat praktik">
+                                </div>
+                            </div>
+                            <!-- views/pages/register.ejs - Part 3 -->
+                            <!-- Address Information Section -->
+                            <div class="col-12 mt-4 mb-4">
+                                <h5 class="border-bottom pb-2 mb-3">Informasi Alamat</h5>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <label for="address" class="form-label">Alamat <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <textarea class="form-control" id="address" name="address" rows="2" placeholder="Masukkan alamat lengkap" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Alamat harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="province" class="form-label">Provinsi <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map"></i></span>
+                                    <select class="form-select" id="province" name="province" required>
+                                        <option value="" selected disabled>Pilih provinsi</option>
+                                        <option value="Aceh">Aceh</option>
+                                        <option value="Sumatera Utara">Sumatera Utara</option>
+                                        <option value="Sumatera Barat">Sumatera Barat</option>
+                                        <option value="Riau">Riau</option>
+                                        <option value="Jambi">Jambi</option>
+                                        <option value="Sumatera Selatan">Sumatera Selatan</option>
+                                        <option value="Bengkulu">Bengkulu</option>
+                                        <option value="Lampung">Lampung</option>
+                                        <option value="Kepulauan Bangka Belitung">Kepulauan Bangka Belitung</option>
+                                        <option value="Kepulauan Riau">Kepulauan Riau</option>
+                                        <option value="DKI Jakarta">DKI Jakarta</option>
+                                        <option value="Jawa Barat">Jawa Barat</option>
+                                        <option value="Jawa Tengah">Jawa Tengah</option>
+                                        <option value="DI Yogyakarta">DI Yogyakarta</option>
+                                        <option value="Jawa Timur">Jawa Timur</option>
+                                        <option value="Banten">Banten</option>
+                                        <option value="Bali">Bali</option>
+                                        <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+                                        <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+                                        <option value="Kalimantan Barat">Kalimantan Barat</option>
+                                        <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+                                        <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+                                        <option value="Kalimantan Timur">Kalimantan Timur</option>
+                                        <option value="Kalimantan Utara">Kalimantan Utara</option>
+                                        <option value="Sulawesi Utara">Sulawesi Utara</option>
+                                        <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                                        <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                                        <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+                                        <option value="Gorontalo">Gorontalo</option>
+                                        <option value="Sulawesi Barat">Sulawesi Barat</option>
+                                        <option value="Maluku">Maluku</option>
+                                        <option value="Maluku Utara">Maluku Utara</option>
+                                        <option value="Papua">Papua</option>
+                                        <option value="Papua Barat">Papua Barat</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Provinsi harus dipilih.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="city" class="form-label">Kota/Kabupaten <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-city"></i></span>
+                                    <input type="text" class="form-control" id="city" name="city" placeholder="Masukkan kota/kabupaten" required>
+                                    <div class="invalid-feedback">
+                                        Kota/Kabupaten harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="district" class="form-label">Kecamatan <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-signs"></i></span>
+                                    <input type="text" class="form-control" id="district" name="district" placeholder="Masukkan kecamatan" required>
+                                    <div class="invalid-feedback">
+                                        Kecamatan harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="postalCode" class="form-label">Kode Pos <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-mail-bulk"></i></span>
+                                    <input type="text" class="form-control" id="postalCode" name="postalCode" placeholder="Kode pos" required>
+                                    <div class="invalid-feedback">
+                                        Kode pos harus diisi.
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- views/pages/register.ejs - Part 4 -->
+                            <!-- Account Information Section -->
+                            <div class="col-12 mt-4 mb-4">
+                                <h5 class="border-bottom pb-2 mb-3">Informasi Akun</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Minimal 8 karakter" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1">
+                                        <i class="far fa-eye"></i>
+                                    </button>
+                                    <div class="invalid-feedback">
+                                        Password harus diisi dan minimal 8 karakter.
+                                    </div>
+                                </div>
+                                <div class="password-strength mt-2">
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small class="password-feedback text-muted">Password harus minimal 8 karakter</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmPassword" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Konfirmasi password Anda" required>
+                                    <button class="btn btn-outline-secondary toggle-confirm-password" type="button" tabindex="-1">
+                                        <i class="far fa-eye"></i>
+                                    </button>
+                                    <div class="invalid-feedback">
+                                        Konfirmasi password harus diisi dan sesuai dengan password.
+                                    </div>
+                                </div>
+                                <div class="password-match-feedback mt-2"></div>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <label for="profilePicture" class="form-label">Foto Profil</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-image"></i></span>
+                                    <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*">
+                                </div>
+                                <small class="text-muted">Ukuran maksimal 5MB. Format: JPG, JPEG, PNG.</small>
+                                <div class="mt-2">
+                                    <div class="profile-picture-preview" style="display: none;">
+                                        <img id="picturePreview" src="#" alt="Preview" class="img-thumbnail" style="max-height: 150px;">
+                                        <button type="button" class="btn btn-sm btn-danger mt-1 remove-preview">
+                                            <i class="fas fa-times"></i> Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12 mt-3 mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="uploadDocuments" name="uploadDocuments">
+                                    <label class="form-check-label" for="uploadDocuments">
+                                        Saya ingin melampirkan dokumen pendukung sekarang (opsional)
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div id="documentsSection" class="col-12 mb-4" style="display: none;">
+                                <div class="card border">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">Dokumen Pendukung</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="ktpDocument" class="form-label">Scan KTP</label>
+                                                <input type="file" class="form-control" id="ktpDocument" name="ktpDocument" accept="image/*, application/pdf">
+                                                <small class="text-muted">Ukuran maksimal 2MB. Format: PDF, JPG, PNG.</small>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="sipDocument" class="form-label">Scan SIP</label>
+                                                <input type="file" class="form-control" id="sipDocument" name="sipDocument" accept="image/*, application/pdf">
+                                                <small class="text-muted">Ukuran maksimal 2MB. Format: PDF, JPG, PNG.</small>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="strDocument" class="form-label">Scan STR</label>
+                                                <input type="file" class="form-control" id="strDocument" name="strDocument" accept="image/*, application/pdf">
+                                                <small class="text-muted">Ukuran maksimal 2MB. Format: PDF, JPG, PNG.</small>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="diplomaDocument" class="form-label">Scan Ijazah</label>
+                                                <input type="file" class="form-control" id="diplomaDocument" name="diplomaDocument" accept="image/*, application/pdf">
+                                                <small class="text-muted">Ukuran maksimal 2MB. Format: PDF, JPG, PNG.</small>
+                                            </div>
+                                            
+                                            <div class="col-12 small text-muted mt-2">
+                                                <i class="fas fa-info-circle me-1"></i> Dokumen ini dapat juga diunggah nanti melalui dashboard anggota setelah pendaftaran.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- views/pages/register.ejs - Part 5 (Complete) -->
+                            <!-- Terms & Conditions Section -->
+                            <div class="col-12 mb-4">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                            <label class="form-check-label" for="agreeTerms">
+                                                Saya menyetujui <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Syarat dan Ketentuan</a> serta <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Kebijakan Privasi</a> Ikatan Dokter Indonesia <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="invalid-feedback">
+                                                Anda harus menyetujui syarat dan ketentuan untuk melanjutkan.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fas fa-info-circle me-2"></i> Setelah pendaftaran, Anda akan menerima email konfirmasi. Tim kami akan memverifikasi data Anda dalam 2-3 hari kerja.
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary w-100 py-3 mb-4">
+                                    <i class="fas fa-user-plus me-2"></i> Daftar Sekarang
+                                </button>
+                                
+                                <div class="text-center">
+                                    <p class="mb-0">Sudah memiliki akun? <a href="/auth/login" class="text-primary">Masuk di sini</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Syarat dan Ketentuan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>1. Ketentuan Umum</h5>
+                <p>Dengan mendaftar sebagai anggota Ikatan Dokter Indonesia (IDI), Anda menyetujui untuk mematuhi semua peraturan dan ketentuan yang berlaku dalam organisasi.</p>
+                
+                <h5>2. Keanggotaan</h5>
+                <p>Keanggotaan terbuka bagi semua dokter yang memenuhi persyaratan dan kualifikasi yang ditetapkan oleh IDI, termasuk memiliki ijazah dokter dari fakultas kedokteran yang diakui, memiliki STR (Surat Tanda Registrasi) dan SIP (Surat Izin Praktik) yang masih berlaku.</p>
+                
+                <h5>3. Hak dan Kewajiban</h5>
+                <p>Sebagai anggota, Anda memiliki hak untuk mengakses layanan dan fasilitas yang disediakan oleh IDI. Anda juga berkewajiban untuk menjaga nama baik organisasi dan mematuhi kode etik kedokteran Indonesia.</p>
+                
+                <h5>4. Pembayaran Iuran</h5>
+                <p>Anggota diwajibkan membayar iuran keanggotaan sesuai dengan ketentuan yang berlaku. Pembayaran iuran dapat dilakukan melalui metode yang telah ditentukan oleh IDI.</p>
+                
+                <h5>5. Pembaruan Data</h5>
+                <p>Anggota bertanggung jawab untuk memperbarui data dan informasi pribadi jika terjadi perubahan. Hal ini penting untuk memastikan komunikasi yang efektif antara IDI dan anggotanya.</p>
+                
+                <h5>6. Verifikasi Data</h5>
+                <p>IDI berhak melakukan verifikasi terhadap data dan dokumen yang diberikan oleh calon anggota. Apabila ditemukan ketidaksesuaian atau pemalsuan data, IDI berhak menolak pendaftaran atau mencabut keanggotaan.</p>
+                
+                <h5>7. Kerahasiaan Data</h5>
+                <p>IDI akan menjaga kerahasiaan data anggota sesuai dengan kebijakan privasi yang berlaku. Data anggota hanya akan digunakan untuk kepentingan organisasi dan tidak akan dibagikan kepada pihak ketiga tanpa persetujuan anggota.</p>
+                
+                <h5>8. Perubahan Ketentuan</h5>
+                <p>IDI berhak mengubah syarat dan ketentuan ini sewaktu-waktu dengan pemberitahuan kepada anggota. Anggota dianggap telah menyetujui perubahan tersebut jika tetap menggunakan layanan IDI setelah pemberitahuan perubahan.</p>
+                
+                <h5>9. Penghentian Keanggotaan</h5>
+                <p>IDI berhak mencabut keanggotaan jika anggota melanggar ketentuan atau kode etik yang berlaku. Anggota juga dapat mengajukan pengunduran diri sesuai dengan prosedur yang berlaku.</p>
+                
+                <h5>10. Hukum yang Berlaku</h5>
+                <p>Syarat dan ketentuan ini tunduk pada hukum yang berlaku di Republik Indonesia.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Saya Mengerti</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Kebijakan Privasi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>1. Pengumpulan Data</h5>
+                <p>Kami mengumpulkan data pribadi yang Anda berikan saat pendaftaran, seperti nama, alamat, email, nomor telepon, informasi profesional, dan dokumen pendukung.</p>
+                
+                <h5>2. Tujuan Pengumpulan Data</h5>
+                <p>Data yang kami kumpulkan digunakan untuk:</p>
+                <ul>
+                    <li>Memproses pendaftaran keanggotaan</li>
+                    <li>Verifikasi kualifikasi profesional</li>
+                    <li>Komunikasi terkait kegiatan IDI</li>
+                    <li>Pengelolaan database anggota</li>
+                    <li>Penerbitan kartu anggota</li>
+                    <li>Penelitian dan statistik (dalam bentuk anonim)</li>
+                </ul>
+                
+                <h5>3. Penyimpanan Data</h5>
+                <p>Data anggota disimpan dalam database yang aman dan terlindungi dengan sistem keamanan yang memadai. Kami menyimpan data selama Anda menjadi anggota IDI dan untuk periode yang wajar setelahnya sesuai dengan kebutuhan organisasi dan ketentuan hukum yang berlaku.</p>
+                
+                <h5>4. Keamanan Data</h5>
+                <p>Kami berkomitmen untuk menjaga keamanan data pribadi Anda dengan menerapkan langkah-langkah keamanan yang sesuai, termasuk enkripsi data, pembatasan akses, dan audit keamanan secara berkala.</p>
+                
+                <h5>5. Pembagian Data</h5>
+                <p>Kami tidak akan membagikan data pribadi Anda kepada pihak ketiga tanpa persetujuan Anda, kecuali:</p>
+                <ul>
+                    <li>Jika diwajibkan oleh hukum atau perintah pengadilan</li>
+                    <li>Untuk melindungi hak, keamanan, atau properti IDI</li>
+                    <li>Kepada penyedia layanan yang membantu operasional IDI (dengan perjanjian kerahasiaan)</li>
+                    <li>Dalam keadaan darurat untuk melindungi keselamatan anggota atau publik</li>
+                </ul>
+                
+                <h5>6. Hak Anda</h5>
+                <p>Anda memiliki hak untuk:</p>
+                <ul>
+                    <li>Mengakses data pribadi Anda</li>
+                    <li>Memperbarui atau memperbaiki data yang tidak akurat</li>
+                    <li>Meminta penghapusan data (dengan batasan tertentu)</li>
+                    <li>Membatasi penggunaan data Anda</li>
+                    <li>Mendapatkan penjelasan tentang penggunaan data Anda</li>
+                </ul>
+                
+                <h5>7. Cookie dan Teknologi Pelacakan</h5>
+                <p>Website IDI menggunakan cookie dan teknologi pelacakan serupa untuk meningkatkan pengalaman pengguna dan mengumpulkan informasi tentang penggunaan website. Anda dapat mengatur browser Anda untuk menolak cookie, namun hal ini mungkin memengaruhi fungsi website.</p>
+                
+                <h5>8. Perubahan Kebijakan</h5>
+                <p>Kebijakan privasi ini dapat berubah sewaktu-waktu, dan perubahan akan diinformasikan kepada anggota melalui email atau pemberitahuan di website IDI.</p>
+                
+                <h5>9. Kontak</h5>
+                <p>Jika Anda memiliki pertanyaan atau kekhawatiran tentang kebijakan privasi ini atau penanganan data pribadi Anda, silakan hubungi kami melalui email: privacy@idi.or.id atau telepon: (021) 3150679.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Saya Mengerti</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.getElementById('registrationForm');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        // Additional validation for password match
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Passwords do not match');
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+        
+        form.classList.add('was-validated');
+    });
+    
+    // Toggle password visibility
+    const togglePassword = document.querySelector('.toggle-password');
+    const password = document.querySelector('#password');
+    
+    togglePassword.addEventListener('click', function() {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        
+        // Toggle eye icon
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // Toggle confirm password visibility
+    const toggleConfirmPassword = document.querySelector('.toggle-confirm-password');
+    const confirmPassword = document.querySelector('#confirmPassword');
+    
+    toggleConfirmPassword.addEventListener('click', function() {
+        const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+        confirmPassword.setAttribute('type', type);
+        
+        // Toggle eye icon
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // Password strength checker
+    const passwordInput = document.querySelector('#password');
+    const passwordStrengthBar = document.querySelector('.password-strength .progress-bar');
+    const passwordFeedback = document.querySelector('.password-feedback');
+    
+    passwordInput.addEventListener('input', function() {
+        const value = this.value;
+        let strength = 0;
+        let feedback = '';
+        
+        if (value.length >= 8) {
+            strength += 25;
+            feedback = 'Password cukup panjang. ';
+        } else {
+            feedback = 'Password terlalu pendek. ';
+        }
+        
+        if (value.match(/[A-Z]/)) {
+            strength += 25;
+            feedback += 'Huruf besar terdeteksi. ';
+        }
+        
+        if (value.match(/[0-9]/)) {
+            strength += 25;
+            feedback += 'Angka terdeteksi. ';
+        }
+        
+        if (value.match(/[^A-Za-z0-9]/)) {
+            strength += 25;
+            feedback += 'Karakter khusus terdeteksi.';
+        }
+        
+        // Update progress bar
+        passwordStrengthBar.style.width = strength + '%';
+        if (strength < 50) {
+            passwordStrengthBar.className = 'progress-bar bg-danger';
+        } else if (strength < 75) {
+            passwordStrengthBar.className = 'progress-bar bg-warning';
+        } else {
+            passwordStrengthBar.className = 'progress-bar bg-success';
+        }
+        
+        // Update feedback
+        passwordFeedback.textContent = feedback;
+    });
+    
+    // Check password match
+    const confirmPasswordInput = document.querySelector('#confirmPassword');
+    const passwordMatchFeedback = document.querySelector('.password-match-feedback');
+    
+    confirmPasswordInput.addEventListener('input', function() {
+        if (this.value === passwordInput.value) {
+            passwordMatchFeedback.innerHTML = '<small class="text-success">Password cocok</small>';
+            this.setCustomValidity('');
+        } else {
+            passwordMatchFeedback.innerHTML = '<small class="text-danger">Password tidak cocok</small>';
+            this.setCustomValidity('Passwords do not match');
+        }
+    });
+    
+    // Handle "Other" option in medical degree select
+    const medicalDegreeSelect = document.querySelector('#medicalDegree');
+    const otherDegreeDiv = document.querySelector('#otherDegreeDiv');
+    
+    medicalDegreeSelect.addEventListener('change', function() {
+        if (this.value === 'other') {
+            otherDegreeDiv.style.display = 'block';
+            document.querySelector('#otherDegree').setAttribute('required', '');
+        } else {
+            otherDegreeDiv.style.display = 'none';
+            document.querySelector('#otherDegree').removeAttribute('required');
+        }
+    });
+    
+    // Toggle documents section
+    const uploadDocumentsCheckbox = document.querySelector('#uploadDocuments');
+    const documentsSection = document.querySelector('#documentsSection');
+    
+    uploadDocumentsCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            documentsSection.style.display = 'block';
+        } else {
+            documentsSection.style.display = 'none';
+        }
+    });
+    
+    // Profile picture preview
+    const profilePictureInput = document.querySelector('#profilePicture');
+    const profilePicturePreview = document.querySelector('.profile-picture-preview');
+    const picturePreview = document.querySelector('#picturePreview');
+    const removePreviewButton = document.querySelector('.remove-preview');
+    
+    profilePictureInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                picturePreview.src = e.target.result;
+                profilePicturePreview.style.display = 'block';
+            };
+            
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+    
+    removePreviewButton.addEventListener('click', function() {
+        profilePictureInput.value = '';
+        profilePicturePreview.style.display = 'none';
+    });
+});
+</script>

@@ -1,0 +1,50 @@
+<!-- views/partials/user-sidebar.ejs -->
+<div class="sidebar bg-primary text-white">
+    <div class="sidebar-header p-3 text-center">
+        <img src="/images/logo-white.png" alt="Organization Logo" class="img-fluid mb-3" style="max-height: 50px;">
+        <h5 class="fw-bold mb-0">User Dashboard</h5>
+    </div>
+    <hr class="bg-light my-0">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Dashboard' ? 'active' : '' %>" href="/user/dashboard">
+                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'My Profile' ? 'active' : '' %>" href="/user/profile">
+                <i class="fas fa-user me-2"></i> Profile
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Change Password' ? 'active' : '' %>" href="/user/change-password">
+                <i class="fas fa-key me-2"></i> Change Password
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'My Activities' ? 'active' : '' %>" href="/user/activities">
+                <i class="fas fa-calendar-alt me-2"></i> My Activities
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Membership' ? 'active' : '' %>" href="/user/membership">
+                <i class="fas fa-id-card me-2"></i> Membership
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Certificates' ? 'active' : '' %>" href="/user/certificates">
+                <i class="fas fa-certificate me-2"></i> Certificates
+            </a>
+        </li>
+        <li class="nav-item mt-5">
+            <a class="nav-link text-white" href="/">
+                <i class="fas fa-home me-2"></i> Back to Website
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/auth/logout">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>

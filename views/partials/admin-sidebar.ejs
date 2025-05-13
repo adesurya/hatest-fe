@@ -1,0 +1,65 @@
+<!-- views/partials/admin-sidebar.ejs -->
+<div class="sidebar bg-dark text-white">
+    <div class="sidebar-header p-3 text-center">
+        <img src="/images/logo-white.png" alt="Organization Logo" class="img-fluid mb-3" style="max-height: 50px;">
+        <h5 class="fw-bold mb-0">Admin Dashboard</h5>
+    </div>
+    <hr class="bg-light my-0">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Admin Dashboard' ? 'active' : '' %>" href="/admin/dashboard">
+                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Manage Users' || title === 'Create User' || title === 'Edit User' ? 'active' : '' %>" href="/admin/users">
+                <i class="fas fa-users me-2"></i> Users
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Manage Sliders' || title === 'Create Slider' || title === 'Edit Slider' ? 'active' : '' %>" href="/admin/sliders">
+                <i class="fas fa-images me-2"></i> Sliders
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Manage Articles' || title === 'Create Article' || title === 'Edit Article' ? 'active' : '' %>" href="/admin/articles">
+                <i class="fas fa-newspaper me-2"></i> Articles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Manage Activities' || title === 'Create Activity' || title === 'Edit Activity' ? 'active' : '' %>" href="/admin/activities">
+                <i class="fas fa-calendar-alt me-2"></i> Activities
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Manage Testimonials' || title === 'Create Testimonial' || title === 'Edit Testimonial' ? 'active' : '' %>" href="/admin/testimonials">
+                <i class="fas fa-comment-dots me-2"></i> Testimonials
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Manage Benefits' || title === 'Create Benefit' || title === 'Edit Benefit' ? 'active' : '' %>" href="/admin/benefits">
+                <i class="fas fa-gift me-2"></i> Benefits
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Contact Messages' ? 'active' : '' %>" href="/admin/messages">
+                <i class="fas fa-envelope me-2"></i> Contact Messages
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= title === 'Organization Settings' ? 'active' : '' %>" href="/admin/settings">
+                <i class="fas fa-cog me-2"></i> Settings
+            </a>
+        </li>
+        <li class="nav-item mt-5">
+            <a class="nav-link text-white" href="/">
+                <i class="fas fa-home me-2"></i> Back to Website
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/auth/logout">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,1059 @@
+<!-- views/pages/admin/dashboard.ejs - Part 1 -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Ikatan Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap5.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <!-- CSRF Token for API calls -->
+    <meta name="csrf-token" content="<%= csrfToken %>">
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../partials/admin-sidebar') %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Admin Dashboard</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- Notifications Dropdown -->
+                    <li class="nav-item dropdown me-3">
+                        <a class="nav-link position-relative" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell fa-lg"></i>
+                            <% if (stats && stats.unreadNotifications && stats.unreadNotifications > 0) { %>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    <%= stats.unreadNotifications > 99 ? '99+' : stats.unreadNotifications %>
+                                </span>
+                            <% } %>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end notification-dropdown shadow-lg" aria-labelledby="notificationsDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Notifikasi</h6>
+                            </li>
+                            <% if (stats && stats.notifications && stats.notifications.length > 0) { %>
+                                <% stats.notifications.forEach(notification => { %>
+                                    <li>
+                                        <a class="dropdown-item notification-item <%= notification.isRead ? '' : 'unread' %>" href="<%= notification.link %>">
+                                            <div class="d-flex align-items-center">
+                                                <div class="notification-icon bg-<%= notification.type === 'info' ? 'info' : notification.type === 'success' ? 'success' : notification.type === 'warning' ? 'warning' : 'danger' %> text-white">
+                                                    <i class="fas <%= notification.type === 'info' ? 'fa-info' : notification.type === 'success' ? 'fa-check' : notification.type === 'warning' ? 'fa-exclamation' : 'fa-times' %>"></i>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <p class="mb-1 fw-bold"><%= notification.title %></p>
+                                                    <p class="mb-0 small text-muted"><%= notification.message.substring(0, 80) %><%= notification.message.length > 80 ? '...' : '' %></p>
+                                                    <p class="mb-0 small text-muted"><%= new Date(notification.date).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                <% }); %>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-center" href="/admin/notifications">Lihat Semua Notifikasi</a>
+                                </li>
+                            <% } else { %>
+                                <li>
+                                    <div class="dropdown-item text-center">
+                                        <p class="mb-0 text-muted">Tidak ada notifikasi</p>
+                                    </div>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </li>
+                    
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <% if (user.profilePicture) { %>
+                                <img src="<%= user.profilePicture %>" alt="<%= user.name %>" class="rounded-circle me-2" width="32" height="32">
+                            <% } else { %>
+                                <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                    <%= user.name.charAt(0).toUpperCase() %>
+                                </div>
+                            <% } %>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li>
+                                <div class="dropdown-item text-center">
+                                    <% if (user.profilePicture) { %>
+                                        <img src="<%= user.profilePicture %>" alt="<%= user.name %>" class="rounded-circle mb-2" width="64" height="64">
+                                    <% } else { %>
+                                        <div class="avatar-placeholder rounded-circle mb-2 d-flex align-items-center justify-content-center bg-primary text-white mx-auto" style="width: 64px; height: 64px;">
+                                            <%= user.name.charAt(0).toUpperCase() %>
+                                        </div>
+                                    <% } %>
+                                    <h6 class="mb-0"><%= user.name %></h6>
+                                    <p class="text-muted small mb-0">Administrator</p>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <!-- views/pages/admin/dashboard.ejs - Part 2 -->
+            
+            <!-- Dashboard Content -->
+            <div class="content-wrapper p-4">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="page-title">Dashboard</h3>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/admin/dashboard">Admin</a></li>
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ul>
+                        </div>
+                        <div class="col-auto">
+                            <span class="welcome-text">Selamat datang, <strong><%= user.name %></strong>!</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Flash Messages -->
+                <% if (success_msg && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (error_msg && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Dashboard Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-start border-primary border-4">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="icon-box bg-primary text-white me-3">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Anggota</h6>
+                                    <h3 class="mb-0">
+                                        <% if (stats && stats.totalUsers) { %>
+                                            <%= stats.totalUsers.toLocaleString('id-ID') %>
+                                        <% } else { %>
+                                            25,345
+                                        <% } %>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0 py-2">
+                                <small class="<%= (stats && stats.userGrowth && stats.userGrowth > 0) ? 'text-success' : 'text-danger' %>">
+                                    <i class="fas <%= (stats && stats.userGrowth && stats.userGrowth > 0) ? 'fa-arrow-up' : 'fa-arrow-down' %> me-1"></i>
+                                    <% if (stats && stats.userGrowth) { %>
+                                        <%= Math.abs(stats.userGrowth).toFixed(1) %>%
+                                    <% } else { %>
+                                        5.2%
+                                    <% } %>
+                                    sejak bulan lalu
+                                </small>
+                                <a href="/admin/users" class="float-end text-primary">Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-start border-success border-4">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="icon-box bg-success text-white me-3">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Kegiatan Aktif</h6>
+                                    <h3 class="mb-0">
+                                        <% if (stats && stats.activeActivities) { %>
+                                            <%= stats.activeActivities %>
+                                        <% } else { %>
+                                            18
+                                        <% } %>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0 py-2">
+                                <small class="<%= (stats && stats.activitiesGrowth && stats.activitiesGrowth > 0) ? 'text-success' : 'text-danger' %>">
+                                    <i class="fas <%= (stats && stats.activitiesGrowth && stats.activitiesGrowth > 0) ? 'fa-arrow-up' : 'fa-arrow-down' %> me-1"></i>
+                                    <% if (stats && stats.activitiesGrowth) { %>
+                                        <%= Math.abs(stats.activitiesGrowth).toFixed(1) %>%
+                                    <% } else { %>
+                                        12.5%
+                                    <% } %>
+                                    sejak bulan lalu
+                                </small>
+                                <a href="/admin/activities" class="float-end text-success">Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-start border-info border-4">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="icon-box bg-info text-white me-3">
+                                    <i class="fas fa-newspaper"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Artikel</h6>
+                                    <h3 class="mb-0">
+                                        <% if (stats && stats.totalArticles) { %>
+                                            <%= stats.totalArticles %>
+                                        <% } else { %>
+                                            125
+                                        <% } %>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0 py-2">
+                                <small class="<%= (stats && stats.articlesGrowth && stats.articlesGrowth > 0) ? 'text-success' : 'text-danger' %>">
+                                    <i class="fas <%= (stats && stats.articlesGrowth && stats.articlesGrowth > 0) ? 'fa-arrow-up' : 'fa-arrow-down' %> me-1"></i>
+                                    <% if (stats && stats.articlesGrowth) { %>
+                                        <%= Math.abs(stats.articlesGrowth).toFixed(1) %>%
+                                    <% } else { %>
+                                        8.3%
+                                    <% } %>
+                                    sejak bulan lalu
+                                </small>
+                                <a href="/admin/articles" class="float-end text-info">Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-start border-warning border-4">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="icon-box bg-warning text-white me-3">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Pesan Baru</h6>
+                                    <h3 class="mb-0">
+                                        <% if (stats && stats.newMessages) { %>
+                                            <%= stats.newMessages %>
+                                        <% } else { %>
+                                            42
+                                        <% } %>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0 py-2">
+                                <small class="<%= (stats && stats.messagesGrowth && stats.messagesGrowth > 0) ? 'text-success' : 'text-danger' %>">
+                                    <i class="fas <%= (stats && stats.messagesGrowth && stats.messagesGrowth > 0) ? 'fa-arrow-up' : 'fa-arrow-down' %> me-1"></i>
+                                    <% if (stats && stats.messagesGrowth) { %>
+                                        <%= Math.abs(stats.messagesGrowth).toFixed(1) %>%
+                                    <% } else { %>
+                                        3.7%
+                                    <% } %>
+                                    sejak bulan lalu
+                                </small>
+                                <a href="/admin/messages" class="float-end text-warning">Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- views/pages/admin/dashboard.ejs - Part 3 -->
+                
+                <!-- Additional Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-0">
+                            <div class="card-body">
+                                <div class="stat-widget-two">
+                                    <div class="stat-content">
+                                        <div class="stat-text">Anggota yang Menunggu Verifikasi</div>
+                                        <div class="stat-digit">
+                                            <% if (stats && stats.pendingVerification) { %>
+                                                <%= stats.pendingVerification %>
+                                            <% } else { %>
+                                                24
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: <%= (stats && stats.pendingVerification) ? Math.min((stats.pendingVerification / 100) * 100, 100) : 24 %>%" aria-valuenow="<%= (stats && stats.pendingVerification) ? stats.pendingVerification : 24 %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/admin/users/verification" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-user-check me-1"></i> Verifikasi Sekarang
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-0">
+                            <div class="card-body">
+                                <div class="stat-widget-two">
+                                    <div class="stat-content">
+                                        <div class="stat-text">Iuran Terkumpul Bulan Ini</div>
+                                        <div class="stat-digit">
+                                            <% if (stats && stats.monthlyDues) { %>
+                                                Rp <%= stats.monthlyDues.toLocaleString('id-ID') %>
+                                            <% } else { %>
+                                                Rp 15.750.000
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: <%= (stats && stats.duesProgress) ? Math.min(stats.duesProgress, 100) : 65 %>%" aria-valuenow="<%= (stats && stats.duesProgress) ? stats.duesProgress : 65 %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/admin/finances" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-money-bill-wave me-1"></i> Lihat Laporan
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-0">
+                            <div class="card-body">
+                                <div class="stat-widget-two">
+                                    <div class="stat-content">
+                                        <div class="stat-text">Kegiatan Minggu Ini</div>
+                                        <div class="stat-digit">
+                                            <% if (stats && stats.upcomingActivities) { %>
+                                                <%= stats.upcomingActivities %>
+                                            <% } else { %>
+                                                5
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: <%= (stats && stats.upcomingActivities) ? Math.min((stats.upcomingActivities / 10) * 100, 100) : 50 %>%" aria-valuenow="<%= (stats && stats.upcomingActivities) ? stats.upcomingActivities : 5 %>" aria-valuemin="0" aria-valuemax="10"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/admin/activities/upcoming" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-calendar-alt me-1"></i> Lihat Jadwal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="card stat-card h-100 border-0">
+                            <div class="card-body">
+                                <div class="stat-widget-two">
+                                    <div class="stat-content">
+                                        <div class="stat-text">Pengunjung Website Hari Ini</div>
+                                        <div class="stat-digit">
+                                            <% if (stats && stats.todayVisitors) { %>
+                                                <%= stats.todayVisitors.toLocaleString('id-ID') %>
+                                            <% } else { %>
+                                                1,256
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: <%= (stats && stats.visitorsProgress) ? Math.min(stats.visitorsProgress, 100) : 78 %>%" aria-valuenow="<%= (stats && stats.visitorsProgress) ? stats.visitorsProgress : 78 %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/admin/analytics" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-chart-line me-1"></i> Analitik
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div class="row g-4 mb-4">
+                    <!-- Membership Growth Chart -->
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Pertumbuhan Anggota</h5>
+                                <div class="chart-period-selector">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-primary active" data-period="month">Bulanan</button>
+                                        <button type="button" class="btn btn-outline-primary" data-period="quarter">Kuartal</button>
+                                        <button type="button" class="btn btn-outline-primary" data-period="year">Tahunan</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="membershipChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Member Distribution Chart -->
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Distribusi Anggota</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="distributionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Berdasarkan Wilayah
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="distributionDropdown">
+                                        <li><a class="dropdown-item active" href="#" data-distribution="region">Berdasarkan Wilayah</a></li>
+                                        <li><a class="dropdown-item" href="#" data-distribution="age">Berdasarkan Usia</a></li>
+                                        <li><a class="dropdown-item" href="#" data-distribution="specialty">Berdasarkan Spesialisasi</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="memberDistributionChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+                <!-- Activities & Analytics Section -->
+                <div class="row g-4 mb-4">
+                    <!-- Activities Calendar -->
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Kalender Kegiatan</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="collapse" data-bs-target="#calendarFilters" aria-expanded="false" aria-controls="calendarFilters">
+                                        <i class="fas fa-filter me-1"></i> Filter
+                                    </button>
+                                    <a href="/admin/activities/create" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-plus me-1"></i> Tambah Kegiatan
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="collapse" id="calendarFilters">
+                                <div class="card-body border-bottom pb-0">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Jenis Kegiatan</label>
+                                            <select class="form-select form-select-sm" id="calendarActivityType">
+                                                <option value="all" selected>Semua Jenis</option>
+                                                <option value="seminar">Seminar</option>
+                                                <option value="workshop">Workshop</option>
+                                                <option value="conference">Konferensi</option>
+                                                <option value="training">Pelatihan</option>
+                                                <option value="meeting">Rapat</option>
+                                                <option value="social">Kegiatan Sosial</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Wilayah</label>
+                                            <select class="form-select form-select-sm" id="calendarRegion">
+                                                <option value="all" selected>Semua Wilayah</option>
+                                                <option value="jakarta">Jakarta</option>
+                                                <option value="west_java">Jawa Barat</option>
+                                                <option value="central_java">Jawa Tengah</option>
+                                                <option value="east_java">Jawa Timur</option>
+                                                <option value="bali">Bali</option>
+                                                <option value="sumatra">Sumatera</option>
+                                                <option value="kalimantan">Kalimantan</option>
+                                                <option value="sulawesi">Sulawesi</option>
+                                                <option value="papua">Papua</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-select form-select-sm" id="calendarStatus">
+                                                <option value="all" selected>Semua Status</option>
+                                                <option value="upcoming">Akan Datang</option>
+                                                <option value="ongoing">Sedang Berlangsung</option>
+                                                <option value="completed">Selesai</option>
+                                                <option value="cancelled">Dibatalkan</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="text-end mb-3">
+                                        <button type="button" class="btn btn-sm btn-secondary me-2" id="resetCalendarFilters">Reset</button>
+                                        <button type="button" class="btn btn-sm btn-primary" id="applyCalendarFilters">Terapkan</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="activitiesCalendar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Website Analytics -->
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title mb-0">Analitik Website</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-4">
+                                    <div class="metric-item text-center">
+                                        <div class="metric-value">
+                                            <% if (stats && stats.totalVisitors) { %>
+                                                <%= stats.totalVisitors.toLocaleString('id-ID') %>
+                                            <% } else { %>
+                                                8,456
+                                            <% } %>
+                                        </div>
+                                        <div class="metric-label">Total Pengunjung</div>
+                                    </div>
+                                    <div class="metric-item text-center">
+                                        <div class="metric-value">
+                                            <% if (stats && stats.averageTime) { %>
+                                                <%= stats.averageTime %>
+                                            <% } else { %>
+                                                3m 24s
+                                            <% } %>
+                                        </div>
+                                        <div class="metric-label">Waktu Rata-Rata</div>
+                                    </div>
+                                    <div class="metric-item text-center">
+                                        <div class="metric-value">
+                                            <% if (stats && stats.bounceRate) { %>
+                                                <%= stats.bounceRate %>%
+                                            <% } else { %>
+                                                42.8%
+                                            <% } %>
+                                        </div>
+                                        <div class="metric-label">Bounce Rate</div>
+                                    </div>
+                                </div>
+                                
+                                <h6>Sumber Trafik</h6>
+                                <div class="traffic-sources mb-4">
+                                    <div class="traffic-source-item mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Direct</span>
+                                            <span>
+                                                <% if (stats && stats.trafficSources && stats.trafficSources.direct) { %>
+                                                    <%= stats.trafficSources.direct %>%
+                                                <% } else { %>
+                                                    42%
+                                                <% } %>
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: <%= (stats && stats.trafficSources && stats.trafficSources.direct) ? stats.trafficSources.direct : 42 %>%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="traffic-source-item mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Organic Search</span>
+                                            <span>
+                                                <% if (stats && stats.trafficSources && stats.trafficSources.organic) { %>
+                                                    <%= stats.trafficSources.organic %>%
+                                                <% } else { %>
+                                                    28%
+                                                <% } %>
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: <%= (stats && stats.trafficSources && stats.trafficSources.organic) ? stats.trafficSources.organic : 28 %>%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="traffic-source-item mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Social Media</span>
+                                            <span>
+                                                <% if (stats && stats.trafficSources && stats.trafficSources.social) { %>
+                                                    <%= stats.trafficSources.social %>%
+                                                <% } else { %>
+                                                    18%
+                                                <% } %>
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: <%= (stats && stats.trafficSources && stats.trafficSources.social) ? stats.trafficSources.social : 18 %>%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="traffic-source-item">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Referral</span>
+                                            <span>
+                                                <% if (stats && stats.trafficSources && stats.trafficSources.referral) { %>
+                                                    <%= stats.trafficSources.referral %>%
+                                                <% } else { %>
+                                                    12%
+                                                <% } %>
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: <%= (stats && stats.trafficSources && stats.trafficSources.referral) ? stats.trafficSources.referral : 12 %>%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h6>Halaman Populer</h6>
+                                <div class="popular-pages">
+                                    <% if (stats && stats.popularPages && stats.popularPages.length > 0) { %>
+                                        <ul class="list-group list-group-flush">
+                                            <% stats.popularPages.forEach((page, index) => { %>
+                                                <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="badge <%= index < 3 ? 'bg-primary' : 'bg-secondary' %> me-2"><%= index + 1 %></span>
+                                                        <%= page.title %>
+                                                    </div>
+                                                    <span class="badge bg-light text-dark"><%= page.views.toLocaleString('id-ID') %> views</span>
+                                                </li>
+                                            <% }); %>
+                                        </ul>
+                                    <% } else { %>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge bg-primary me-2">1</span>
+                                                    Beranda
+                                                </div>
+                                                <span class="badge bg-light text-dark">3,254 views</span>
+                                            </li>
+                                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge bg-primary me-2">2</span>
+                                                    Tentang Kami
+                                                </div>
+                                                <span class="badge bg-light text-dark">1,846 views</span>
+                                            </li>
+                                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge bg-primary me-2">3</span>
+                                                    Kegiatan
+                                                </div>
+                                                <span class="badge bg-light text-dark">1,249 views</span>
+                                            </li>
+                                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge bg-secondary me-2">4</span>
+                                                    Artikel
+                                                </div>
+                                                <span class="badge bg-light text-dark">978 views</span>
+                                            </li>
+                                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge bg-secondary me-2">5</span>
+                                                    Kontak
+                                                </div>
+                                                <span class="badge bg-light text-dark">654 views</span>
+                                            </li>
+                                        </ul>
+                                    <% } %>
+                                </div>
+                                
+                                <div class="text-center mt-3">
+                                    <a href="/admin/analytics" class="btn btn-sm btn-outline-primary">Lihat Laporan Lengkap</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- views/pages/admin/dashboard.ejs - Part 5 (Bagian 1) -->
+
+                <!-- Recent Activities & Users Section -->
+                <div class="row g-4 mb-4">
+                    <!-- Recent Activities -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Kegiatan Terbaru</h5>
+                                <a href="/admin/activities" class="btn btn-sm btn-primary">Lihat Semua</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Kegiatan</th>
+                                                <th>Tanggal</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if (stats && stats.recentActivities && stats.recentActivities.length > 0) { %>
+                                                <% stats.recentActivities.forEach(activity => { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="<%= activity.imageUrl %>" alt="<%= activity.title %>" class="rounded me-3" width="40">
+                                                                <div>
+                                                                    <h6 class="mb-0"><%= activity.title %></h6>
+                                                                    <small class="text-muted"><%= activity.location %></small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td><%= new Date(activity.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                                                        <td>
+                                                            <span class="badge bg-<%= activity.status === 'active' ? 'success' : (activity.status === 'pending' ? 'warning' : 'secondary') %>">
+                                                                <%= activity.status === 'active' ? 'Aktif' : (activity.status === 'pending' ? 'Menunggu' : 'Selesai') %>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton<%= activity._id %>" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="fas fa-ellipsis-v"></i>
+                                                                </button>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<%= activity._id %>">
+                                                                    <li><a class="dropdown-item" href="/admin/activities/edit/<%= activity._id %>"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                    <li><a class="dropdown-item" href="/admin/activities/view/<%= activity._id %>"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                    <li><hr class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal<%= activity._id %>"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <!-- Placeholder data if no activities -->
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/images/activity-1.jpg" alt="Seminar Nasional" class="rounded me-3" width="40">
+                                                            <div>
+                                                                <h6 class="mb-0">Seminar Nasional Profesionalisme Kedokteran</h6>
+                                                                <small class="text-muted">Jakarta</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>15 Mei 2025</td>
+                                                    <td><span class="badge bg-success">Aktif</span></td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                <li><hr class="dropdown-divider"></li>
+                                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/images/activity-2.jpg" alt="Workshop" class="rounded me-3" width="40">
+                                                            <div>
+                                                                <h6 class="mb-0">Workshop Pengembangan Kompetensi Medis</h6>
+                                                                <small class="text-muted">Surabaya</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>20 Juni 2025</td>
+                                                    <td><span class="badge bg-warning">Menunggu</span></td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton2">
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                <li><hr class="dropdown-divider"></li>
+                                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/images/activity-3.jpg" alt="Kongres" class="rounded me-3" width="40">
+                                                            <div>
+                                                                <h6 class="mb-0">Kongres Nasional IDI 2025</h6>
+                                                                <small class="text-muted">Bali</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>10 Juli 2025</td>
+                                                    <td><span class="badge bg-secondary">Selesai</span></td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton3">
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                <li><hr class="dropdown-divider"></li>
+                                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Users -->
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Anggota Terbaru</h5>
+                                <a href="/admin/users" class="btn btn-sm btn-primary">Lihat Semua</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Anggota</th>
+                                                <th>Email</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <!-- views/pages/admin/dashboard.ejs - Part 5 (Bagian 2) -->
+                                        <tbody>
+                                            <% if (stats && stats.recentUsers && stats.recentUsers.length > 0) { %>
+                                                <% stats.recentUsers.forEach(user => { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <% if (user.profilePicture) { %>
+                                                                    <img src="<%= user.profilePicture %>" alt="<%= user.name %>" class="rounded-circle me-3" width="40">
+                                                                <% } else { %>
+                                                                    <div class="avatar-placeholder rounded-circle me-3 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 40px; height: 40px;">
+                                                                        <%= user.name.charAt(0).toUpperCase() %>
+                                                                    </div>
+                                                                <% } %>
+                                                                <div>
+                                                                    <h6 class="mb-0"><%= user.name %></h6>
+                                                                    <small class="text-muted"><%= user.role === 'admin' ? 'Administrator' : 'Anggota' %></small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td><%= user.email %></td>
+                                                        <td>
+                                                            <span class="badge bg-<%= user.status === 'active' ? 'success' : (user.status === 'pending' ? 'warning' : 'danger') %>">
+                                                                <%= user.status === 'active' ? 'Aktif' : (user.status === 'pending' ? 'Menunggu' : 'Nonaktif') %>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton<%= user._id %>" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="fas fa-ellipsis-v"></i>
+                                                                </button>
+                                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<%= user._id %>">
+                                                                    <li><a class="dropdown-item" href="/admin/users/edit/<%= user._id %>"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                    <li><a class="dropdown-item" href="/admin/users/view/<%= user._id %>"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                    <li><hr class="dropdown-divider"></li>
+                                                                    <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteUserModal<%= user._id %>"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <!-- Placeholder data if no users -->
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/images/user-1.jpg" alt="Budi Santoso" class="rounded-circle me-3" width="40">
+                                                            <div>
+                                                                <h6 class="mb-0">Dr. Budi Santoso</h6>
+                                                                <small class="text-muted">Anggota</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>budi@example.com</td>
+                                                    <td><span class="badge bg-success">Aktif</span></td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton4">
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                <li><hr class="dropdown-divider"></li>
+                                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/images/user-2.jpg" alt="Siti Rahayu" class="rounded-circle me-3" width="40">
+                                                            <div>
+                                                                <h6 class="mb-0">Dr. Siti Rahayu, Sp.A</h6>
+                                                                <small class="text-muted">Anggota</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>siti@example.com</td>
+                                                    <td><span class="badge bg-warning">Menunggu</span></td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                <li><hr class="dropdown-divider"></li>
+                                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/images/user-3.jpg" alt="Ahmad Firdaus" class="rounded-circle me-3" width="40">
+                                                            <div>
+                                                                <h6 class="mb-0">Dr. Ahmad Firdaus, Sp.OG</h6>
+                                                                <small class="text-muted">Administrator</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>ahmad@example.com</td>
+                                                    <td><span class="badge bg-success">Aktif</span></td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton6">
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Detail</a></li>
+                                                                <li><hr class="dropdown-divider"></li>
+                                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Hapus</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Aksi Cepat</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3 col-sm-6">
+                                <a href="/admin/activities/create" class="btn btn-light border w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center">
+                                    <i class="fas fa-calendar-plus fa-2x mb-2 text-primary"></i>
+                                    <span>Tambah Kegiatan</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <a href="/admin/articles/create" class="btn btn-light border w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center">
+                                    <i class="fas fa-file-alt fa-2x mb-2 text-info"></i>
+                                    <span>Tambah Artikel</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <a href="/admin/users/verification" class="btn btn-light border w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center">
+                                    <i class="fas fa-user-check fa-2x mb-2 text-danger"></i>
+                                    <span>Verifikasi Anggota</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <a href="/admin/messages" class="btn btn-light border w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center">
+                                    <i class="fas fa-envelope-open-text fa-2x mb-2 text-warning"></i>
+                                    <span>Lihat Pesan</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="footer mt-auto">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-0">Copyright © <%= new Date().getFullYear() %> Ikatan Dokter Indonesia. All rights reserved.</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <p class="mb-0">Admin Dashboard v1.0</p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/js/admin.js"></script>
+</body>
+</html>

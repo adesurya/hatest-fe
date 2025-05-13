@@ -1,0 +1,118 @@
+<!-- views/partials/footer.ejs -->
+<!-- Footer -->
+<footer class="footer bg-dark text-white pt-5 pb-3">
+    <div class="container">
+        <div class="row">
+            <!-- About Organization -->
+            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                <img src="/images/logo-white.png" alt="Organization Logo" class="mb-4" height="60">
+                <p class="mb-4">Organisasi Indonesia adalah lembaga profesional yang berdedikasi untuk memajukan dan membangun Indonesia melalui berbagai program dan kegiatan profesional.</p>
+                <ul class="list-inline social-links-footer">
+                    <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-youtube"></i></a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <h5 class="footer-heading mb-4">Tautan Cepat</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="/" class="footer-link">Beranda</a></li>
+                    <li><a href="/about" class="footer-link">Tentang Kami</a></li>
+                    <li><a href="/vision-mission" class="footer-link">Visi & Misi</a></li>
+                    <li><a href="/structure" class="footer-link">Struktur Organisasi</a></li>
+                    <li><a href="/articles" class="footer-link">Artikel</a></li>
+                    <li><a href="/contact" class="footer-link">Kontak</a></li>
+                </ul>
+            </div>
+            
+            <!-- Services -->
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <h5 class="footer-heading mb-4">Layanan</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#" class="footer-link">Registrasi Anggota</a></li>
+                    <li><a href="#" class="footer-link">Pendidikan Berkelanjutan</a></li>
+                    <li><a href="#" class="footer-link">Sertifikasi</a></li>
+                    <li><a href="#" class="footer-link">Advokasi</a></li>
+                    <li><a href="#" class="footer-link">Riset & Publikasi</a></li>
+                    <li><a href="#" class="footer-link">Kegiatan Sosial</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="col-lg-4 col-md-6">
+                <h5 class="footer-heading mb-4">Informasi Kontak</h5>
+                <ul class="list-unstyled contact-info">
+                    <li class="d-flex mb-3">
+                        <i class="fas fa-map-marker-alt mt-1 me-3"></i>
+                        <span>Jl. Menteng Raya No. 29, Jakarta Pusat 10340</span>
+                    </li>
+                    <li class="d-flex mb-3">
+                        <i class="fas fa-phone-alt mt-1 me-3"></i>
+                        <span>(021) 3150679</span>
+                    </li>
+                    <li class="d-flex mb-3">
+                        <i class="fas fa-envelope mt-1 me-3"></i>
+                        <span>info@organisasi.org</span>
+                    </li>
+                    <li class="d-flex mb-3">
+                        <i class="fas fa-clock mt-1 me-3"></i>
+                        <span>Senin - Jumat: 08.00 - 16.30 WIB</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <hr class="my-4 bg-light">
+        
+        <!-- Copyright -->
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-md-0">&copy; <%= new Date().getFullYear() %> Organisasi Indonesia. All Rights Reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="#" class="text-white">Ketentuan Penggunaan</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white">Kebijakan Privasi</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to Top Button -->
+<a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Swiper Slider JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<!-- AOS Animation JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- Custom JS -->
+<script src="/js/main.js"></script>
+
+<!-- Page Specific JS -->
+<% if (typeof pageSpecificJS !== 'undefined') { %>
+    <script src="/js/<%= pageSpecificJS %>"></script>
+<% } %>
+
+<!-- Initialize AOS animation -->
+<script>
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+</script>
+</body>
+</html>

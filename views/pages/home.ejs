@@ -1,0 +1,638 @@
+<!-- views/pages/home.ejs - Part 1 -->
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<!-- Hero Slider Section -->
+<section class="hero-slider">
+    <div class="swiper hero-swiper">
+        <div class="swiper-wrapper">
+            <% if (sliders && sliders.length > 0) { %>
+                <% sliders.forEach(slider => { %>
+                    <div class="swiper-slide">
+                        <div class="hero-slide" style="background-image: url('<%= slider.imageUrl %>');">
+                            <div class="container h-100">
+                                <div class="row h-100 align-items-center">
+                                    <div class="col-lg-8 text-white" data-aos="fade-right">
+                                        <h1 class="display-4 fw-bold mb-3"><%= slider.title %></h1>
+                                        <p class="lead mb-4"><%= slider.subtitle %></p>
+                                        <% if (slider.buttonText && slider.buttonUrl) { %>
+                                            <a href="<%= slider.buttonUrl %>" class="btn btn-primary btn-lg px-5 py-3"><%= slider.buttonText %></a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <!-- Default slide if no data -->
+                <div class="swiper-slide">
+                    <div class="hero-slide" style="background-image: url('/images/hero-default.jpg');">
+                        <div class="container h-100">
+                            <div class="row h-100 align-items-center">
+                                <div class="col-lg-8 text-white" data-aos="fade-right">
+                                    <h1 class="display-4 fw-bold mb-3">Selamat Datang di Ikatan Dokter Indonesia</h1>
+                                    <p class="lead mb-4">Organisasi profesional yang berdedikasi untuk kemajuan dan pelayanan kepada masyarakat Indonesia</p>
+                                    <a href="/about" class="btn btn-primary btn-lg px-5 py-3">Tentang Kami</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="hero-slide" style="background-image: url('/images/hero-2.jpg');">
+                        <div class="container h-100">
+                            <div class="row h-100 align-items-center">
+                                <div class="col-lg-8 text-white" data-aos="fade-right">
+                                    <h1 class="display-4 fw-bold mb-3">Profesionalisme dalam Pelayanan Kesehatan</h1>
+                                    <p class="lead mb-4">Meningkatkan standar pelayanan kesehatan untuk Indonesia yang lebih sehat</p>
+                                    <a href="/about" class="btn btn-primary btn-lg px-5 py-3">Pelajari Lebih Lanjut</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="hero-slide" style="background-image: url('/images/hero-3.jpg');">
+                        <div class="container h-100">
+                            <div class="row h-100 align-items-center">
+                                <div class="col-lg-8 text-white" data-aos="fade-right">
+                                    <h1 class="display-4 fw-bold mb-3">Bergabunglah dengan IDI</h1>
+                                    <p class="lead mb-4">Jadilah bagian dari komunitas dokter terbesar di Indonesia</p>
+                                    <a href="/auth/register" class="btn btn-primary btn-lg px-5 py-3">Daftar Sekarang</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+</section>
+
+<!-- About Preview Section -->
+<section class="about-preview py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                <img src="/images/about-preview.jpg" alt="About Organization" class="img-fluid rounded-3 shadow-lg">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="section-title">
+                    <h6 class="text-primary fw-bold">TENTANG KAMI</h6>
+                    <h2 class="display-6 mb-4">Ikatan Dokter Indonesia</h2>
+                </div>
+                
+                <% if (homepage && homepage.aboutPreview) { %>
+                    <p class="lead mb-4"><%= homepage.aboutPreview.description %></p>
+                <% } else { %>
+                    <p class="lead mb-4">Ikatan Dokter Indonesia (IDI) adalah organisasi profesi kedokteran yang menaungi para dokter di Indonesia. Sebagai organisasi profesi yang berintegritas, IDI terus berkomitmen untuk memajukan standar profesional, etika, dan kualitas pelayanan kesehatan melalui pendidikan berkelanjutan, riset, dan advokasi.</p>
+                <% } %>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex mb-3">
+                            <div class="icon-box me-3">
+                                <i class="fas fa-check text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Visi & Misi</h5>
+                                <p class="mb-0">Menjadi organisasi profesi kedokteran terdepan yang berkontribusi nyata bagi kesehatan bangsa</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex mb-3">
+                            <div class="icon-box me-3">
+                                <i class="fas fa-check text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Profesionalisme</h5>
+                                <p class="mb-0">Meningkatkan standar profesional melalui pelatihan berkelanjutan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="/about" class="btn btn-primary px-4 py-3">Pelajari Lebih Lanjut</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- views/pages/home.ejs - Part 2 -->
+
+<!-- Stats Counter Section -->
+<section class="counter-section bg-primary text-white py-5">
+    <div class="container py-4">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0" data-aos="fade-up">
+                <div class="counter-item">
+                    <i class="fas fa-users fa-3x mb-3"></i>
+                    <h2 class="counter display-4 fw-bold" data-target="25000">25,000+</h2>
+                    <p class="mb-0">Anggota</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0" data-aos="fade-up" data-aos-delay="100">
+                <div class="counter-item">
+                    <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+                    <h2 class="counter display-4 fw-bold" data-target="34">34</h2>
+                    <p class="mb-0">Cabang di Seluruh Indonesia</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0" data-aos="fade-up" data-aos-delay="200">
+                <div class="counter-item">
+                    <i class="fas fa-calendar-check fa-3x mb-3"></i>
+                    <h2 class="counter display-4 fw-bold" data-target="500">500+</h2>
+                    <p class="mb-0">Kegiatan Tahunan</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0" data-aos="fade-up" data-aos-delay="300">
+                <div class="counter-item">
+                    <i class="fas fa-award fa-3x mb-3"></i>
+                    <h2 class="counter display-4 fw-bold" data-target="74">74</h2>
+                    <p class="mb-0">Tahun Pengalaman</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center">
+                <div class="section-title">
+                    <h6 class="text-primary fw-bold">LAYANAN KAMI</h6>
+                    <h2 class="display-6 mb-3">Apa yang Kami Lakukan untuk Anggota dan Masyarakat</h2>
+                    <p class="text-muted">Kami menyediakan berbagai layanan untuk mendukung perkembangan profesional anggota kami dan berkontribusi positif bagi masyarakat Indonesia.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up">
+                <div class="service-card h-100 p-4 border rounded-3 shadow-sm">
+                    <div class="icon-box mb-4">
+                        <i class="fas fa-user-graduate text-primary fa-3x"></i>
+                    </div>
+                    <h4 class="mb-3">Pendidikan Berkelanjutan</h4>
+                    <p class="text-muted mb-4">Program pelatihan dan pendidikan berkualitas untuk meningkatkan pengetahuan dan keterampilan profesional dokter di Indonesia.</p>
+                    <a href="#" class="btn btn-outline-primary">Selengkapnya</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-card h-100 p-4 border rounded-3 shadow-sm">
+                    <div class="icon-box mb-4">
+                        <i class="fas fa-certificate text-primary fa-3x"></i>
+                    </div>
+                    <h4 class="mb-3">Sertifikasi Profesional</h4>
+                    <p class="text-muted mb-4">Standarisasi kompetensi melalui program sertifikasi yang diakui secara nasional dan internasional untuk dokter di Indonesia.</p>
+                    <a href="#" class="btn btn-outline-primary">Selengkapnya</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-card h-100 p-4 border rounded-3 shadow-sm">
+                    <div class="icon-box mb-4">
+                        <i class="fas fa-gavel text-primary fa-3x"></i>
+                    </div>
+                    <h4 class="mb-3">Advokasi Profesional</h4>
+                    <p class="text-muted mb-4">Memperjuangkan hak dan kepentingan profesional dokter melalui advokasi kebijakan dan regulasi kesehatan di Indonesia.</p>
+                    <a href="#" class="btn btn-outline-primary">Selengkapnya</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-card h-100 p-4 border rounded-3 shadow-sm">
+                    <div class="icon-box mb-4">
+                        <i class="fas fa-book text-primary fa-3x"></i>
+                    </div>
+                    <h4 class="mb-3">Riset & Publikasi</h4>
+                    <p class="text-muted mb-4">Mengembangkan pengetahuan kedokteran melalui penelitian dan publikasi ilmiah berkualitas tinggi untuk kemajuan dunia kesehatan.</p>
+                    <a href="#" class="btn btn-outline-primary">Selengkapnya</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="service-card h-100 p-4 border rounded-3 shadow-sm">
+                    <div class="icon-box mb-4">
+                        <i class="fas fa-handshake text-primary fa-3x"></i>
+                    </div>
+                    <h4 class="mb-3">Jejaring Profesional</h4>
+                    <p class="text-muted mb-4">Membangun hubungan dan kolaborasi antar profesional kesehatan melalui berbagai forum dan kegiatan untuk memperkuat ekosistem kesehatan.</p>
+                    <a href="#" class="btn btn-outline-primary">Selengkapnya</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="service-card h-100 p-4 border rounded-3 shadow-sm">
+                    <div class="icon-box mb-4">
+                        <i class="fas fa-hands-helping text-primary fa-3x"></i>
+                    </div>
+                    <h4 class="mb-3">Pengabdian Masyarakat</h4>
+                    <p class="text-muted mb-4">Menerapkan keahlian profesional untuk membantu masyarakat melalui program-program sosial kesehatan di seluruh Indonesia.</p>
+                    <a href="#" class="btn btn-outline-primary">Selengkapnya</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- views/pages/home.ejs - Part 3 -->
+
+<!-- Recent Activities Section -->
+<section class="activities-section py-5 bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center">
+                <div class="section-title">
+                    <h6 class="text-primary fw-bold">KEGIATAN TERBARU</h6>
+                    <h2 class="display-6 mb-3">Agenda dan Aktivitas Organisasi</h2>
+                    <p class="text-muted">Berbagai kegiatan dan agenda yang telah dan akan diselenggarakan oleh Ikatan Dokter Indonesia untuk anggota dan masyarakat umum.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <% if (activities && activities.data && activities.data.length > 0) { %>
+                <% activities.data.forEach((activity, index) => { %>
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+                        <div class="activity-card h-100 bg-white rounded-3 shadow-sm overflow-hidden">
+                            <img src="<%= activity.imageUrl %>" alt="<%= activity.title %>" class="img-fluid activity-img">
+                            <div class="p-4">
+                                <div class="activity-date mb-3">
+                                    <span class="date-badge bg-primary text-white px-3 py-2 rounded-3">
+                                        <i class="far fa-calendar-alt me-2"></i><%= new Date(activity.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %>
+                                    </span>
+                                </div>
+                                <h4 class="mb-3"><%= activity.title %></h4>
+                                <p class="text-muted mb-4"><%= activity.description.substring(0, 100) %>...</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="location">
+                                        <i class="fas fa-map-marker-alt me-2 text-primary"></i><%= activity.location %>
+                                    </span>
+                                    <a href="/activities/<%= activity._id %>" class="btn btn-sm btn-outline-primary">Selengkapnya</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <!-- Placeholder activities if no data -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up">
+                    <div class="activity-card h-100 bg-white rounded-3 shadow-sm overflow-hidden">
+                        <img src="/images/activity-1.jpg" alt="Seminar Nasional" class="img-fluid activity-img">
+                        <div class="p-4">
+                            <div class="activity-date mb-3">
+                                <span class="date-badge bg-primary text-white px-3 py-2 rounded-3">
+                                    <i class="far fa-calendar-alt me-2"></i>15 Mei 2025
+                                </span>
+                            </div>
+                            <h4 class="mb-3">Seminar Nasional Profesionalisme Kedokteran</h4>
+                            <p class="text-muted mb-4">Seminar nasional yang membahas standar dan etika profesional dalam pelayanan kesehatan di era modern...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="location">
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Jakarta
+                                </span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="activity-card h-100 bg-white rounded-3 shadow-sm overflow-hidden">
+                        <img src="/images/activity-2.jpg" alt="Workshop" class="img-fluid activity-img">
+                        <div class="p-4">
+                            <div class="activity-date mb-3">
+                                <span class="date-badge bg-primary text-white px-3 py-2 rounded-3">
+                                    <i class="far fa-calendar-alt me-2"></i>20 Juni 2025
+                                </span>
+                            </div>
+                            <h4 class="mb-3">Workshop Pengembangan Kompetensi Medis</h4>
+                            <p class="text-muted mb-4">Workshop yang dirancang untuk meningkatkan keterampilan dan kompetensi profesional dokter dalam penanganan kasus-kasus medis...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="location">
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Surabaya
+                                </span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="activity-card h-100 bg-white rounded-3 shadow-sm overflow-hidden">
+                        <img src="/images/activity-3.jpg" alt="Kongres" class="img-fluid activity-img">
+                        <div class="p-4">
+                            <div class="activity-date mb-3">
+                                <span class="date-badge bg-primary text-white px-3 py-2 rounded-3">
+                                    <i class="far fa-calendar-alt me-2"></i>10 Juli 2025
+                                </span>
+                            </div>
+                            <h4 class="mb-3">Kongres Nasional IDI 2025</h4>
+                            <p class="text-muted mb-4">Pertemuan tahunan seluruh anggota untuk membahas kebijakan dan rencana strategis organisasi dalam mendukung sistem kesehatan nasional...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="location">
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Bali
+                                </span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="/activities" class="btn btn-primary px-5 py-3">Lihat Semua Kegiatan</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center">
+                <div class="section-title">
+                    <h6 class="text-primary fw-bold">TESTIMONI</h6>
+                    <h2 class="display-6 mb-3">Apa Kata Anggota Kami</h2>
+                    <p class="text-muted">Pendapat dan pengalaman dari anggota yang telah bergabung dan merasakan manfaat dari Ikatan Dokter Indonesia.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="swiper testimonial-swiper">
+            <div class="swiper-wrapper">
+                <!-- Testimonial Items -->
+                <div class="swiper-slide">
+                    <div class="testimonial-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="testimonial-content">
+                            <div class="rating mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="mb-4">"Bergabung dengan IDI memberikan banyak manfaat untuk perkembangan karir profesional saya. Program pendidikan berkelanjutan dan jaringan yang luas sangat membantu dalam meningkatkan kompetensi dan memperluas koneksi dalam dunia kedokteran."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="/images/testimonial-1.jpg" alt="Testimonial 1" class="rounded-circle me-3" width="60">
+                                <div>
+                                    <h5 class="mb-1">Dr. Budi Santoso</h5>
+                                    <p class="mb-0 text-muted">Anggota sejak 2018</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-slide">
+                    <div class="testimonial-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="testimonial-content">
+                            <div class="rating mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="mb-4">"Sertifikasi yang saya dapatkan melalui IDI sangat diakui secara nasional dan membantu saya mendapatkan posisi yang lebih baik. Saya sangat merekomendasikan untuk bergabung dengan organisasi ini bagi seluruh dokter di Indonesia."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="/images/testimonial-2.jpg" alt="Testimonial 2" class="rounded-circle me-3" width="60">
+                                <div>
+                                    <h5 class="mb-1">Dr. Siti Rahayu, Sp.A</h5>
+                                    <p class="mb-0 text-muted">Anggota sejak 2016</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-slide">
+                    <div class="testimonial-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="testimonial-content">
+                            <div class="rating mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            </div>
+                            <p class="mb-4">"Program advokasi yang dilakukan IDI sangat membantu profesi kami. Kami merasa terlindungi dan didukung dalam menjalankan tugas profesional sehari-hari terutama dalam kasus-kasus medis yang kompleks."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="/images/testimonial-3.jpg" alt="Testimonial 3" class="rounded-circle me-3" width="60">
+                                <div>
+                                    <h5 class="mb-1">Dr. Ahmad Firdaus, Sp.OG</h5>
+                                    <p class="mb-0 text-muted">Anggota sejak 2020</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-slide">
+                    <div class="testimonial-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="testimonial-content">
+                            <div class="rating mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="mb-4">"Kegiatan pelatihan dan seminar yang diadakan IDI sangat berkualitas dan up-to-date. Saya bisa terus mengikuti perkembangan terbaru dalam dunia kedokteran dan memperbarui pengetahuan saya. Sangat bermanfaat untuk pengembangan profesional."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="/images/testimonial-4.jpg" alt="Testimonial 4" class="rounded-circle me-3" width="60">
+                                <div>
+                                    <h5 class="mb-1">Dr. Maya Wijaya, Sp.PD</h5>
+                                    <p class="mb-0 text-muted">Anggota sejak 2019</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-slide">
+                    <div class="testimonial-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="testimonial-content">
+                            <div class="rating mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="mb-4">"Jaringan IDI yang luas memudahkan saya untuk berkolaborasi dengan rekan-rekan dokter dari berbagai spesialisasi. Ini sangat membantu dalam praktik klinis dan penelitian yang saya lakukan. IDI benar-benar menjadi rumah bagi dokter Indonesia."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="/images/testimonial-5.jpg" alt="Testimonial 5" class="rounded-circle me-3" width="60">
+                                <div>
+                                    <h5 class="mb-1">Dr. Rudi Hartono, Sp.JP</h5>
+                                    <p class="mb-0 text-muted">Anggota sejak 2015</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="/testimonials" class="btn btn-primary px-5 py-3">Lihat Semua Testimoni</a>
+        </div>
+    </div>
+</section>
+
+<!-- views/pages/home.ejs - Part 4 -->
+
+<!-- Call to Action Section -->
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <h2 class="display-6 fw-bold mb-3">Bergabunglah dengan Ikatan Dokter Indonesia</h2>
+                <p class="lead mb-0">Dapatkan berbagai manfaat dan kesempatan untuk meningkatkan profesionalisme Anda</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="/auth/register" class="btn btn-light btn-lg px-5 py-3">Daftar Sekarang</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Articles Section -->
+<section class="articles-section py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center">
+                <div class="section-title">
+                    <h6 class="text-primary fw-bold">ARTIKEL TERBARU</h6>
+                    <h2 class="display-6 mb-3">Berita dan Informasi Terkini</h2>
+                    <p class="text-muted">Artikel dan informasi terkini terkait perkembangan dan isu-isu penting dalam dunia kedokteran dan kesehatan.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Article Items -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up">
+                <div class="article-card h-100 bg-white rounded-3 shadow-sm overflow-hidden">
+                    <img src="/images/article-1.jpg" alt="Article 1" class="img-fluid article-img">
+                    <div class="p-4">
+                        <div class="article-meta mb-2">
+                            <span class="me-3"><i class="far fa-calendar-alt me-1"></i> 10 Mei 2025</span>
+                            <span><i class="far fa-user me-1"></i> Admin</span>
+                        </div>
+                        <h4 class="mb-3">Perkembangan Teknologi dalam Bidang Kedokteran</h4>
+                        <p class="text-muted mb-4">Pemanfaatan teknologi terkini untuk meningkatkan kualitas pelayanan kesehatan di era digital dan transformasi industri 4.0...</p>
+                        <a href="#" class="btn btn-outline-primary">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="article-card h-100 bg-white rounded-3 shadow-sm overflow-hidden">
+                    <img src="/images/article-2.jpg" alt="Article 2" class="img-fluid article-img">
+                    <div class="p-4">
+                        <div class="article-meta mb-2">
+                            <span class="me-3"><i class="far fa-calendar-alt me-1"></i> 5 Mei 2025</span>
+                            <span><i class="far fa-user me-1"></i> Admin</span>
+                        </div>
+                        <h4 class="mb-3">Etika Kedokteran di Era Modern</h4>
+                        <p class="text-muted mb-4">Tantangan dan penerapan etika kedokteran dalam menghadapi kompleksitas isu kesehatan di masyarakat modern...</p>
+                        <a href="#" class="btn btn-outline-primary">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="article-card h-100 bg-white rounded-3 shadow-sm overflow-hidden">
+                    <img src="/images/article-3.jpg" alt="Article 3" class="img-fluid article-img">
+                    <div class="p-4">
+                        <div class="article-meta mb-2">
+                            <span class="me-3"><i class="far fa-calendar-alt me-1"></i> 1 Mei 2025</span>
+                            <span><i class="far fa-user me-1"></i> Admin</span>
+                        </div>
+                        <h4 class="mb-3">Peningkatan Standar Pelayanan Kesehatan</h4>
+                        <p class="text-muted mb-4">Strategi dan langkah-langkah untuk meningkatkan standar pelayanan kesehatan di Indonesia demi terwujudnya masyarakat yang lebih sehat...</p>
+                        <a href="#" class="btn btn-outline-primary">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="/articles" class="btn btn-primary px-5 py-3">Lihat Semua Artikel</a>
+        </div>
+    </div>
+</section>
+
+<!-- Sponsors Section -->
+<section class="sponsors-section py-5 bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center">
+                <div class="section-title">
+                    <h6 class="text-primary fw-bold">MITRA KAMI</h6>
+                    <h2 class="display-6 mb-3">Lembaga dan Organisasi Mitra</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="sponsors-slider">
+                    <div class="swiper sponsors-swiper">
+                        <div class="swiper-wrapper align-items-center">
+                            <div class="swiper-slide text-center">
+                                <img src="/images/sponsor-1.png" alt="Sponsor 1" class="img-fluid">
+                            </div>
+                            <div class="swiper-slide text-center">
+                                <img src="/images/sponsor-2.png" alt="Sponsor 2" class="img-fluid">
+                            </div>
+                            <div class="swiper-slide text-center">
+                                <img src="/images/sponsor-3.png" alt="Sponsor 3" class="img-fluid">
+                            </div>
+                            <div class="swiper-slide text-center">
+                                <img src="/images/sponsor-4.png" alt="Sponsor 4" class="img-fluid">
+                            </div>
+                            <div class="swiper-slide text-center">
+                                <img src="/images/sponsor-5.png" alt="Sponsor 5" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="newsletter-box text-center bg-white p-5 rounded-3 shadow">
+                    <h3 class="mb-3">Berlangganan Newsletter Kami</h3>
+                    <p class="text-muted mb-4">Dapatkan informasi terbaru tentang kegiatan, artikel, dan perkembangan organisasi</p>
+                    <form action="#" method="post" class="newsletter-form">
+                        <div class="input-group">
+                            <input type="email" class="form-control form-control-lg" placeholder="Alamat Email Anda" required>
+                            <button type="submit" class="btn btn-primary px-4">Berlangganan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer') %>
