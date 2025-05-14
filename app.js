@@ -1,5 +1,4 @@
-// Modified app.js to handle API login with redirection
-// This is a simplified version - you would need to integrate it with your full app.js
+// Updated app.js with direct API login endpoint
 
 const express = require('express');
 const path = require('path');
@@ -32,7 +31,7 @@ app.use(session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 3600000 } // 1 hour
+  cookie: { maxAge: 8 * 60 * 60 * 1000 } // 8 hours
 }));
 
 // Flash messages
@@ -47,13 +46,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route setup
-app.use('/', indexRouter);
-app.use('/auth', authRouter);
-app.use('/admin', adminRouter);
-app.use('/user', userRouter);
-
-// API login endpoint that redirects like the web form
+// Include the API login endpoint directly in app.js
+// This makes sure it's available at the right path
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -65,49 +59,36 @@ app.post('/api/auth/login', async (req, res) => {
       });
     }
     
-    // Using the authAPI service
+    // Import auth API here to avoid circular dependencies
     const { authAPI } = require('./services/api');
     const response = await authAPI.login({ email, password });
     
-    // Store user in session, just like the web login
+    // Store user in session
     req.session.user = response.user;
     global.token = response.token;
     
-    // Redirect based on user role - this is the key part
-    const redirectPath = response.user.role === 'admin' ? '/admin/dashboard' : '/user/dashboard';
-    
-    // Decide how to respond based on the Accept header
-    const acceptHeader = req.headers.accept || '';
-    if (acceptHeader.includes('application/json')) {
-      // If client expects JSON, send JSON with redirect info
-      return res.status(200).json({
-        success: true,
-        token: response.token,
-        user: response.user,
-        redirect: redirectPath
-      });
-    } else {
-      // Otherwise redirect directly
-      return res.redirect(redirectPath);
-    }
+    // Return JSON with user info and redirect URL
+    return res.status(200).json({
+      success: true,
+      token: response.token,
+      user: response.user,
+      redirect: response.user.is_admin === 1 ? '/admin/dashboard' : '/user/dashboard'
+    });
   } catch (err) {
     console.error('Login Error:', err);
     
-    // Decide how to respond based on the Accept header
-    const acceptHeader = req.headers.accept || '';
-    if (acceptHeader.includes('application/json')) {
-      // If client expects JSON, send JSON error
-      return res.status(401).json({ 
-        success: false, 
-        message: err.message || 'Invalid email or password' 
-      });
-    } else {
-      // For non-JSON clients, flash an error and redirect to login
-      req.flash('error_msg', err.message || 'Invalid email or password');
-      return res.redirect('/auth/login');
-    }
+    return res.status(401).json({ 
+      success: false, 
+      message: err.message || 'Invalid email or password' 
+    });
   }
 });
+
+// Web routes
+app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/admin', adminRouter);
+app.use('/user', userRouter);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {

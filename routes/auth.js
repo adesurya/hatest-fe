@@ -1,4 +1,4 @@
-// Updated routes/auth.js file to handle the API login request
+// Updated routes/auth.js with fixed login route
 
 const express = require('express');
 const router = express.Router();
@@ -20,20 +20,20 @@ const isLoggedOut = (req, res, next) => {
     next();
   } else {
     // Redirect based on user role
-    const redirectPath = req.session.user.role === 'admin' ? '/admin/dashboard' : '/user/dashboard';
+    const redirectPath = req.session.user.is_admin === 1 ? '/admin/dashboard' : '/user/dashboard';
     res.redirect(redirectPath);
   }
 };
 
-// Login page
-router.get('/login', isLoggedOut, (req, res) => {
+// Login page - WITHOUT middleware that could redirect
+router.get('/login', (req, res) => {
   res.render('pages/login', {
     title: 'Login'
   });
 });
 
 // Process web form login
-router.post('/login', isLoggedOut, async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     
@@ -44,15 +44,16 @@ router.post('/login', isLoggedOut, async (req, res) => {
     global.token = response.token;
     
     // Redirect based on user role
-    const redirectPath = response.user.role === 'admin' ? '/admin/dashboard' : '/user/dashboard';
+    const redirectPath = response.user.is_admin === 1 ? '/admin/dashboard' : '/user/dashboard';
     res.redirect(redirectPath);
   } catch (err) {
+    console.error('Login Error:', err);
     req.flash('error_msg', err.response?.data?.message || 'Invalid email or password');
     res.redirect('/auth/login');
   }
 });
 
-// API login endpoint for REST clients
+// API login endpoint that redirects like the web form
 router.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -66,22 +67,41 @@ router.post('/api/login', async (req, res) => {
     
     const response = await authAPI.login({ email, password });
     
-    // Return JSON response with token and user info
-    return res.status(200).json({
-      success: true,
-      token: response.token,
-      user: {
-        id: response.user.id,
-        name: response.user.name,
-        email: response.user.email,
-        role: response.user.role
-      }
-    });
+    // Store user in session
+    req.session.user = response.user;
+    global.token = response.token;
+    
+    // Decide how to respond based on the Accept header
+    const acceptHeader = req.headers.accept || '';
+    if (acceptHeader.includes('application/json')) {
+      // If client expects JSON, send JSON with redirect info
+      return res.status(200).json({
+        success: true,
+        token: response.token,
+        user: response.user,
+        redirect: response.user.is_admin === 1 ? '/admin/dashboard' : '/user/dashboard'
+      });
+    } else {
+      // Otherwise redirect directly
+      const redirectPath = response.user.is_admin === 1 ? '/admin/dashboard' : '/user/dashboard';
+      return res.redirect(redirectPath);
+    }
   } catch (err) {
-    return res.status(401).json({ 
-      success: false, 
-      message: err.response?.data?.message || 'Invalid email or password' 
-    });
+    console.error('Login Error:', err);
+    
+    // Decide how to respond based on the Accept header
+    const acceptHeader = req.headers.accept || '';
+    if (acceptHeader.includes('application/json')) {
+      // If client expects JSON, send JSON error
+      return res.status(401).json({ 
+        success: false, 
+        message: err.response?.data?.message || 'Invalid email or password' 
+      });
+    } else {
+      // For non-JSON clients, flash an error and redirect to login
+      req.flash('error_msg', err.response?.data?.message || 'Invalid email or password');
+      return res.redirect('/auth/login');
+    }
   }
 });
 
@@ -93,7 +113,7 @@ router.get('/register', isLoggedOut, (req, res) => {
 });
 
 // Process registration
-router.post('/register', isLoggedOut, async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
     
@@ -114,14 +134,14 @@ router.post('/register', isLoggedOut, async (req, res) => {
 });
 
 // Forgot password page
-router.get('/forgot-password', isLoggedOut, (req, res) => {
+router.get('/forgot-password', (req, res) => {
   res.render('pages/forgot-password', {
     title: 'Forgot Password'
   });
 });
 
 // Process forgot password
-router.post('/forgot-password', isLoggedOut, async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
     
@@ -136,7 +156,7 @@ router.post('/forgot-password', isLoggedOut, async (req, res) => {
 });
 
 // Reset password page
-router.get('/reset-password/:token', isLoggedOut, (req, res) => {
+router.get('/reset-password/:token', (req, res) => {
   const { token } = req.params;
   
   res.render('pages/reset-password', {
@@ -146,7 +166,7 @@ router.get('/reset-password/:token', isLoggedOut, (req, res) => {
 });
 
 // Process reset password
-router.post('/reset-password', isLoggedOut, async (req, res) => {
+router.post('/reset-password', async (req, res) => {
   try {
     const { token, password, confirmPassword } = req.body;
     
@@ -167,22 +187,38 @@ router.post('/reset-password', isLoggedOut, async (req, res) => {
 });
 
 // Logout
-router.get('/logout', isLoggedIn, async (req, res) => {
+router.get('/logout', async (req, res) => {
   try {
     // Call logout API to invalidate token if needed
-    await authAPI.logout();
+    if (req.session.user && global.token) {
+      await authAPI.logout();
+    }
     
     // Clear session
     req.session.destroy();
     global.token = null;
     
-    res.redirect('/');
+    // In addition to server-side logout, we'll tell the client to clear localStorage
+    res.send(`
+      <script>
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        window.location.href = '/';
+      </script>
+    `);
   } catch (err) {
+    console.error('Logout Error:', err);
     // Even if API call fails, destroy session
     req.session.destroy();
     global.token = null;
     
-    res.redirect('/');
+    res.send(`
+      <script>
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        window.location.href = '/';
+      </script>
+    `);
   }
 });
 

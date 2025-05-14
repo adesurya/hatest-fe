@@ -1,9 +1,10 @@
+<!-- views/pages/user/profile.ejs -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | Organisasi Indonesia</title>
+    <title><%= title %> | Organisasi Indonesia</title>
     
     <!-- Favicon -->
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
@@ -21,191 +22,6 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/user.css">
-    
-    <!-- Additional Custom CSS -->
-    <style>
-        .profile-header {
-            background: linear-gradient(to right, #0d6efd, #0dcaf0);
-            border-radius: 1rem;
-            padding: 2rem;
-            color: #fff;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .profile-avatar-container {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 5px solid #fff;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            object-fit: cover;
-            background-color: #f8f9fa;
-        }
-        
-        .profile-avatar-placeholder {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 5px solid #fff;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            background-color: #0d6efd;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: bold;
-        }
-        
-        .upload-btn {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #0d6efd;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 2px solid #fff;
-            transition: all 0.3s ease;
-        }
-        
-        .upload-btn:hover {
-            background-color: #0b5ed7;
-        }
-        
-        .profile-card {
-            border-radius: 1rem;
-            border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-        }
-        
-        .profile-card-header {
-            padding: 1.25rem;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-        
-        .btn-update-profile {
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-        }
-        
-        .membership-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            display: inline-block;
-        }
-        
-        .field-label {
-            font-weight: 600;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-        
-        .field-value {
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-        }
-        
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-        
-        .toast {
-            width: 350px;
-        }
-        
-        .section-divider {
-            display: flex;
-            align-items: center;
-            color: #6c757d;
-            margin: 1.5rem 0;
-        }
-        
-        .section-divider span {
-            padding: 0 1rem;
-        }
-        
-        .section-divider:before,
-        .section-divider:after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .id-card-preview {
-            max-width: 100%;
-            height: auto;
-            border-radius: 0.5rem;
-            border: 1px solid #dee2e6;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .id-card-preview:hover {
-            transform: scale(1.05);
-        }
-        
-        .modal-body img {
-            max-width: 100%;
-        }
-        
-        .profile-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        @media (max-width: 767.98px) {
-            .profile-header {
-                padding: 1.5rem;
-                text-align: center;
-            }
-            
-            .profile-info {
-                text-align: center;
-                margin-top: 1rem;
-            }
-            
-            .profile-avatar, .profile-avatar-placeholder {
-                width: 100px;
-                height: 100px;
-                font-size: 2.5rem;
-            }
-            
-            .membership-badge {
-                margin-top: 0.5rem;
-            }
-            
-            .profile-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-        }
-    </style>
 </head>
 <body>
     <!-- Preloader -->
@@ -216,55 +32,7 @@
     <!-- User Layout -->
     <div class="user-layout">
         <!-- Sidebar -->
-        <div class="sidebar bg-primary text-white">
-            <div class="sidebar-header p-3 text-center">
-                <img src="/images/logo-white.png" alt="Organization Logo" class="img-fluid mb-3" style="max-height: 50px;">
-                <h5 class="fw-bold mb-0">User Dashboard</h5>
-            </div>
-            <hr class="bg-light my-0">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/dashboard">
-                        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white active" href="/user/profile">
-                        <i class="fas fa-user me-2"></i> Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/change-password">
-                        <i class="fas fa-key me-2"></i> Change Password
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/activities">
-                        <i class="fas fa-calendar-alt me-2"></i> My Activities
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/membership">
-                        <i class="fas fa-id-card me-2"></i> Membership
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/certificates">
-                        <i class="fas fa-certificate me-2"></i> Certificates
-                    </a>
-                </li>
-                <li class="nav-item mt-5">
-                    <a class="nav-link text-white" href="/">
-                        <i class="fas fa-home me-2"></i> Back to Website
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/auth/logout">
-                        <i class="fas fa-sign-out-alt me-2"></i> Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <%- include('../../partials/user-sidebar') %>
         
         <!-- Main Content -->
         <div class="main-content">
@@ -274,21 +42,20 @@
                     <button id="sidebarToggle" class="btn">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h5 class="mb-0 ms-3">My Profile</h5>
+                    <h5 class="mb-0 ms-3">Profil Saya</h5>
                 </div>
                 
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div id="nav-profile-placeholder" class="avatar-placeholder rounded-circle me-2 d-inline-flex align-items-center justify-content-center bg-primary text-white" style="width: 30px; height: 30px; display: none;">
-                                A
+                            <div class="avatar-placeholder rounded-circle me-2 d-inline-flex align-items-center justify-content-center bg-primary text-white" style="width: 30px; height: 30px;">
+                                <span class="user-initial">U</span>
                             </div>
-                            <img id="nav-profile-image" src="" alt="Profile" class="rounded-circle me-2" width="30" height="30" style="display: none; object-fit: cover;">
-                            <span id="nav-user-name">User</span>
+                            <span class="user-name">User</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
-                            <li><a class="dropdown-item" href="/user/change-password"><i class="fas fa-key me-2"></i> Change Password</a></li>
+                            <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user me-2"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="/user/change-password"><i class="fas fa-key me-2"></i> Ubah Password</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                         </ul>
@@ -298,271 +65,161 @@
             
             <!-- Profile Content -->
             <div class="content-wrapper p-4">
-                <!-- Toast notification container -->
-                <div class="toast-container">
-                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
-                        <div class="toast-header bg-success text-white">
-                            <i class="fas fa-check-circle me-2"></i>
-                            <strong class="me-auto">Success</strong>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body">
-                            Profile updated successfully!
-                        </div>
+                <!-- Flash Messages -->
+                <% if (success_msg && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
-                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
-                        <div class="toast-header bg-danger text-white">
-                            <i class="fas fa-exclamation-circle me-2"></i>
-                            <strong class="me-auto">Error</strong>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body" id="errorToastBody">
-                            An error occurred while updating your profile.
-                        </div>
+                <% } %>
+                
+                <% if (error_msg && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                </div>
+                <% } %>
+                
+                <!-- Alert Container for API messages -->
+                <div class="alert-container"></div>
                 
                 <!-- Profile Header -->
-                <div class="profile-header mb-4">
-                    <div class="row align-items-center">
-                        <div class="col-md-3 text-center text-md-start">
-                            <div class="profile-avatar-container">
-                                <div id="profile-avatar-placeholder" class="profile-avatar-placeholder mx-auto">
-                                    A
+                <div class="profile-header card border-0 rounded-3 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <div class="d-flex align-items-center">
+                                    <!-- Profile Photo -->
+                                    <div class="position-relative me-4">
+                                        <img src="" alt="Profile Photo" class="profile-photo rounded-circle" style="width: 100px; height: 100px; object-fit: cover; display: none;">
+                                        <div class="profile-photo-placeholder rounded-circle d-flex align-items-center justify-content-center bg-light" style="width: 100px; height: 100px;">
+                                            <i class="fas fa-user fa-3x text-secondary"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="mb-1 user-full-name">Loading...</h4>
+                                        <p class="text-muted mb-2 user-email">Loading...</p>
+                                        <span class="badge status-badge bg-secondary rounded-pill px-3 py-2">
+                                            <i class="fas fa-circle me-1"></i>
+                                            <span class="membership-status">Loading...</span>
+                                        </span>
+                                    </div>
                                 </div>
-                                <img id="profile-avatar" class="profile-avatar mx-auto" style="display: none;" src="" alt="Profile Picture">
-                                <label for="profile-photo-input" class="upload-btn" title="Upload Profile Picture">
-                                    <i class="fas fa-camera"></i>
-                                </label>
-                                <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
                             </div>
-                        </div>
-                        <div class="col-md-9 mt-3 mt-md-0">
-                            <div class="profile-info">
-                                <h3 id="user-full-name" class="mb-2">Loading...</h3>
-                                <p id="user-email" class="mb-2"><i class="fas fa-envelope me-2"></i>loading@example.com</p>
-                                <p id="user-phone" class="mb-3"><i class="fas fa-phone me-2"></i>+62-000-0000-0000</p>
-                                
-                                <div class="membership-status mb-3">
-                                    <span id="membership-badge" class="membership-badge bg-warning text-dark">
-                                        <i class="fas fa-clock me-1"></i> Loading...
-                                    </span>
-                                </div>
-                                
-                                <div class="profile-actions">
-                                    <button type="button" class="btn btn-primary" id="editProfileBtn">
-                                        <i class="fas fa-edit me-1"></i> Edit Profile
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary">
-                                        <i class="fas fa-id-card me-1"></i> View Membership Card
-                                    </button>
-                                </div>
+                            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                                <button type="button" class="btn btn-primary" id="edit-profile-btn">
+                                    <i class="fas fa-edit me-2"></i> Edit Profil
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Profile Details -->
-                <div class="row">
-                    <div class="col-lg-8">
-                        <!-- Personal Information -->
-                        <div class="profile-card mb-4">
-                            <div class="profile-card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i> Personal Information</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="row" id="viewProfileSection">
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Full Name</div>
-                                            <div class="field-value" id="view-full-name">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Email Address</div>
-                                            <div class="field-value" id="view-email">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Phone Number</div>
-                                            <div class="field-value" id="view-phone">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Birth Place</div>
-                                            <div class="field-value" id="view-birth-place">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Birth Date</div>
-                                            <div class="field-value" id="view-birth-date">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Role</div>
-                                            <div class="field-value" id="view-role">Loading...</div>
-                                        </div>
-                                    </div>
+                <!-- Profile Loading Indicator -->
+                <div class="profile-loading text-center p-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Memuat data profil...</p>
+                </div>
+                
+                <!-- Profile Information Container -->
+                <div class="profile-info-container" style="display: none;">
+                    <form id="profile-form" class="card border-0 rounded-3 shadow-sm mb-4" enctype="multipart/form-data">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">Informasi Personal</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="full_name" class="form-label">Nama Lengkap</label>
+                                    <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Masukkan nama lengkap">
                                 </div>
-                                
-                                <!-- Edit Profile Form (Hidden by default) -->
-                                <form id="editProfileForm" style="display: none;">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="full_name" class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="full_name" name="full_name" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="email" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="email" name="email" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="phone_number" class="form-label">Phone Number</label>
-                                            <input type="text" class="form-control" id="phone_number" name="phone_number">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="birth_place" class="form-label">Birth Place</label>
-                                            <input type="text" class="form-control" id="birth_place" name="birth_place">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="birth_date" class="form-label">Birth Date</label>
-                                            <input type="date" class="form-control" id="birth_date" name="birth_date">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="role" class="form-label">Role</label>
-                                            <input type="text" class="form-control" id="role" name="role" readonly>
-                                        </div>
-                                        <div class="col-12 mt-3 text-end">
-                                            <button type="button" class="btn btn-outline-secondary me-2" id="cancelEditBtn">Cancel</button>
-                                            <button type="submit" class="btn btn-primary btn-update-profile">
-                                                <i class="fas fa-save me-1"></i> Update Profile
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan email" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone_number" class="form-label">Nomor Telepon</label>
+                                    <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Masukkan nomor telepon">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="birth_date" class="form-label">Tanggal Lahir</label>
+                                    <input type="date" class="form-control" id="birth_date" name="birth_date">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="birth_place" class="form-label">Tempat Lahir</label>
+                                    <input type="text" class="form-control" id="birth_place" name="birth_place" placeholder="Masukkan tempat lahir">
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="card-header bg-white border-top">
+                            <h5 class="card-title mb-0">Informasi Profesional</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="institution" class="form-label">Institusi</label>
+                                    <input type="text" class="form-control" id="institution" name="institution" placeholder="Masukkan institusi">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="collegium_certificate_number" class="form-label">Nomor Sertifikat Kolegium</label>
+                                    <input type="text" class="form-control" id="collegium_certificate_number" name="collegium_certificate_number" placeholder="Masukkan nomor sertifikat">
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- Professional Information -->
-                        <div class="profile-card mb-4">
-                            <div class="profile-card-header">
-                                <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i> Professional Information</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="row" id="viewProfessionalSection">
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Institution</div>
-                                            <div class="field-value" id="view-institution">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Collegium Certificate Number</div>
-                                            <div class="field-value" id="view-collegium">Loading...</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Edit Professional Info Form (Hidden by default) -->
-                                <form id="editProfessionalForm" style="display: none;">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="institution" class="form-label">Institution</label>
-                                            <input type="text" class="form-control" id="institution" name="institution">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="collegium_certificate_number" class="form-label">Collegium Certificate Number</label>
-                                            <input type="text" class="form-control" id="collegium_certificate_number" name="collegium_certificate_number">
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                        <div class="card-header bg-white border-top">
+                            <h5 class="card-title mb-0">Foto Profil</h5>
                         </div>
-                    </div>
-                    
-                    <div class="col-lg-4">
-                        <!-- Membership Information -->
-                        <div class="profile-card mb-4">
-                            <div class="profile-card-header">
-                                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i> Membership Information</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="text-center mb-3">
-                                    <div class="membership-status mb-2">
-                                        <span id="membership-status-card" class="badge bg-warning rounded-pill px-3 py-2">
-                                            <i class="fas fa-clock me-1"></i> Inactive
-                                        </span>
-                                    </div>
-                                    <p class="small text-muted" id="membership-message">Your membership is currently inactive. Please complete your profile and upload the required documents.</p>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="profile_photo" class="form-label">Upload Foto Profil</label>
+                                    <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/*">
+                                    <small class="text-muted">Format yang didukung: JPG, PNG. Ukuran maksimum: 2MB</small>
                                 </div>
-                                
-                                <div class="section-divider">
-                                    <span><i class="fas fa-id-card me-1"></i> ID Card</span>
-                                </div>
-                                
-                                <div class="text-center mb-3">
-                                    <div id="id-card-container">
-                                        <div id="no-id-card" class="p-3 bg-light rounded-3 text-center">
-                                            <i class="fas fa-id-card fa-3x text-muted mb-2"></i>
-                                            <p class="mb-0">No ID card uploaded</p>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Preview</label>
+                                    <div class="text-center border rounded p-3" style="height: 150px;">
+                                        <img src="" alt="Preview" class="profile-photo-preview img-fluid" style="max-height: 100%; display: none;">
+                                        <div class="d-flex align-items-center justify-content-center h-100 profile-preview-placeholder">
+                                            <span class="text-muted">Belum ada foto</span>
                                         </div>
-                                        <img id="id-card-img" src="" alt="ID Card" class="id-card-preview my-2" data-bs-toggle="modal" data-bs-target="#idCardModal" style="display: none;">
                                     </div>
-                                    <div class="mt-3">
-                                        <label for="id-card-input" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-upload me-1"></i> Upload ID Card
-                                        </label>
-                                        <input type="file" id="id-card-input" accept="image/*" style="display: none;">
-                                    </div>
-                                </div>
-                                
-                                <div class="section-divider">
-                                    <span><i class="fas fa-info-circle me-1"></i> Member Info</span>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="field-label">Member Category</div>
-                                    <div class="field-value" id="view-category">Loading...</div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="field-label">User ID</div>
-                                    <div class="field-value" id="view-user-id">Loading...</div>
-                                </div>
-                                
-                                <div class="text-center mt-4">
-                                    <a href="/user/membership" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-id-card me-1"></i> View Complete Membership Details
-                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- ID Card Modal -->
-    <div class="modal fade" id="idCardModal" tabindex="-1" aria-labelledby="idCardModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="idCardModalLabel">ID Card</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <img id="id-card-modal-img" src="" alt="ID Card" class="img-fluid">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        
+                        <div class="card-header bg-white border-top">
+                            <h5 class="card-title mb-0">KTP</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_card_photo" class="form-label">Upload Foto KTP</label>
+                                    <input type="file" class="form-control" id="id_card_photo" name="id_card_photo" accept="image/*">
+                                    <small class="text-muted">Format yang didukung: JPG, PNG. Ukuran maksimum: 2MB</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Preview</label>
+                                    <div class="text-center border rounded p-3" style="height: 150px;">
+                                        <img src="" alt="Preview" class="id-card-photo-preview img-fluid" style="max-height: 100%; display: none;">
+                                        <div class="d-flex align-items-center justify-content-center h-100 id-card-preview-placeholder">
+                                            <span class="text-muted">Belum ada foto</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-white text-end">
+                            <button type="button" class="btn btn-secondary me-2" id="cancel-edit-btn">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -575,451 +232,106 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <!-- Custom JS -->
+    <script src="/js/user.js"></script>
+    
+    <!-- User Profile JS -->
+    <script src="/js/user-profile.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Hide preloader when page is fully loaded
-            setTimeout(function() {
-                const preloader = document.getElementById('preloader');
-                if (preloader) {
-                    preloader.style.opacity = '0';
-                    setTimeout(function() {
-                        preloader.style.display = 'none';
-                    }, 300);
+            // Initialize form in view mode
+            const profileForm = document.getElementById('profile-form');
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+            
+            // Make form fields readonly on initial load
+            const makeFormReadOnly = (readonly = true) => {
+                const inputs = profileForm.querySelectorAll('input:not([type="file"]):not([readonly])');
+                inputs.forEach(input => {
+                    input.readOnly = readonly;
+                    if (readonly) {
+                        input.classList.add('bg-light');
+                    } else {
+                        input.classList.remove('bg-light');
+                    }
+                });
+                
+                // Hide/show file inputs and buttons
+                const fileInputs = profileForm.querySelectorAll('input[type="file"]');
+                const submitBtn = profileForm.querySelector('button[type="submit"]');
+                
+                if (readonly) {
+                    fileInputs.forEach(input => input.parentElement.style.display = 'none');
+                    cancelEditBtn.style.display = 'none';
+                    submitBtn.style.display = 'none';
+                } else {
+                    fileInputs.forEach(input => input.parentElement.style.display = 'block');
+                    cancelEditBtn.style.display = 'inline-block';
+                    submitBtn.style.display = 'inline-block';
                 }
-            }, 500);
+            };
             
-            // Initialize sidebar toggle
-            initSidebarToggle();
+            // Initialize form in readonly mode
+            makeFormReadOnly(true);
             
-            // Fetch user profile data
-            fetchUserProfile();
+            // Handle edit profile button
+            editProfileBtn.addEventListener('click', function() {
+                makeFormReadOnly(false);
+            });
             
-            // Event listeners
-            document.getElementById('editProfileBtn').addEventListener('click', toggleEditMode);
-            document.getElementById('cancelEditBtn').addEventListener('click', toggleEditMode);
-            document.getElementById('editProfileForm').addEventListener('submit', updateProfile);
+            // Handle cancel edit button
+            cancelEditBtn.addEventListener('click', function() {
+                makeFormReadOnly(true);
+                // Reload profile data
+                window.location.reload();
+            });
             
-            // Profile photo upload
-            document.getElementById('profile-photo-input').addEventListener('change', handleProfilePhotoUpload);
-            
-            // ID card upload
-            document.getElementById('id-card-input').addEventListener('change', handleIdCardUpload);
-        });
-        
-        function initSidebarToggle() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const userLayout = document.querySelector('.user-layout');
-            
-            if (sidebarToggle && userLayout) {
-                sidebarToggle.addEventListener('click', function() {
-                    userLayout.classList.toggle('sidebar-collapsed');
+            // Initialize file preview for ID Card
+            const idCardInput = document.getElementById('id_card_photo');
+            if (idCardInput) {
+                idCardInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            // Display preview
+                            const preview = document.querySelector('.id-card-photo-preview');
+                            if (preview) {
+                                preview.src = e.target.result;
+                                preview.style.display = 'block';
+                            }
+                            
+                            // Hide placeholder
+                            const placeholder = document.querySelector('.id-card-preview-placeholder');
+                            if (placeholder) {
+                                placeholder.style.display = 'none';
+                            }
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    }
                 });
             }
-        }
-        
-        function fetchUserProfile() {
-            // Replace with actual API call
-            // For demonstration, simulate an API response
-            const mockApiResponse = {
-                success: true,
-                user: {
-                    id: 1,
-                    full_name: "Admin System",
-                    email: "admin@healthcare.com",
-                    phone_number: "081234567890",
-                    birth_place: "Jakarta",
-                    birth_date: "1989-12-31T17:00:00.000Z",
-                    institution: null,
-                    collegium_certificate_number: null,
-                    id_card_photo: null,
-                    profile_photo: null,
-                    membership_status: "inactive",
-                    is_admin: 1,
-                    category_id: 3,
-                    role: "Administrator"
-                }
-            };
             
-            // In a real implementation, you would use fetch:
-            /*
-            fetch('localhost:3000/api/users/profile', {
-                headers: {
-                    'Authorization': 'Bearer ' + getToken() // Function to get token from localStorage or cookie
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    populateUserData(data.user);
-                } else {
-                    showErrorToast(data.message || 'Failed to load profile data');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching profile:', error);
-                showErrorToast('Network error. Please try again later.');
-            });
-            */
-            
-            // For demonstration purposes, use the mock data
-            populateUserData(mockApiResponse.user);
-        }
-        
-        function populateUserData(userData) {
-            // Set user name in navbar
-            document.getElementById('nav-user-name').textContent = userData.full_name;
-            
-            // Set profile avatar
-            if (userData.profile_photo) {
-                document.getElementById('profile-avatar').src = userData.profile_photo;
-                document.getElementById('profile-avatar').style.display = 'block';
-                document.getElementById('profile-avatar-placeholder').style.display = 'none';
-                
-                document.getElementById('nav-profile-image').src = userData.profile_photo;
-                document.getElementById('nav-profile-image').style.display = 'inline-block';
-                document.getElementById('nav-profile-placeholder').style.display = 'none';
-            } else {
-                // Set placeholder with first letter of name
-                const firstLetter = userData.full_name.charAt(0).toUpperCase();
-                document.getElementById('profile-avatar-placeholder').textContent = firstLetter;
-                document.getElementById('profile-avatar-placeholder').style.display = 'flex';
-                document.getElementById('profile-avatar').style.display = 'none';
-                
-                document.getElementById('nav-profile-placeholder').textContent = firstLetter;
-                document.getElementById('nav-profile-placeholder').style.display = 'inline-flex';
-                document.getElementById('nav-profile-image').style.display = 'none';
-            }
-            
-            // Set header information
-            document.getElementById('user-full-name').textContent = userData.full_name;
-            document.getElementById('user-email').innerHTML = `<i class="fas fa-envelope me-2"></i>${userData.email}`;
-            document.getElementById('user-phone').innerHTML = `<i class="fas fa-phone me-2"></i>${userData.phone_number || 'Not provided'}`;
-            
-            // Set membership status
-            const membershipStatus = userData.membership_status || 'inactive';
-            const membershipBadge = document.getElementById('membership-badge');
-            const membershipStatusCard = document.getElementById('membership-status-card');
-            
-            if (membershipStatus === 'active') {
-                membershipBadge.className = 'membership-badge bg-success text-white';
-                membershipBadge.innerHTML = '<i class="fas fa-check-circle me-1"></i> Active';
-                
-                membershipStatusCard.className = 'badge bg-success rounded-pill px-3 py-2';
-                membershipStatusCard.innerHTML = '<i class="fas fa-check-circle me-1"></i> Active';
-                
-                document.getElementById('membership-message').textContent = 'Your membership is active. You have full access to all services.';
-            } else {
-                membershipBadge.className = 'membership-badge bg-warning text-dark';
-                membershipBadge.innerHTML = '<i class="fas fa-clock me-1"></i> Inactive';
-                
-                membershipStatusCard.className = 'badge bg-warning rounded-pill px-3 py-2';
-                membershipStatusCard.innerHTML = '<i class="fas fa-clock me-1"></i> Inactive';
-                
-                document.getElementById('membership-message').textContent = 'Your membership is currently inactive. Please complete your profile and upload the required documents.';
-            }
-            
-            // Personal Information Section
-            document.getElementById('view-full-name').textContent = userData.full_name;
-            document.getElementById('view-email').textContent = userData.email;
-            document.getElementById('view-phone').textContent = userData.phone_number || 'Not provided';
-            document.getElementById('view-birth-place').textContent = userData.birth_place || 'Not provided';
-            
-            // Format birth date
-            const birthDate = userData.birth_date ? new Date(userData.birth_date) : null;
-            document.getElementById('view-birth-date').textContent = birthDate 
-                ? birthDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-                : 'Not provided';
-            
-            document.getElementById('view-role').textContent = userData.role || 'User';
-            
-            // Professional Information Section
-            document.getElementById('view-institution').textContent = userData.institution || 'Not provided';
-            document.getElementById('view-collegium').textContent = userData.collegium_certificate_number || 'Not provided';
-            
-            // Member Info
-            document.getElementById('view-category').textContent = getCategoryName(userData.category_id) || 'Standard';
-            document.getElementById('view-user-id').textContent = userData.id || '—';
-            
-            // ID Card Preview
-            if (userData.id_card_photo) {
-                document.getElementById('id-card-img').src = userData.id_card_photo;
-                document.getElementById('id-card-img').style.display = 'block';
-                document.getElementById('no-id-card').style.display = 'none';
-                
-                document.getElementById('id-card-modal-img').src = userData.id_card_photo;
-            } else {
-                document.getElementById('id-card-img').style.display = 'none';
-                document.getElementById('no-id-card').style.display = 'block';
-            }
-            
-            // Populate edit form
-            document.getElementById('full_name').value = userData.full_name;
-            document.getElementById('email').value = userData.email;
-            document.getElementById('phone_number').value = userData.phone_number || '';
-            document.getElementById('birth_place').value = userData.birth_place || '';
-            
-            // Format birth date for input field (YYYY-MM-DD)
-            if (birthDate) {
-                const year = birthDate.getFullYear();
-                const month = String(birthDate.getMonth() + 1).padStart(2, '0');
-                const day = String(birthDate.getDate()).padStart(2, '0');
-                document.getElementById('birth_date').value = `${year}-${month}-${day}`;
-            } else {
-                document.getElementById('birth_date').value = '';
-            }
-            
-            document.getElementById('role').value = userData.role || 'User';
-            document.getElementById('institution').value = userData.institution || '';
-            document.getElementById('collegium_certificate_number').value = userData.collegium_certificate_number || '';
-        }
-        
-        function getCategoryName(categoryId) {
-            const categories = {
-                1: 'Bronze',
-                2: 'Silver',
-                3: 'Gold',
-                4: 'Platinum'
-            };
-            
-            return categories[categoryId] || 'Standard';
-        }
-        
-        function toggleEditMode() {
-            const viewSection = document.getElementById('viewProfileSection');
-            const editForm = document.getElementById('editProfileForm');
-            const viewProfessionalSection = document.getElementById('viewProfessionalSection');
-            const editProfessionalForm = document.getElementById('editProfessionalForm');
-            
-            if (viewSection.style.display === 'none') {
-                // Switch to view mode
-                viewSection.style.display = 'flex';
-                editForm.style.display = 'none';
-                viewProfessionalSection.style.display = 'flex';
-                editProfessionalForm.style.display = 'none';
-                document.getElementById('editProfileBtn').innerHTML = '<i class="fas fa-edit me-1"></i> Edit Profile';
-            } else {
-                // Switch to edit mode
-                viewSection.style.display = 'none';
-                editForm.style.display = 'block';
-                viewProfessionalSection.style.display = 'none';
-                editProfessionalForm.style.display = 'block';
-                document.getElementById('editProfileBtn').innerHTML = '<i class="fas fa-times me-1"></i> Cancel Edit';
-            }
-        }
-        
-        function updateProfile(event) {
-            event.preventDefault();
-            
-            // Get form data
-            const formData = {
-                full_name: document.getElementById('full_name').value,
-                email: document.getElementById('email').value,
-                phone_number: document.getElementById('phone_number').value,
-                birth_place: document.getElementById('birth_place').value,
-                birth_date: document.getElementById('birth_date').value,
-                institution: document.getElementById('institution').value,
-                collegium_certificate_number: document.getElementById('collegium_certificate_number').value,
-                // Keep existing values for photos and membership status
-                id_card_photo: null, // This would be the actual value from the user object
-                profile_photo: null, // This would be the actual value from the user object
-                membership_status: 'inactive' // This would be the actual value from the user object
-            };
-            
-            // For demonstration purposes, log the data that would be sent
-            console.log('Update profile with:', formData);
-            
-            // In a real implementation, you would send the data to the server with fetch:
-            /*
-            fetch('localhost:3000/api/users/profile', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + getToken() // Function to get token from localStorage or cookie
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showSuccessToast('Profile updated successfully');
-                    // Update the UI with new data
-                    populateUserData(data.user || formData);
-                    // Switch back to view mode
-                    toggleEditMode();
-                } else {
-                    showErrorToast(data.message || 'Failed to update profile');
-                }
-            })
-            .catch(error => {
-                console.error('Error updating profile:', error);
-                showErrorToast('Network error. Please try again later.');
-            });
-            */
-            
-            // For demonstration purposes, simulate a successful update
-            setTimeout(() => {
-                // Update the user data with the form values
-                const updatedUser = {
-                    id: 1,
-                    full_name: formData.full_name,
-                    email: formData.email,
-                    phone_number: formData.phone_number,
-                    birth_place: formData.birth_place,
-                    birth_date: formData.birth_date ? new Date(formData.birth_date).toISOString() : null,
-                    institution: formData.institution,
-                    collegium_certificate_number: formData.collegium_certificate_number,
-                    id_card_photo: null,
-                    profile_photo: null,
-                    membership_status: 'inactive',
-                    is_admin: 1,
-                    category_id: 3,
-                    role: "Administrator"
-                };
-                
-                // Show success message
-                showSuccessToast('Profile updated successfully');
-                
-                // Update the UI with the new data
-                populateUserData(updatedUser);
-                
-                // Switch back to view mode
-                toggleEditMode();
-            }, 1000);
-        }
-        
-        function handleProfilePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Check file type
-            if (!file.type.match('image.*')) {
-                showErrorToast('Please select an image file');
-                return;
-            }
-            
-            // Check file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                showErrorToast('File size must not exceed 5MB');
-                return;
-            }
-            
-            // For demonstration, just show the selected image
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profile-avatar').src = e.target.result;
-                document.getElementById('profile-avatar').style.display = 'block';
-                document.getElementById('profile-avatar-placeholder').style.display = 'none';
-                
-                document.getElementById('nav-profile-image').src = e.target.result;
-                document.getElementById('nav-profile-image').style.display = 'inline-block';
-                document.getElementById('nav-profile-placeholder').style.display = 'none';
-                
-                // In a real implementation, you would upload the file to the server
-                // and update the user profile
-                showSuccessToast('Profile photo uploaded. Save your profile to apply changes.');
-            };
-            reader.readAsDataURL(file);
-        }
-        
-        function handleIdCardUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Check file type
-            if (!file.type.match('image.*')) {
-                showErrorToast('Please select an image file');
-                return;
-            }
-            
-            // Check file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                showErrorToast('File size must not exceed 5MB');
-                return;
-            }
-            
-            // For demonstration, just show the selected image
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('id-card-img').src = e.target.result;
-                document.getElementById('id-card-img').style.display = 'block';
-                document.getElementById('no-id-card').style.display = 'none';
-                
-                document.getElementById('id-card-modal-img').src = e.target.result;
-                
-                // In a real implementation, you would upload the file to the server
-                // and update the user profile
-                showSuccessToast('ID card uploaded. Save your profile to apply changes.');
-            };
-            reader.readAsDataURL(file);
-        }
-        
-        function showSuccessToast(message) {
-            const toast = document.getElementById('successToast');
-            const bsToast = new bootstrap.Toast(toast);
-            
-            toast.querySelector('.toast-body').textContent = message;
-            bsToast.show();
-        }
-        
-        function showErrorToast(message) {
-            const toast = document.getElementById('errorToast');
-            const bsToast = new bootstrap.Toast(toast);
-            
-            document.getElementById('errorToastBody').textContent = message;
-            bsToast.show();
-        }
-        
-        // Helper function to get token
-        function getToken() {
-            // This is a placeholder - implement according to your authentication strategy
-            return localStorage.getItem('authToken');
-        }
-    </script>
-    
-    <!-- Profile API Integration Script -->
-    <script src="/js/profile-service.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize profile manager
-            const profileManager = new ProfileManager();
-            
-            // Load profile data
-            await profileManager.loadProfile();
-        });
-        
-        /**
-         * Profile Manager class - Main controller for the profile page
-         */
-        class ProfileManager {
-            constructor() {
-                this.ui = new ProfileUI();
-                this.isLoading = false;
-            }
-            
-            /**
-             * Load user profile
-             */
-            async loadProfile() {
-                try {
-                    this.isLoading = true;
-                    
-                    // Fetch user profile
-                    const response = await ProfileService.getUserProfile();
-                    
-                    if (response.success) {
-                        // Populate UI with user data
-                        this.ui.populateUserData(response.user);
-                    } else {
-                        this.ui.showErrorToast(response.message || 'Failed to load profile data');
+            // Update user name in navbar from localStorage when available
+            const updateUserInfo = () => {
+                const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+                if (userInfo.name) {
+                    const userNameElement = document.querySelector('.user-name');
+                    if (userNameElement) {
+                        userNameElement.textContent = userInfo.name;
                     }
-                } catch (error) {
-                    console.error('Error loading profile:', error);
-                    this.ui.showErrorToast('Failed to load profile data. Please try again later.');
-                } finally {
-                    this.isLoading = false;
+                    
+                    const userInitialElement = document.querySelector('.user-initial');
+                    if (userInitialElement && userInfo.name) {
+                        userInitialElement.textContent = userInfo.name.charAt(0).toUpperCase();
+                    }
                 }
-            }
-        }
+            };
+            
+            updateUserInfo();
+        });
     </script>
 </body>
 </html>

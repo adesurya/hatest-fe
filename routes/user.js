@@ -1,4 +1,4 @@
-// routes/user.js - User dashboard routes
+// routes/user.js - User dashboard routes with API integration
 
 const express = require('express');
 const router = express.Router();
@@ -17,8 +17,21 @@ const isLoggedIn = (req, res, next) => {
 // Apply middleware to all routes
 router.use(isLoggedIn);
 
+// API token check middleware
+const hasAPIToken = (req, res, next) => {
+  if (global.token) {
+    next();
+  } else {
+    return res.status(401).render('pages/error', {
+      title: 'Error',
+      message: 'Your session has expired. Please log in again.',
+      status: 401
+    });
+  }
+};
+
 // User dashboard
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', hasAPIToken, async (req, res) => {
   try {
     const dashboardData = await userAPI.getUserDashboard();
     
@@ -29,6 +42,15 @@ router.get('/dashboard', async (req, res) => {
     });
   } catch (err) {
     console.error('API Error:', err);
+    
+    // Check if it's an authentication error
+    if (err.response && err.response.status === 401) {
+      req.session.destroy();
+      global.token = null;
+      req.flash('error_msg', 'Your session has expired. Please log in again.');
+      return res.redirect('/auth/login');
+    }
+    
     res.status(500).render('pages/error', {
       title: 'Error',
       message: err.response?.data?.message || 'Failed to load dashboard data',
@@ -37,18 +59,25 @@ router.get('/dashboard', async (req, res) => {
   }
 });
 
-// User profile
-router.get('/profile', async (req, res) => {
+// User profile page
+router.get('/profile', hasAPIToken, async (req, res) => {
   try {
-    const profile = await userAPI.getUserProfile();
-    
+    // We'll load the profile data client-side with JavaScript
     res.render('pages/user/profile', {
       title: 'My Profile',
-      profile: profile,
       user: req.session.user
     });
   } catch (err) {
     console.error('API Error:', err);
+    
+    // Check if it's an authentication error
+    if (err.response && err.response.status === 401) {
+      req.session.destroy();
+      global.token = null;
+      req.flash('error_msg', 'Your session has expired. Please log in again.');
+      return res.redirect('/auth/login');
+    }
+    
     res.status(500).render('pages/error', {
       title: 'Error',
       message: err.response?.data?.message || 'Failed to load profile data',
@@ -57,68 +86,99 @@ router.get('/profile', async (req, res) => {
   }
 });
 
-// Update profile
-router.post('/profile', async (req, res) => {
-  try {
-    const profileData = {
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      address: req.body.address,
-      // Add other profile fields as needed
-    };
-    
-    const updatedProfile = await userAPI.updateUserProfile(profileData);
-    
-    // Update session user data
-    req.session.user = {
-      ...req.session.user,
-      name: updatedProfile.name,
-      email: updatedProfile.email
-    };
-    
-    req.flash('success_msg', 'Profile updated successfully');
-    res.redirect('/user/profile');
-  } catch (err) {
-    console.error('API Error:', err);
-    req.flash('error_msg', err.response?.data?.message || 'Failed to update profile');
-    res.redirect('/user/profile');
-  }
-});
-
 // Change password page
-router.get('/change-password', (req, res) => {
+router.get('/change-password', hasAPIToken, (req, res) => {
   res.render('pages/user/change-password', {
     title: 'Change Password',
     user: req.session.user
   });
 });
 
-// Process change password
-router.post('/change-password', async (req, res) => {
+// User activities page
+router.get('/activities', hasAPIToken, async (req, res) => {
   try {
-    const { currentPassword, newPassword, confirmPassword } = req.body;
+    const activities = await userAPI.getUserActivities();
     
-    // Client-side validation
-    if (newPassword !== confirmPassword) {
-      req.flash('error_msg', 'New passwords do not match');
-      return res.redirect('/user/change-password');
-    }
-    
-    await userAPI.changePassword({
-      currentPassword,
-      newPassword
+    res.render('pages/user/activities', {
+      title: 'My Activities',
+      activities: activities,
+      user: req.session.user
     });
-    
-    req.flash('success_msg', 'Password changed successfully');
-    res.redirect('/user/profile');
   } catch (err) {
     console.error('API Error:', err);
-    req.flash('error_msg', err.response?.data?.message || 'Failed to change password');
-    res.redirect('/user/change-password');
+    
+    // Check if it's an authentication error
+    if (err.response && err.response.status === 401) {
+      req.session.destroy();
+      global.token = null;
+      req.flash('error_msg', 'Your session has expired. Please log in again.');
+      return res.redirect('/auth/login');
+    }
+    
+    res.status(500).render('pages/error', {
+      title: 'Error',
+      message: err.response?.data?.message || 'Failed to load activities data',
+      status: err.response?.status || 500
+    });
   }
 });
 
-// Additional user routes could be added here
+// User membership page
+router.get('/membership', hasAPIToken, async (req, res) => {
+  try {
+    const membership = await userAPI.getUserMembership();
+    
+    res.render('pages/user/membership', {
+      title: 'Membership',
+      membership: membership,
+      user: req.session.user
+    });
+  } catch (err) {
+    console.error('API Error:', err);
+    
+    // Check if it's an authentication error
+    if (err.response && err.response.status === 401) {
+      req.session.destroy();
+      global.token = null;
+      req.flash('error_msg', 'Your session has expired. Please log in again.');
+      return res.redirect('/auth/login');
+    }
+    
+    res.status(500).render('pages/error', {
+      title: 'Error',
+      message: err.response?.data?.message || 'Failed to load membership data',
+      status: err.response?.status || 500
+    });
+  }
+});
+
+// User certificates page
+router.get('/certificates', hasAPIToken, async (req, res) => {
+  try {
+    const certificates = await userAPI.getUserCertificates();
+    
+    res.render('pages/user/certificates', {
+      title: 'Certificates',
+      certificates: certificates,
+      user: req.session.user
+    });
+  } catch (err) {
+    console.error('API Error:', err);
+    
+    // Check if it's an authentication error
+    if (err.response && err.response.status === 401) {
+      req.session.destroy();
+      global.token = null;
+      req.flash('error_msg', 'Your session has expired. Please log in again.');
+      return res.redirect('/auth/login');
+    }
+    
+    res.status(500).render('pages/error', {
+      title: 'Error',
+      message: err.response?.data?.message || 'Failed to load certificates data',
+      status: err.response?.status || 500
+    });
+  }
+});
 
 module.exports = router;
