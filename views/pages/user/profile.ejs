@@ -1,4 +1,5 @@
-<!-- views/pages/user/profile.ejs -->
+<!-- views/pages/user/profile.ejs - Part 1 -->
+<!-- Header bagian untuk views/pages/user/profile.ejs -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -22,6 +23,220 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/user.css">
+    
+    <!-- Style tambahan untuk perbaikan header -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* User Layout */
+        .user-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding-left: var(--sidebar-width);
+            transition: padding-left 0.3s ease;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            z-index: 100;
+            overflow-y: auto;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar-collapsed .sidebar {
+            width: 70px;
+        }
+        
+        .sidebar-collapsed .main-content {
+            padding-left: 70px;
+        }
+        
+        .sidebar .sidebar-header {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar .sidebar-header img {
+            max-height: 50px;
+            margin-bottom: 10px;
+        }
+        
+        .sidebar .sidebar-header h5 {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        
+        .sidebar-collapsed .sidebar .sidebar-header h5 {
+            display: none;
+        }
+        
+        .sidebar .nav {
+            padding: 15px 0;
+        }
+        
+        .sidebar .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-collapsed .sidebar .nav-link span {
+            display: none;
+        }
+        
+        /* Navbar */
+        .navbar {
+            height: var(--header-height);
+            background-color: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 0 20px;
+        }
+        
+        .navbar .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar .navbar-brand img {
+            max-height: 40px;
+        }
+        
+        /* Content Wrapper */
+        .content-wrapper {
+            padding: 20px;
+            margin-top: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                width: 0;
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                padding-left: 0;
+            }
+            
+            .sidebar-open .sidebar {
+                width: var(--sidebar-width);
+                transform: translateX(0);
+            }
+            
+            .sidebar-open.sidebar-collapsed .sidebar {
+                width: 70px;
+            }
+        }
+        
+        /* Profile Header */
+        .profile-header {
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), #0099ff);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+        }
+        
+        .profile-photo-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #6c757d;
+            border: 4px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50rem;
+            font-weight: 500;
+        }
+        
+        /* Fixes for sidebar toggle on mobile */
+        #sidebarToggle {
+            background: transparent;
+            border: none;
+            color: #212529;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .avatar-placeholder {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-weight: 500;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
     <!-- Preloader -->
@@ -32,37 +247,92 @@
     <!-- User Layout -->
     <div class="user-layout">
         <!-- Sidebar -->
-        <%- include('../../partials/user-sidebar') %>
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="/images/logo-white.png" alt="Organization Logo" class="img-fluid">
+                <h5 class="text-white fw-bold">User Dashboard</h5>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/user/profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/change-password">
+                        <i class="fas fa-key"></i>
+                        <span>Change Password</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/activities">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>My Activities</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/membership">
+                        <i class="fas fa-id-card"></i>
+                        <span>Membership</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/certificates">
+                        <i class="fas fa-certificate"></i>
+                        <span>Certificates</span>
+                    </a>
+                </li>
+                <li class="nav-item mt-5">
+                    <a class="nav-link" href="/">
+                        <i class="fas fa-home"></i>
+                        <span>Back to Website</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
         
         <!-- Main Content -->
         <div class="main-content">
             <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
-                <div class="d-flex align-items-center">
-                    <button id="sidebarToggle" class="btn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h5 class="mb-0 ms-3">Profil Saya</h5>
-                </div>
-                
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="avatar-placeholder rounded-circle me-2 d-inline-flex align-items-center justify-content-center bg-primary text-white" style="width: 30px; height: 30px;">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div>
+                        <button id="sidebarToggle" class="btn">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <span class="ms-3 d-none d-md-inline-block fw-medium">My Profile</span>
+                    </div>
+                    
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownAccount" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
                                 <span class="user-initial">U</span>
                             </div>
                             <span class="user-name">User</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user me-2"></i> Profil</a></li>
-                            <li><a class="dropdown-item" href="/user/change-password"><i class="fas fa-key me-2"></i> Ubah Password</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAccount">
+                            <li><a class="dropdown-item active" href="/user/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/user/change-password"><i class="fas fa-key me-2"></i> Change Password</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </nav>
-            
+            <!-- views/pages/user/profile.ejs - Part 2 -->
             <!-- Profile Content -->
             <div class="content-wrapper p-4">
                 <!-- Flash Messages -->
@@ -123,7 +393,7 @@
                     </div>
                     <p class="mt-3">Memuat data profil...</p>
                 </div>
-                
+                <!-- views/pages/user/profile.ejs - Part 3 -->
                 <!-- Profile Information Container -->
                 <div class="profile-info-container" style="display: none;">
                     <form id="profile-form" class="card border-0 rounded-3 shadow-sm mb-4" enctype="multipart/form-data">
@@ -170,7 +440,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <!-- views/pages/user/profile.ejs - Part 4 -->
                         <div class="card-header bg-white border-top">
                             <h5 class="card-title mb-0">Foto Profil</h5>
                         </div>
@@ -224,7 +494,7 @@
             </div>
         </div>
     </div>
-    
+    <!-- views/pages/user/profile.ejs - Part 5 -->
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -234,18 +504,252 @@
     <!-- Custom JS -->
     <script src="/js/user.js"></script>
     
-    <!-- User Profile JS -->
-    <script src="/js/user-profile.js"></script>
-    
+    <!-- Embedded Profile JS (in case the external script fails to load) -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize form in view mode
+            // Initialize sidebar toggle
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const userLayout = document.querySelector('.user-layout');
+            
+            if (sidebarToggle && userLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    userLayout.classList.toggle('sidebar-collapsed');
+                });
+            }
+
+            // Profile form elements
             const profileForm = document.getElementById('profile-form');
             const editProfileBtn = document.getElementById('edit-profile-btn');
             const cancelEditBtn = document.getElementById('cancel-edit-btn');
+            const profilePhotoInput = document.getElementById('profile_photo');
+            const idCardPhotoInput = document.getElementById('id_card_photo');
             
-            // Make form fields readonly on initial load
-            const makeFormReadOnly = (readonly = true) => {
+            // Initial state - readonly form
+            let isEditMode = false;
+            setFormReadOnly(true);
+            
+            // Load profile data on page load
+            fetchUserProfile();
+            
+            // Event listeners
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener('click', toggleEditMode);
+            }
+            
+            if (cancelEditBtn) {
+                cancelEditBtn.addEventListener('click', cancelEdit);
+            }
+            
+            if (profileForm) {
+                profileForm.addEventListener('submit', handleProfileUpdate);
+            }
+            
+            if (profilePhotoInput) {
+                profilePhotoInput.addEventListener('change', function(e) {
+                    previewImage(e.target.files[0], '.profile-photo-preview', '.profile-preview-placeholder');
+                });
+            }
+            
+            if (idCardPhotoInput) {
+                idCardPhotoInput.addEventListener('change', function(e) {
+                    previewImage(e.target.files[0], '.id-card-photo-preview', '.id-card-preview-placeholder');
+                });
+            }
+            
+            // Function to fetch user profile data
+            function fetchUserProfile() {
+                // Show loading indicator
+                document.querySelector('.profile-loading').style.display = 'block';
+                document.querySelector('.profile-info-container').style.display = 'none';
+                
+                // Get auth token from localStorage
+                const authToken = localStorage.getItem('authToken');
+                
+                if (!authToken) {
+                    showErrorToast('No authentication token found. Please log in again.');
+                    return;
+                }
+                
+                // Fetch profile data from API
+                fetch('/api/users/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Failed to fetch profile data');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Populate UI with user data
+                        populateUserData(data.user);
+                        
+                        // Store basic user info in localStorage
+                        updateUserInfo(data.user);
+                        
+                        // Make form readonly initially
+                        setFormReadOnly(true);
+                    } else {
+                        throw new Error(data.message || 'Failed to fetch profile data');
+                    }
+                })
+                .catch(error => {
+                    console.error('Profile fetch error:', error);
+                    showErrorToast(error.message || 'Failed to load profile data');
+                })
+                .finally(() => {
+                    // Hide loading indicator
+                    document.querySelector('.profile-loading').style.display = 'none';
+                });
+            }
+            <!-- views/pages/user/profile.ejs - Part 6 -->
+            
+            // Function to update user information in localStorage
+            function updateUserInfo(userData) {
+                if (userData) {
+                    localStorage.setItem('user', JSON.stringify({
+                        id: userData.id,
+                        name: userData.full_name,
+                        email: userData.email,
+                        role: userData.role
+                    }));
+                    
+                    // Update header user name
+                    const navbarUserName = document.querySelector('.user-name');
+                    if (navbarUserName && userData.full_name) {
+                        navbarUserName.textContent = userData.full_name;
+                    }
+                    
+                    // Update header user initial
+                    const userInitialElement = document.querySelector('.user-initial');
+                    if (userInitialElement && userData.full_name) {
+                        userInitialElement.textContent = userData.full_name.charAt(0).toUpperCase();
+                    }
+                }
+            }
+            
+            // Function to populate user data in the UI
+            function populateUserData(userData) {
+                // Update user name and email in profile header
+                document.querySelector('.user-full-name').textContent = userData.full_name || 'User';
+                document.querySelector('.user-email').textContent = userData.email || '';
+                
+                // Update navbar user name
+                const userNameElement = document.querySelector('.user-name');
+                if (userNameElement) {
+                    userNameElement.textContent = userData.full_name || 'User';
+                }
+                
+                // Update navbar user initial
+                const userInitialElement = document.querySelector('.user-initial');
+                if (userInitialElement && userData.full_name) {
+                    userInitialElement.textContent = userData.full_name.charAt(0).toUpperCase();
+                }
+                
+                // Update membership status
+                const membershipStatus = userData.membership_status || 'inactive';
+                const statusBadge = document.querySelector('.status-badge');
+                const membershipStatusElement = document.querySelector('.membership-status');
+                
+                if (statusBadge && membershipStatusElement) {
+                    membershipStatusElement.textContent = 
+                        membershipStatus === 'active' ? 'Active' : 
+                        membershipStatus === 'pending' ? 'Pending' : 'Inactive';
+                        
+                    statusBadge.className = 'badge rounded-pill px-3 py-2 status-badge ' + 
+                        (membershipStatus === 'active' ? 'bg-success' : 
+                        membershipStatus === 'pending' ? 'bg-warning' : 'bg-secondary');
+                }
+                
+                // Update profile photo
+                if (userData.profile_photo) {
+                    const profilePhoto = document.querySelector('.profile-photo');
+                    if (profilePhoto) {
+                        profilePhoto.src = userData.profile_photo;
+                        profilePhoto.style.display = 'block';
+                        document.querySelector('.profile-photo-placeholder').style.display = 'none';
+                    }
+                    
+                    const photoPreview = document.querySelector('.profile-photo-preview');
+                    if (photoPreview) {
+                        photoPreview.src = userData.profile_photo;
+                        photoPreview.style.display = 'block';
+                        document.querySelector('.profile-preview-placeholder').style.display = 'none';
+                    }
+                }
+                
+                // Update ID card photo
+                if (userData.id_card_photo) {
+                    const idCardPhoto = document.querySelector('.id-card-photo-preview');
+                    if (idCardPhoto) {
+                        idCardPhoto.src = userData.id_card_photo;
+                        idCardPhoto.style.display = 'block';
+                        document.querySelector('.id-card-preview-placeholder').style.display = 'none';
+                    }
+                }
+                
+                // Update form fields
+                document.getElementById('full_name').value = userData.full_name || '';
+                document.getElementById('email').value = userData.email || '';
+                document.getElementById('phone_number').value = userData.phone_number || '';
+                document.getElementById('birth_place').value = userData.birth_place || '';
+                
+                // Format birth date for input field (YYYY-MM-DD)
+                if (userData.birth_date) {
+                    const birthDate = new Date(userData.birth_date);
+                    const year = birthDate.getFullYear();
+                    const month = String(birthDate.getMonth() + 1).padStart(2, '0');
+                    const day = String(birthDate.getDate()).padStart(2, '0');
+                    document.getElementById('birth_date').value = `${year}-${month}-${day}`;
+                } else {
+                    document.getElementById('birth_date').value = '';
+                }
+                
+                document.getElementById('institution').value = userData.institution || '';
+                document.getElementById('collegium_certificate_number').value = userData.collegium_certificate_number || '';
+                
+                // Show profile information container
+                document.querySelector('.profile-info-container').style.display = 'block';
+            }
+           
+            // Function to toggle edit mode
+            function toggleEditMode() {
+                isEditMode = !isEditMode;
+                setFormReadOnly(!isEditMode);
+                
+                // Update button text
+                if (editProfileBtn) {
+                    editProfileBtn.innerHTML = isEditMode ? 
+                        '<i class="fas fa-times me-2"></i> Cancel' : 
+                        '<i class="fas fa-edit me-2"></i> Edit Profile';
+                }
+            }
+            
+            // Function to cancel edit
+            function cancelEdit() {
+                // Reset form to original data
+                fetchUserProfile();
+                
+                // Switch back to view mode
+                isEditMode = false;
+                setFormReadOnly(true);
+                
+                // Update button text
+                if (editProfileBtn) {
+                    editProfileBtn.innerHTML = '<i class="fas fa-edit me-2"></i> Edit Profile';
+                }
+            }
+            
+            // Function to set form fields to read-only mode
+            function setFormReadOnly(readonly = true) {
+                // Text input fields
                 const inputs = profileForm.querySelectorAll('input:not([type="file"]):not([readonly])');
                 inputs.forEach(input => {
                     input.readOnly = readonly;
@@ -256,82 +760,165 @@
                     }
                 });
                 
-                // Hide/show file inputs and buttons
-                const fileInputs = profileForm.querySelectorAll('input[type="file"]');
+                // File inputs and buttons
+                const fileContainers = profileForm.querySelectorAll('.col-md-6:has(input[type="file"])');
                 const submitBtn = profileForm.querySelector('button[type="submit"]');
                 
                 if (readonly) {
-                    fileInputs.forEach(input => input.parentElement.style.display = 'none');
+                    fileContainers.forEach(container => container.style.display = 'none');
                     cancelEditBtn.style.display = 'none';
                     submitBtn.style.display = 'none';
                 } else {
-                    fileInputs.forEach(input => input.parentElement.style.display = 'block');
+                    fileContainers.forEach(container => container.style.display = 'block');
                     cancelEditBtn.style.display = 'inline-block';
                     submitBtn.style.display = 'inline-block';
                 }
-            };
+            }
             
-            // Initialize form in readonly mode
-            makeFormReadOnly(true);
-            
-            // Handle edit profile button
-            editProfileBtn.addEventListener('click', function() {
-                makeFormReadOnly(false);
-            });
-            
-            // Handle cancel edit button
-            cancelEditBtn.addEventListener('click', function() {
-                makeFormReadOnly(true);
-                // Reload profile data
-                window.location.reload();
-            });
-            
-            // Initialize file preview for ID Card
-            const idCardInput = document.getElementById('id_card_photo');
-            if (idCardInput) {
-                idCardInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        
-                        reader.onload = function(e) {
-                            // Display preview
-                            const preview = document.querySelector('.id-card-photo-preview');
-                            if (preview) {
-                                preview.src = e.target.result;
-                                preview.style.display = 'block';
-                            }
-                            
-                            // Hide placeholder
-                            const placeholder = document.querySelector('.id-card-preview-placeholder');
-                            if (placeholder) {
-                                placeholder.style.display = 'none';
-                            }
-                        };
-                        
-                        reader.readAsDataURL(file);
+            // Function to handle profile update
+            function handleProfileUpdate(event) {
+                event.preventDefault();
+                
+                // Get auth token from localStorage
+                const authToken = localStorage.getItem('authToken');
+                
+                if (!authToken) {
+                    showErrorToast('No authentication token found. Please log in again.');
+                    return;
+                }
+                
+                // Create FormData from form
+                const formData = new FormData(profileForm);
+                
+                // Only include file inputs if they have a file selected
+                if (!profilePhotoInput.files.length) {
+                    formData.delete('profile_photo');
+                }
+                
+                if (!idCardPhotoInput.files.length) {
+                    formData.delete('id_card_photo');
+                }
+                
+                // Show loading state on button
+                const submitBtn = profileForm.querySelector('button[type="submit"]');
+                const originalButtonText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...';
+                submitBtn.disabled = true;
+                
+                // Submit update to API
+                fetch('/api/users/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                        // Don't set Content-Type when using FormData
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Failed to update profile');
+                        });
                     }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        showSuccessToast('Profile updated successfully');
+                        
+                        // Update UI with new data
+                        populateUserData(data.user);
+                        
+                        // Update localStorage with user info
+                        updateUserInfo(data.user);
+                        
+                        // Switch back to view mode
+                        isEditMode = false;
+                        setFormReadOnly(true);
+                        
+                        // Update button text
+                        if (editProfileBtn) {
+                            editProfileBtn.innerHTML = '<i class="fas fa-edit me-2"></i> Edit Profile';
+                        }
+                    } else {
+                        throw new Error(data.message || 'Failed to update profile');
+                    }
+                })
+                .catch(error => {
+                    console.error('Profile update error:', error);
+                    showErrorToast(error.message || 'Failed to update profile');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.innerHTML = originalButtonText;
+                    submitBtn.disabled = false;
                 });
             }
             
-            // Update user name in navbar from localStorage when available
-            const updateUserInfo = () => {
-                const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
-                if (userInfo.name) {
-                    const userNameElement = document.querySelector('.user-name');
-                    if (userNameElement) {
-                        userNameElement.textContent = userInfo.name;
+            // Function to preview image
+            function previewImage(file, previewSelector, placeholderSelector) {
+                if (!file) return;
+                
+                // Validate file type
+                if (!file.type.match('image.*')) {
+                    showErrorToast('Please select an image file');
+                    return;
+                }
+                
+                // Validate file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showErrorToast('File size must not exceed 2MB');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Display preview
+                    const preview = document.querySelector(previewSelector);
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
                     }
                     
-                    const userInitialElement = document.querySelector('.user-initial');
-                    if (userInitialElement && userInfo.name) {
-                        userInitialElement.textContent = userInfo.name.charAt(0).toUpperCase();
+                    // Hide placeholder
+                    const placeholder = document.querySelector(placeholderSelector);
+                    if (placeholder) {
+                        placeholder.style.display = 'none';
                     }
-                }
-            };
+                };
+                reader.readAsDataURL(file);
+            }
             
-            updateUserInfo();
+            // Function to show success toast notification
+            function showSuccessToast(message) {
+                const alertContainer = document.querySelector('.alert-container');
+                if (alertContainer) {
+                    alertContainer.innerHTML = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i> ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Function to show error toast notification
+            function showErrorToast(message) {
+                const alertContainer = document.querySelector('.alert-container');
+                if (alertContainer) {
+                    alertContainer.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i> ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                }
+            }
         });
     </script>
+    
+    <!-- User Profile JS (external script for more advanced functionality) -->
+    <script src="/js/user-profile.js"></script>
 </body>
 </html>
