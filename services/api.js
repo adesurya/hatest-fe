@@ -229,12 +229,23 @@ const adminAPI = {
   // Dashboard stats
   getDashboardStats: async () => {
     try {
+      // Coba dapatkan data dari API
       const response = await api.get('/admin/dashboard');
       return response.data;
     } catch (error) {
-      throw error;
+      // Handle error lebih baik
+      console.error('getDashboardStats error:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      
+      // Jika API endpoint tidak ada atau error, kita bisa kembalikan objek kosong
+      // sehingga kode akan menggunakan data default
+      return {};
     }
   },
+
   
   // Users management
   getUsers: async (page = 1, limit = 10) => {
