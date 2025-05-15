@@ -1,6 +1,4 @@
-// Client-side script to handle API login and redirection
-// Save this as public/js/api-login.js
-
+// Updated api-login.js script to handle different user roles properly
 document.addEventListener('DOMContentLoaded', function() {
     // Function to handle API login
     function handleApiLogin(email, password) {
@@ -39,12 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Store token in localStorage for future API calls
                     localStorage.setItem('authToken', data.token);
                     
-                    // Store basic user info in localStorage
+                    // Store basic user info in localStorage with correct role
                     localStorage.setItem('user', JSON.stringify({
                         id: data.user.id,
                         name: data.user.full_name,
                         email: data.user.email,
-                        role: data.user.role
+                        role: data.user.is_admin === 1 ? 'admin' : 'user'
                     }));
                     
                     // Redirect based on user role (is_admin value)
@@ -115,10 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
                    <i class="fas fa-user-circle me-1"></i> ${user.name}
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownAccount">
-                    ${user.role === 'Administrator' ? 
+                    ${user.role === 'admin' ? 
                         '<li><a class="dropdown-item" href="/admin/dashboard">Admin Dashboard</a></li>' : 
                         '<li><a class="dropdown-item" href="/user/dashboard">Dashboard</a></li>'}
-                    <li><a class="dropdown-item" href="/user/profile">Profil Saya</a></li>
+                    <li><a class="dropdown-item" href="${user.role === 'admin' ? '/admin/profile' : '/user/profile'}">Profil Saya</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="#" id="logout-link">Logout</a></li>
                 </ul>

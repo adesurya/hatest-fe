@@ -14,8 +14,16 @@ const isLoggedIn = (req, res, next) => {
   }
 };
 
-// Apply middleware to all routes
-router.use(isLoggedIn);
+const isRegularUser = (req, res, next) => {
+  // Check if user is not admin (either by role or is_admin flag)
+  if (req.session.user && req.session.user.role !== 'admin' && req.session.user.is_admin !== 1) {
+    next();
+  } else {
+    // If admin tries to access user routes, redirect to admin dashboard
+    req.flash('error_msg', 'Admin users should use the admin dashboard');
+    res.redirect('/admin/dashboard');
+  }
+};
 
 // API token check middleware
 const hasAPIToken = (req, res, next) => {
@@ -30,8 +38,14 @@ const hasAPIToken = (req, res, next) => {
   }
 };
 
+// Apply middleware to all routes
+router.use(isLoggedIn);
+router.use(isRegularUser);
+router.use(hasAPIToken);
+
+
 // User dashboard
-router.get('/dashboard', hasAPIToken, async (req, res) => {
+router.get('/dashboard', async (req, res) => {
   try {
     const dashboardData = await userAPI.getUserDashboard();
     

@@ -39,7 +39,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize header scroll effect
     initHeaderScroll();
+
+    // Check user auth status and update UI
+    checkAuthStatus();
+
 });
+
+function checkAuthStatus() {
+    const authToken = localStorage.getItem('authToken');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    // If there's a token and user data
+    if (authToken && user && user.name) {
+        // Find the login link to replace it with user dropdown
+        const loginLink = document.querySelector('a[href="/auth/login"]');
+        if (loginLink) {
+            const userDropdown = document.createElement('div');
+            userDropdown.className = 'dropdown';
+            
+            // Generate dropdown based on user role
+            const dashboardLink = user.role === 'admin' || user.is_admin === 1 
+                ? '/admin/dashboard' 
+                : '/user/dashboard';
+                
+            const profileLink = user.role === 'admin' || user.is_admin === 1
+                ? '/admin/profile'
+                : '/user/profile';
+            
+            userDropdown.innerHTML = `
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAccount" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                   <i class="fas fa-user-circle me-1"></i> ${user.name}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownAccount">
+                    <li><a class="dropdown-item" href="${dashboardLink}">${user.role === 'admin' || user.is_admin === 1 ? 'Admin Dashboard' : 'Dashboard'}</a></li>
+                    <li><a class="dropdown-item" href="${profileLink}">Profil Saya</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" id="logout-link">Logout</a></li>
+                </ul>
+            `;
+            
+            // Replace login link with user dropdown
+            loginLink.parentNode.replaceWith(userDropdown);
+            
+            // Add event listener to logout link
+            document.getElementById('logout-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear localStorage
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                // Redirect to logout
+                window.location.href = '/auth/logout';
+            });
+        }
+    }
+}
 
 // Initialize Swiper sliders
 function initSwipers() {

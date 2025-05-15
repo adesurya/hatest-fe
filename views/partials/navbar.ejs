@@ -1,4 +1,4 @@
-<!-- views/partials/navbar.ejs -->
+<!-- Updated Navbar Partial (views/partials/navbar.ejs) -->
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
@@ -48,12 +48,12 @@
                             <i class="fas fa-user-circle me-1"></i> <%= user.name %>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownAccount">
-                            <% if (user.role === 'admin') { %>
+                            <% if (user.role === 'admin' || user.is_admin === 1) { %>
                                 <li><a class="dropdown-item" href="/admin/dashboard">Admin Dashboard</a></li>
                             <% } else { %>
                                 <li><a class="dropdown-item" href="/user/dashboard">Dashboard</a></li>
                             <% } %>
-                            <li><a class="dropdown-item" href="/user/profile">Profil Saya</a></li>
+                            <li><a class="dropdown-item" href="<%= user.role === 'admin' || user.is_admin === 1 ? '/admin/profile' : '/user/profile' %>">Profil Saya</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
                         </ul>

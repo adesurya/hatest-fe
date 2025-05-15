@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | Organisasi Indonesia</title>
+    <title>Admin Profile | Organization Name</title>
     
     <!-- Favicon -->
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
@@ -20,12 +20,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="/css/admin.css">
     
-    <!-- Additional Custom CSS -->
+    <!-- Custom Page CSS -->
     <style>
         .profile-header {
-            background: linear-gradient(to right, #0d6efd, #0dcaf0);
+            background: linear-gradient(to right, #4e73df, #36b9cc);
             border-radius: 1rem;
             padding: 2rem;
             color: #fff;
@@ -54,7 +54,7 @@
             border-radius: 50%;
             border: 5px solid #fff;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            background-color: #0d6efd;
+            background-color: #4e73df;
             color: #fff;
             display: flex;
             align-items: center;
@@ -70,7 +70,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background-color: #0d6efd;
+            background-color: #4e73df;
             color: #fff;
             display: flex;
             align-items: center;
@@ -81,13 +81,13 @@
         }
         
         .upload-btn:hover {
-            background-color: #0b5ed7;
+            background-color: #2e59d9;
         }
         
         .profile-card {
             border-radius: 1rem;
             border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             margin-bottom: 1.5rem;
             overflow: hidden;
         }
@@ -95,26 +95,7 @@
         .profile-card-header {
             padding: 1.25rem;
             background-color: #f8f9fa;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-        
-        .btn-update-profile {
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-        }
-        
-        .membership-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            display: inline-block;
+            border-bottom: 1px solid #e3e6f0;
         }
         
         .field-label {
@@ -128,82 +109,42 @@
             margin-bottom: 1.5rem;
         }
         
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
+        .notification-dropdown {
+            width: 320px;
+            padding: 0;
         }
         
-        .toast {
-            width: 350px;
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f8f9fc;
         }
         
-        .section-divider {
+        .notification-item:hover {
+            background-color: #f8f9fc;
+        }
+        
+        .notification-item.unread {
+            background-color: #edf2f9;
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            color: #6c757d;
-            margin: 1.5rem 0;
+            justify-content: center;
+            flex-shrink: 0;
         }
         
-        .section-divider span {
-            padding: 0 1rem;
-        }
-        
-        .section-divider:before,
-        .section-divider:after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .id-card-preview {
-            max-width: 100%;
-            height: auto;
-            border-radius: 0.5rem;
-            border: 1px solid #dee2e6;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .id-card-preview:hover {
-            transform: scale(1.05);
-        }
-        
-        .modal-body img {
-            max-width: 100%;
-        }
-        
-        .profile-actions {
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
-            gap: 10px;
-        }
-        
-        @media (max-width: 767.98px) {
-            .profile-header {
-                padding: 1.5rem;
-                text-align: center;
-            }
-            
-            .profile-info {
-                text-align: center;
-                margin-top: 1rem;
-            }
-            
-            .profile-avatar, .profile-avatar-placeholder {
-                width: 100px;
-                height: 100px;
-                font-size: 2.5rem;
-            }
-            
-            .membership-badge {
-                margin-top: 0.5rem;
-            }
-            
-            .profile-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -213,44 +154,59 @@
         <div class="spinner"></div>
     </div>
     
-    <!-- User Layout -->
-    <div class="user-layout">
+    <!-- Admin Layout -->
+    <div class="admin-layout">
         <!-- Sidebar -->
-        <div class="sidebar bg-primary text-white">
+        <div class="sidebar bg-dark text-white">
             <div class="sidebar-header p-3 text-center">
                 <img src="/images/logo-white.png" alt="Organization Logo" class="img-fluid mb-3" style="max-height: 50px;">
-                <h5 class="fw-bold mb-0">User Dashboard</h5>
+                <h5 class="fw-bold mb-0">Admin Dashboard</h5>
             </div>
             <hr class="bg-light my-0">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/dashboard">
+                    <a class="nav-link text-white" href="/admin/dashboard">
                         <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active" href="/user/profile">
-                        <i class="fas fa-user me-2"></i> Profile
+                    <a class="nav-link text-white" href="/admin/users">
+                        <i class="fas fa-users me-2"></i> Users
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/change-password">
-                        <i class="fas fa-key me-2"></i> Change Password
+                    <a class="nav-link text-white" href="/admin/sliders">
+                        <i class="fas fa-images me-2"></i> Sliders
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/activities">
-                        <i class="fas fa-calendar-alt me-2"></i> My Activities
+                    <a class="nav-link text-white" href="/admin/articles">
+                        <i class="fas fa-newspaper me-2"></i> Articles
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/membership">
-                        <i class="fas fa-id-card me-2"></i> Membership
+                    <a class="nav-link text-white" href="/admin/activities">
+                        <i class="fas fa-calendar-alt me-2"></i> Activities
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/user/certificates">
-                        <i class="fas fa-certificate me-2"></i> Certificates
+                    <a class="nav-link text-white" href="/admin/testimonials">
+                        <i class="fas fa-comment-dots me-2"></i> Testimonials
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/admin/benefits">
+                        <i class="fas fa-gift me-2"></i> Benefits
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/admin/messages">
+                        <i class="fas fa-envelope me-2"></i> Contact Messages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/admin/settings">
+                        <i class="fas fa-cog me-2"></i> Settings
                     </a>
                 </li>
                 <li class="nav-item mt-5">
@@ -265,7 +221,6 @@
                 </li>
             </ul>
         </div>
-        
         <!-- Main Content -->
         <div class="main-content">
             <!-- Navbar -->
@@ -274,21 +229,100 @@
                     <button id="sidebarToggle" class="btn">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h5 class="mb-0 ms-3">My Profile</h5>
+                    <h5 class="mb-0 ms-3">Admin Profile</h5>
                 </div>
                 
                 <ul class="navbar-nav ms-auto">
+                    <!-- Notifications Dropdown -->
+                    <li class="nav-item dropdown me-3">
+                        <a class="nav-link position-relative" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell fa-lg"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                3
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end notification-dropdown shadow-lg" aria-labelledby="notificationsDropdown">
+                            <li>
+                                <h6 class="dropdown-header">Notifications</h6>
+                            </li>
+                            <li>
+                                <a class="dropdown-item notification-item unread" href="#">
+                                    <div class="d-flex align-items-center">
+                                        <div class="notification-icon bg-primary text-white">
+                                            <i class="fas fa-user-plus"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-1 fw-bold">New User Registration</p>
+                                            <p class="mb-0 small text-muted">A new user has registered and needs verification</p>
+                                            <p class="mb-0 small text-muted">2 minutes ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item notification-item" href="#">
+                                    <div class="d-flex align-items-center">
+                                        <div class="notification-icon bg-success text-white">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-1 fw-bold">System Update Complete</p>
+                                            <p class="mb-0 small text-muted">The system update has been successfully completed</p>
+                                            <p class="mb-0 small text-muted">1 hour ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item notification-item" href="#">
+                                    <div class="d-flex align-items-center">
+                                        <div class="notification-icon bg-info text-white">
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-1 fw-bold">New Contact Message</p>
+                                            <p class="mb-0 small text-muted">You have received a new contact form message</p>
+                                            <p class="mb-0 small text-muted">3 hours ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-center" href="/admin/notifications">View All Notifications</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- User Profile Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div id="nav-profile-placeholder" class="avatar-placeholder rounded-circle me-2 d-inline-flex align-items-center justify-content-center bg-primary text-white" style="width: 30px; height: 30px; display: none;">
-                                A
-                            </div>
-                            <img id="nav-profile-image" src="" alt="Profile" class="rounded-circle me-2" width="30" height="30" style="display: none; object-fit: cover;">
-                            <span id="nav-user-name">User</span>
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <% if (user.profilePicture) { %>
+                                <img src="<%= user.profilePicture %>" alt="<%= user.name %>" class="rounded-circle me-2" width="32" height="32">
+                            <% } else { %>
+                                <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                    <%= user.name.charAt(0).toUpperCase() %>
+                                </div>
+                            <% } %>
+                            <span class="d-none d-md-block"><%= user.name %></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
-                            <li><a class="dropdown-item" href="/user/change-password"><i class="fas fa-key me-2"></i> Change Password</a></li>
+                            <li>
+                                <div class="dropdown-item text-center">
+                                    <% if (user.profilePicture) { %>
+                                        <img src="<%= user.profilePicture %>" alt="<%= user.name %>" class="rounded-circle mb-2" width="64" height="64">
+                                    <% } else { %>
+                                        <div class="avatar-placeholder rounded-circle mb-2 d-flex align-items-center justify-content-center bg-primary text-white mx-auto" style="width: 64px; height: 64px;">
+                                            <%= user.name.charAt(0).toUpperCase() %>
+                                        </div>
+                                    <% } %>
+                                    <h6 class="mb-0"><%= user.name %></h6>
+                                    <p class="text-muted small mb-0">Administrator</p>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item active" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                         </ul>
@@ -298,30 +332,23 @@
             
             <!-- Profile Content -->
             <div class="content-wrapper p-4">
-                <!-- Toast notification container -->
-                <div class="toast-container">
-                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
-                        <div class="toast-header bg-success text-white">
-                            <i class="fas fa-check-circle me-2"></i>
-                            <strong class="me-auto">Success</strong>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body">
-                            Profile updated successfully!
-                        </div>
+                <!-- Flash Messages -->
+                <% if (success_msg && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
-                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
-                        <div class="toast-header bg-danger text-white">
-                            <i class="fas fa-exclamation-circle me-2"></i>
-                            <strong class="me-auto">Error</strong>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body" id="errorToastBody">
-                            An error occurred while updating your profile.
-                        </div>
+                <% } %>
+                
+                <% if (error_msg && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                </div>
+                <% } %>
+                
+                <!-- Alert Container for API messages -->
+                <div class="alert-container"></div>
                 
                 <!-- Profile Header -->
                 <div class="profile-header mb-4">
@@ -329,7 +356,7 @@
                         <div class="col-md-3 text-center text-md-start">
                             <div class="profile-avatar-container">
                                 <div id="profile-avatar-placeholder" class="profile-avatar-placeholder mx-auto">
-                                    A
+                                    <%= user.name.charAt(0).toUpperCase() %>
                                 </div>
                                 <img id="profile-avatar" class="profile-avatar mx-auto" style="display: none;" src="" alt="Profile Picture">
                                 <label for="profile-photo-input" class="upload-btn" title="Upload Profile Picture">
@@ -340,29 +367,19 @@
                         </div>
                         <div class="col-md-9 mt-3 mt-md-0">
                             <div class="profile-info">
-                                <h3 id="user-full-name" class="mb-2">Loading...</h3>
-                                <p id="user-email" class="mb-2"><i class="fas fa-envelope me-2"></i>loading@example.com</p>
-                                <p id="user-phone" class="mb-3"><i class="fas fa-phone me-2"></i>+62-000-0000-0000</p>
-                                
-                                <div class="membership-status mb-3">
-                                    <span id="membership-badge" class="membership-badge bg-warning text-dark">
-                                        <i class="fas fa-clock me-1"></i> Loading...
-                                    </span>
-                                </div>
+                                <h3 id="user-full-name" class="mb-2"><%= user.name %></h3>
+                                <p id="user-email" class="mb-2"><i class="fas fa-envelope me-2"></i><%= user.email %></p>
+                                <p id="user-role" class="mb-3"><i class="fas fa-user-shield me-2"></i>Administrator</p>
                                 
                                 <div class="profile-actions">
                                     <button type="button" class="btn btn-primary" id="editProfileBtn">
                                         <i class="fas fa-edit me-1"></i> Edit Profile
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary">
-                                        <i class="fas fa-id-card me-1"></i> View Membership Card
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
                 <!-- Profile Details -->
                 <div class="row">
                     <div class="col-lg-8">
@@ -376,37 +393,25 @@
                                     <div class="col-md-6">
                                         <div class="mb-4">
                                             <div class="field-label">Full Name</div>
-                                            <div class="field-value" id="view-full-name">Loading...</div>
+                                            <div class="field-value" id="view-full-name"><%= user.name %></div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
                                             <div class="field-label">Email Address</div>
-                                            <div class="field-value" id="view-email">Loading...</div>
+                                            <div class="field-value" id="view-email"><%= user.email %></div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
                                             <div class="field-label">Phone Number</div>
-                                            <div class="field-value" id="view-phone">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Birth Place</div>
-                                            <div class="field-value" id="view-birth-place">Loading...</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Birth Date</div>
-                                            <div class="field-value" id="view-birth-date">Loading...</div>
+                                            <div class="field-value" id="view-phone"><%= user.phone_number || '-' %></div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-4">
                                             <div class="field-label">Role</div>
-                                            <div class="field-value" id="view-role">Loading...</div>
+                                            <div class="field-value" id="view-role">Administrator</div>
                                         </div>
                                     </div>
                                 </div>
@@ -416,27 +421,19 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="full_name" class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                                            <input type="text" class="form-control" id="full_name" name="full_name" value="<%= user.name %>" required>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="email" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="email" name="email" required>
+                                            <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" required readonly>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="phone_number" class="form-label">Phone Number</label>
-                                            <input type="text" class="form-control" id="phone_number" name="phone_number">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="birth_place" class="form-label">Birth Place</label>
-                                            <input type="text" class="form-control" id="birth_place" name="birth_place">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="birth_date" class="form-label">Birth Date</label>
-                                            <input type="date" class="form-control" id="birth_date" name="birth_date">
+                                            <input type="text" class="form-control" id="phone_number" name="phone_number" value="<%= user.phone_number || '' %>">
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="role" class="form-label">Role</label>
-                                            <input type="text" class="form-control" id="role" name="role" readonly>
+                                            <input type="text" class="form-control" id="role" name="role" value="Administrator" readonly>
                                         </div>
                                         <div class="col-12 mt-3 text-end">
                                             <button type="button" class="btn btn-outline-secondary me-2" id="cancelEditBtn">Cancel</button>
@@ -449,98 +446,161 @@
                             </div>
                         </div>
                         
-                        <!-- Professional Information -->
+                        <!-- Security Settings -->
                         <div class="profile-card mb-4">
                             <div class="profile-card-header">
-                                <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i> Professional Information</h5>
+                                <h5 class="mb-0"><i class="fas fa-shield-alt me-2"></i> Security Settings</h5>
                             </div>
                             <div class="card-body p-4">
-                                <div class="row" id="viewProfessionalSection">
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Institution</div>
-                                            <div class="field-value" id="view-institution">Loading...</div>
+                                <div class="mb-4">
+                                    <h6 class="mb-3">Change Password</h6>
+                                    <form id="changePasswordForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="current_password" class="form-label">Current Password</label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+                                                    <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1" data-target="current_password">
+                                                        <i class="far fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <!-- Placeholder to maintain layout -->
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="new_password" class="form-label">New Password</label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                                                    <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1" data-target="new_password">
+                                                        <i class="far fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="password-strength mt-2">
+                                                    <div class="progress" style="height: 5px;">
+                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                    <small class="password-feedback text-muted">Password must be at least 8 characters</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="confirm_password" class="form-label">Confirm New Password</label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                                    <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1" data-target="confirm_password">
+                                                        <i class="far fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="password-match-feedback mt-2"></div>
+                                            </div>
+                                            <div class="col-12 text-end">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-key me-1"></i> Change Password
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="field-label">Collegium Certificate Number</div>
-                                            <div class="field-value" id="view-collegium">Loading...</div>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                                 
-                                <!-- Edit Professional Info Form (Hidden by default) -->
-                                <form id="editProfessionalForm" style="display: none;">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="institution" class="form-label">Institution</label>
-                                            <input type="text" class="form-control" id="institution" name="institution">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="collegium_certificate_number" class="form-label">Collegium Certificate Number</label>
-                                            <input type="text" class="form-control" id="collegium_certificate_number" name="collegium_certificate_number">
-                                        </div>
-                                    </div>
-                                </form>
+                                <hr>
+                                
+                                <div>
+                                    <h6 class="mb-3">Two-Factor Authentication</h6>
+                                    <p class="text-muted mb-3">Add an extra layer of security to your account by enabling two-factor authentication.</p>
+                                    <button type="button" class="btn btn-outline-primary">
+                                        <i class="fas fa-lock me-1"></i> Enable 2FA
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="col-lg-4">
-                        <!-- Membership Information -->
+                        <!-- Account Activities -->
                         <div class="profile-card mb-4">
                             <div class="profile-card-header">
-                                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i> Membership Information</h5>
+                                <h5 class="mb-0"><i class="fas fa-history me-2"></i> Recent Activities</h5>
                             </div>
-                            <div class="card-body p-4">
-                                <div class="text-center mb-3">
-                                    <div class="membership-status mb-2">
-                                        <span id="membership-status-card" class="badge bg-warning rounded-pill px-3 py-2">
-                                            <i class="fas fa-clock me-1"></i> Inactive
-                                        </span>
-                                    </div>
-                                    <p class="small text-muted" id="membership-message">Your membership is currently inactive. Please complete your profile and upload the required documents.</p>
-                                </div>
-                                
-                                <div class="section-divider">
-                                    <span><i class="fas fa-id-card me-1"></i> ID Card</span>
-                                </div>
-                                
-                                <div class="text-center mb-3">
-                                    <div id="id-card-container">
-                                        <div id="no-id-card" class="p-3 bg-light rounded-3 text-center">
-                                            <i class="fas fa-id-card fa-3x text-muted mb-2"></i>
-                                            <p class="mb-0">No ID card uploaded</p>
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item p-3">
+                                        <div class="d-flex">
+                                            <div class="activity-icon bg-primary text-white me-3">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </div>
+                                            <div>
+                                                <p class="mb-1 fw-bold">Login Successful</p>
+                                                <p class="small text-muted mb-0">Today, 10:30 AM</p>
+                                            </div>
                                         </div>
-                                        <img id="id-card-img" src="" alt="ID Card" class="id-card-preview my-2" data-bs-toggle="modal" data-bs-target="#idCardModal" style="display: none;">
-                                    </div>
-                                    <div class="mt-3">
-                                        <label for="id-card-input" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-upload me-1"></i> Upload ID Card
-                                        </label>
-                                        <input type="file" id="id-card-input" accept="image/*" style="display: none;">
-                                    </div>
-                                </div>
-                                
-                                <div class="section-divider">
-                                    <span><i class="fas fa-info-circle me-1"></i> Member Info</span>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="field-label">Member Category</div>
-                                    <div class="field-value" id="view-category">Loading...</div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="field-label">User ID</div>
-                                    <div class="field-value" id="view-user-id">Loading...</div>
-                                </div>
-                                
-                                <div class="text-center mt-4">
-                                    <a href="/user/membership" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-id-card me-1"></i> View Complete Membership Details
-                                    </a>
+                                    </li>
+                                    <li class="list-group-item p-3">
+                                        <div class="d-flex">
+                                            <div class="activity-icon bg-info text-white me-3">
+                                                <i class="fas fa-user-edit"></i>
+                                            </div>
+                                            <div>
+                                                <p class="mb-1 fw-bold">Profile Updated</p>
+                                                <p class="small text-muted mb-0">Yesterday, 3:45 PM</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item p-3">
+                                        <div class="d-flex">
+                                            <div class="activity-icon bg-success text-white me-3">
+                                                <i class="fas fa-file-alt"></i>
+                                            </div>
+                                            <div>
+                                                <p class="mb-1 fw-bold">Article Published</p>
+                                                <p class="small text-muted mb-0">May 12, 2025, 9:20 AM</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item p-3">
+                                        <div class="d-flex">
+                                            <div class="activity-icon bg-warning text-white me-3">
+                                                <i class="fas fa-cog"></i>
+                                            </div>
+                                            <div>
+                                                <p class="mb-1 fw-bold">Settings Changed</p>
+                                                <p class="small text-muted mb-0">May 10, 2025, 4:15 PM</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-white text-center">
+                                <a href="/admin/activities/logs" class="btn btn-sm btn-outline-primary">View All Activities</a>
+                            </div>
+                        </div>
+                        
+                        <!-- System Information -->
+                        <div class="profile-card mb-4">
+                            <div class="profile-card-header">
+                                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> System Information</h5>
+                            </div>
+                            <div class="card-body p-3">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-0">
+                                        <span>System Version</span>
+                                        <span class="badge bg-primary rounded-pill">v1.0.0</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-0">
+                                        <span>Last Update</span>
+                                        <span>May 15, 2025</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-0">
+                                        <span>Last Backup</span>
+                                        <span>May 14, 2025</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-0">
+                                        <span>Server Status</span>
+                                        <span class="badge bg-success rounded-pill">Online</span>
+                                    </li>
+                                </ul>
+                                <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-sync-alt me-1"></i> Check for Updates
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -549,30 +609,19 @@
             </div>
         </div>
     </div>
-    
-    <!-- ID Card Modal -->
-    <div class="modal fade" id="idCardModal" tabindex="-1" aria-labelledby="idCardModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="idCardModalLabel">ID Card</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <img id="id-card-modal-img" src="" alt="ID Card" class="img-fluid">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
     
     <!-- Custom JS -->
     <script>
@@ -591,300 +640,186 @@
             // Initialize sidebar toggle
             initSidebarToggle();
             
-            // Fetch user profile data
-            fetchUserProfile();
-            
             // Event listeners
             document.getElementById('editProfileBtn').addEventListener('click', toggleEditMode);
             document.getElementById('cancelEditBtn').addEventListener('click', toggleEditMode);
-            document.getElementById('editProfileForm').addEventListener('submit', updateProfile);
+            document.getElementById('editProfileForm').addEventListener('submit', handleProfileUpdate);
+            document.getElementById('changePasswordForm').addEventListener('submit', handlePasswordChange);
             
             // Profile photo upload
             document.getElementById('profile-photo-input').addEventListener('change', handleProfilePhotoUpload);
             
-            // ID card upload
-            document.getElementById('id-card-input').addEventListener('change', handleIdCardUpload);
+            // Toggle password visibility
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const passwordInput = document.getElementById(targetId);
+                    
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Toggle eye icon
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            });
+            
+            // Password strength checker
+            const passwordInput = document.querySelector('#new_password');
+            const passwordStrengthBar = document.querySelector('.password-strength .progress-bar');
+            const passwordFeedback = document.querySelector('.password-feedback');
+            
+            passwordInput.addEventListener('input', function() {
+                const value = this.value;
+                let strength = 0;
+                let feedback = '';
+                
+                if (value.length >= 8) {
+                    strength += 25;
+                    feedback = 'Password is long enough. ';
+                } else {
+                    feedback = 'Password is too short. ';
+                }
+                
+                if (value.match(/[A-Z]/)) {
+                    strength += 25;
+                    feedback += 'Uppercase letter detected. ';
+                }
+                
+                if (value.match(/[0-9]/)) {
+                    strength += 25;
+                    feedback += 'Number detected. ';
+                }
+                
+                if (value.match(/[^A-Za-z0-9]/)) {
+                    strength += 25;
+                    feedback += 'Special character detected.';
+                }
+                
+                // Update progress bar
+                passwordStrengthBar.style.width = strength + '%';
+                if (strength < 50) {
+                    passwordStrengthBar.className = 'progress-bar bg-danger';
+                } else if (strength < 75) {
+                    passwordStrengthBar.className = 'progress-bar bg-warning';
+                } else {
+                    passwordStrengthBar.className = 'progress-bar bg-success';
+                }
+                
+                // Update feedback
+                passwordFeedback.textContent = feedback;
+            });
+            
+            // Check password match
+            const confirmPasswordInput = document.querySelector('#confirm_password');
+            const passwordMatchFeedback = document.querySelector('.password-match-feedback');
+            
+            confirmPasswordInput.addEventListener('input', function() {
+                if (this.value === passwordInput.value) {
+                    passwordMatchFeedback.innerHTML = '<small class="text-success">Passwords match</small>';
+                } else {
+                    passwordMatchFeedback.innerHTML = '<small class="text-danger">Passwords do not match</small>';
+                }
+            });
         });
         
         function initSidebarToggle() {
             const sidebarToggle = document.getElementById('sidebarToggle');
-            const userLayout = document.querySelector('.user-layout');
+            const adminLayout = document.querySelector('.admin-layout');
             
-            if (sidebarToggle && userLayout) {
+            if (sidebarToggle && adminLayout) {
                 sidebarToggle.addEventListener('click', function() {
-                    userLayout.classList.toggle('sidebar-collapsed');
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
                 });
-            }
-        }
-        
-        function fetchUserProfile() {
-            // Replace with actual API call
-            // For demonstration, simulate an API response
-            const mockApiResponse = {
-                success: true,
-                user: {
-                    id: 1,
-                    full_name: "Admin System",
-                    email: "admin@healthcare.com",
-                    phone_number: "081234567890",
-                    birth_place: "Jakarta",
-                    birth_date: "1989-12-31T17:00:00.000Z",
-                    institution: null,
-                    collegium_certificate_number: null,
-                    id_card_photo: null,
-                    profile_photo: null,
-                    membership_status: "inactive",
-                    is_admin: 1,
-                    category_id: 3,
-                    role: "Administrator"
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
                 }
-            };
-            
-            // In a real implementation, you would use fetch:
-            /*
-            fetch('localhost:3000/api/users/profile', {
-                headers: {
-                    'Authorization': 'Bearer ' + getToken() // Function to get token from localStorage or cookie
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    populateUserData(data.user);
-                } else {
-                    showErrorToast(data.message || 'Failed to load profile data');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching profile:', error);
-                showErrorToast('Network error. Please try again later.');
-            });
-            */
-            
-            // For demonstration purposes, use the mock data
-            populateUserData(mockApiResponse.user);
+            }
         }
-        
-        function populateUserData(userData) {
-            // Set user name in navbar
-            document.getElementById('nav-user-name').textContent = userData.full_name;
-            
-            // Set profile avatar
-            if (userData.profile_photo) {
-                document.getElementById('profile-avatar').src = userData.profile_photo;
-                document.getElementById('profile-avatar').style.display = 'block';
-                document.getElementById('profile-avatar-placeholder').style.display = 'none';
-                
-                document.getElementById('nav-profile-image').src = userData.profile_photo;
-                document.getElementById('nav-profile-image').style.display = 'inline-block';
-                document.getElementById('nav-profile-placeholder').style.display = 'none';
-            } else {
-                // Set placeholder with first letter of name
-                const firstLetter = userData.full_name.charAt(0).toUpperCase();
-                document.getElementById('profile-avatar-placeholder').textContent = firstLetter;
-                document.getElementById('profile-avatar-placeholder').style.display = 'flex';
-                document.getElementById('profile-avatar').style.display = 'none';
-                
-                document.getElementById('nav-profile-placeholder').textContent = firstLetter;
-                document.getElementById('nav-profile-placeholder').style.display = 'inline-flex';
-                document.getElementById('nav-profile-image').style.display = 'none';
-            }
-            
-            // Set header information
-            document.getElementById('user-full-name').textContent = userData.full_name;
-            document.getElementById('user-email').innerHTML = `<i class="fas fa-envelope me-2"></i>${userData.email}`;
-            document.getElementById('user-phone').innerHTML = `<i class="fas fa-phone me-2"></i>${userData.phone_number || 'Not provided'}`;
-            
-            // Set membership status
-            const membershipStatus = userData.membership_status || 'inactive';
-            const membershipBadge = document.getElementById('membership-badge');
-            const membershipStatusCard = document.getElementById('membership-status-card');
-            
-            if (membershipStatus === 'active') {
-                membershipBadge.className = 'membership-badge bg-success text-white';
-                membershipBadge.innerHTML = '<i class="fas fa-check-circle me-1"></i> Active';
-                
-                membershipStatusCard.className = 'badge bg-success rounded-pill px-3 py-2';
-                membershipStatusCard.innerHTML = '<i class="fas fa-check-circle me-1"></i> Active';
-                
-                document.getElementById('membership-message').textContent = 'Your membership is active. You have full access to all services.';
-            } else {
-                membershipBadge.className = 'membership-badge bg-warning text-dark';
-                membershipBadge.innerHTML = '<i class="fas fa-clock me-1"></i> Inactive';
-                
-                membershipStatusCard.className = 'badge bg-warning rounded-pill px-3 py-2';
-                membershipStatusCard.innerHTML = '<i class="fas fa-clock me-1"></i> Inactive';
-                
-                document.getElementById('membership-message').textContent = 'Your membership is currently inactive. Please complete your profile and upload the required documents.';
-            }
-            
-            // Personal Information Section
-            document.getElementById('view-full-name').textContent = userData.full_name;
-            document.getElementById('view-email').textContent = userData.email;
-            document.getElementById('view-phone').textContent = userData.phone_number || 'Not provided';
-            document.getElementById('view-birth-place').textContent = userData.birth_place || 'Not provided';
-            
-            // Format birth date
-            const birthDate = userData.birth_date ? new Date(userData.birth_date) : null;
-            document.getElementById('view-birth-date').textContent = birthDate 
-                ? birthDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-                : 'Not provided';
-            
-            document.getElementById('view-role').textContent = userData.role || 'User';
-            
-            // Professional Information Section
-            document.getElementById('view-institution').textContent = userData.institution || 'Not provided';
-            document.getElementById('view-collegium').textContent = userData.collegium_certificate_number || 'Not provided';
-            
-            // Member Info
-            document.getElementById('view-category').textContent = getCategoryName(userData.category_id) || 'Standard';
-            document.getElementById('view-user-id').textContent = userData.id || '—';
-            
-            // ID Card Preview
-            if (userData.id_card_photo) {
-                document.getElementById('id-card-img').src = userData.id_card_photo;
-                document.getElementById('id-card-img').style.display = 'block';
-                document.getElementById('no-id-card').style.display = 'none';
-                
-                document.getElementById('id-card-modal-img').src = userData.id_card_photo;
-            } else {
-                document.getElementById('id-card-img').style.display = 'none';
-                document.getElementById('no-id-card').style.display = 'block';
-            }
-            
-            // Populate edit form
-            document.getElementById('full_name').value = userData.full_name;
-            document.getElementById('email').value = userData.email;
-            document.getElementById('phone_number').value = userData.phone_number || '';
-            document.getElementById('birth_place').value = userData.birth_place || '';
-            
-            // Format birth date for input field (YYYY-MM-DD)
-            if (birthDate) {
-                const year = birthDate.getFullYear();
-                const month = String(birthDate.getMonth() + 1).padStart(2, '0');
-                const day = String(birthDate.getDate()).padStart(2, '0');
-                document.getElementById('birth_date').value = `${year}-${month}-${day}`;
-            } else {
-                document.getElementById('birth_date').value = '';
-            }
-            
-            document.getElementById('role').value = userData.role || 'User';
-            document.getElementById('institution').value = userData.institution || '';
-            document.getElementById('collegium_certificate_number').value = userData.collegium_certificate_number || '';
-        }
-        
-        function getCategoryName(categoryId) {
-            const categories = {
-                1: 'Bronze',
-                2: 'Silver',
-                3: 'Gold',
-                4: 'Platinum'
-            };
-            
-            return categories[categoryId] || 'Standard';
-        }
-        
         function toggleEditMode() {
             const viewSection = document.getElementById('viewProfileSection');
             const editForm = document.getElementById('editProfileForm');
-            const viewProfessionalSection = document.getElementById('viewProfessionalSection');
-            const editProfessionalForm = document.getElementById('editProfessionalForm');
+            const editProfileBtn = document.getElementById('editProfileBtn');
             
             if (viewSection.style.display === 'none') {
                 // Switch to view mode
                 viewSection.style.display = 'flex';
                 editForm.style.display = 'none';
-                viewProfessionalSection.style.display = 'flex';
-                editProfessionalForm.style.display = 'none';
-                document.getElementById('editProfileBtn').innerHTML = '<i class="fas fa-edit me-1"></i> Edit Profile';
+                editProfileBtn.innerHTML = '<i class="fas fa-edit me-1"></i> Edit Profile';
             } else {
                 // Switch to edit mode
                 viewSection.style.display = 'none';
                 editForm.style.display = 'block';
-                viewProfessionalSection.style.display = 'none';
-                editProfessionalForm.style.display = 'block';
-                document.getElementById('editProfileBtn').innerHTML = '<i class="fas fa-times me-1"></i> Cancel Edit';
+                editProfileBtn.innerHTML = '<i class="fas fa-times me-1"></i> Cancel Edit';
             }
         }
         
-        function updateProfile(event) {
+        function handleProfileUpdate(event) {
             event.preventDefault();
             
-            // Get form data
-            const formData = {
-                full_name: document.getElementById('full_name').value,
-                email: document.getElementById('email').value,
-                phone_number: document.getElementById('phone_number').value,
-                birth_place: document.getElementById('birth_place').value,
-                birth_date: document.getElementById('birth_date').value,
-                institution: document.getElementById('institution').value,
-                collegium_certificate_number: document.getElementById('collegium_certificate_number').value,
-                // Keep existing values for photos and membership status
-                id_card_photo: null, // This would be the actual value from the user object
-                profile_photo: null, // This would be the actual value from the user object
-                membership_status: 'inactive' // This would be the actual value from the user object
-            };
-            
-            // For demonstration purposes, log the data that would be sent
-            console.log('Update profile with:', formData);
-            
-            // In a real implementation, you would send the data to the server with fetch:
-            /*
-            fetch('localhost:3000/api/users/profile', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + getToken() // Function to get token from localStorage or cookie
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showSuccessToast('Profile updated successfully');
-                    // Update the UI with new data
-                    populateUserData(data.user || formData);
-                    // Switch back to view mode
-                    toggleEditMode();
-                } else {
-                    showErrorToast(data.message || 'Failed to update profile');
-                }
-            })
-            .catch(error => {
-                console.error('Error updating profile:', error);
-                showErrorToast('Network error. Please try again later.');
-            });
-            */
-            
-            // For demonstration purposes, simulate a successful update
-            setTimeout(() => {
-                // Update the user data with the form values
-                const updatedUser = {
-                    id: 1,
-                    full_name: formData.full_name,
-                    email: formData.email,
-                    phone_number: formData.phone_number,
-                    birth_place: formData.birth_place,
-                    birth_date: formData.birth_date ? new Date(formData.birth_date).toISOString() : null,
-                    institution: formData.institution,
-                    collegium_certificate_number: formData.collegium_certificate_number,
-                    id_card_photo: null,
-                    profile_photo: null,
-                    membership_status: 'inactive',
-                    is_admin: 1,
-                    category_id: 3,
-                    role: "Administrator"
-                };
+            try {
+                // Get form data
+                const formData = new FormData(event.target);
                 
-                // Show success message
-                showSuccessToast('Profile updated successfully');
+                // Update UI with new values
+                document.getElementById('user-full-name').textContent = formData.get('full_name');
+                document.getElementById('view-full-name').textContent = formData.get('full_name');
+                document.getElementById('view-phone').textContent = formData.get('phone_number') || '-';
                 
-                // Update the UI with the new data
-                populateUserData(updatedUser);
+                // In a real application, you would send the data to the server here
+                // For demonstration, we'll just show a success message
+                showAlert('success', 'Profile updated successfully');
                 
                 // Switch back to view mode
                 toggleEditMode();
-            }, 1000);
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showAlert('danger', 'Failed to update profile. Please try again.');
+            }
+        }
+        
+        function handlePasswordChange(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const currentPassword = document.getElementById('current_password').value;
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            // Validate passwords
+            if (!currentPassword) {
+                showAlert('danger', 'Please enter your current password');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                showAlert('danger', 'New password must be at least 8 characters long');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showAlert('danger', 'New password and confirmation do not match');
+                return;
+            }
+            
+            // In a real application, you would send the data to the server here
+            // For demonstration, we'll just show a success message
+            showAlert('success', 'Password changed successfully');
+            
+            // Reset form
+            event.target.reset();
+            document.querySelector('.password-strength .progress-bar').style.width = '0%';
+            document.querySelector('.password-strength .progress-bar').className = 'progress-bar bg-danger';
+            document.querySelector('.password-feedback').textContent = 'Password must be at least 8 characters';
+            document.querySelector('.password-match-feedback').innerHTML = '';
         }
         
         function handleProfilePhotoUpload(event) {
@@ -893,131 +828,50 @@
             
             // Check file type
             if (!file.type.match('image.*')) {
-                showErrorToast('Please select an image file');
+                showAlert('danger', 'Please select an image file');
                 return;
             }
             
             // Check file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                showErrorToast('File size must not exceed 5MB');
+                showAlert('danger', 'File size must not exceed 5MB');
                 return;
             }
             
-            // For demonstration, just show the selected image
+            // Display the selected image
             const reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById('profile-avatar').src = e.target.result;
-                document.getElementById('profile-avatar').style.display = 'block';
-                document.getElementById('profile-avatar-placeholder').style.display = 'none';
+                const profileAvatar = document.getElementById('profile-avatar');
+                const profileAvatarPlaceholder = document.getElementById('profile-avatar-placeholder');
                 
-                document.getElementById('nav-profile-image').src = e.target.result;
-                document.getElementById('nav-profile-image').style.display = 'inline-block';
-                document.getElementById('nav-profile-placeholder').style.display = 'none';
+                profileAvatar.src = e.target.result;
+                profileAvatar.style.display = 'block';
+                profileAvatarPlaceholder.style.display = 'none';
                 
-                // In a real implementation, you would upload the file to the server
-                // and update the user profile
-                showSuccessToast('Profile photo uploaded. Save your profile to apply changes.');
+                // In a real application, you would upload the file to the server here
+                showAlert('info', 'Profile photo changed. Update your profile to save changes.');
             };
             reader.readAsDataURL(file);
         }
         
-        function handleIdCardUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Check file type
-            if (!file.type.match('image.*')) {
-                showErrorToast('Please select an image file');
-                return;
-            }
-            
-            // Check file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                showErrorToast('File size must not exceed 5MB');
-                return;
-            }
-            
-            // For demonstration, just show the selected image
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('id-card-img').src = e.target.result;
-                document.getElementById('id-card-img').style.display = 'block';
-                document.getElementById('no-id-card').style.display = 'none';
+        function showAlert(type, message) {
+            const alertContainer = document.querySelector('.alert-container');
+            if (alertContainer) {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
                 
-                document.getElementById('id-card-modal-img').src = e.target.result;
-                
-                // In a real implementation, you would upload the file to the server
-                // and update the user profile
-                showSuccessToast('ID card uploaded. Save your profile to apply changes.');
-            };
-            reader.readAsDataURL(file);
-        }
-        
-        function showSuccessToast(message) {
-            const toast = document.getElementById('successToast');
-            const bsToast = new bootstrap.Toast(toast);
-            
-            toast.querySelector('.toast-body').textContent = message;
-            bsToast.show();
-        }
-        
-        function showErrorToast(message) {
-            const toast = document.getElementById('errorToast');
-            const bsToast = new bootstrap.Toast(toast);
-            
-            document.getElementById('errorToastBody').textContent = message;
-            bsToast.show();
-        }
-        
-        // Helper function to get token
-        function getToken() {
-            // This is a placeholder - implement according to your authentication strategy
-            return localStorage.getItem('authToken');
-        }
-    </script>
-    
-    <!-- Profile API Integration Script -->
-    <script src="/js/profile-service.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize profile manager
-            const profileManager = new ProfileManager();
-            
-            // Load profile data
-            await profileManager.loadProfile();
-        });
-        
-        /**
-         * Profile Manager class - Main controller for the profile page
-         */
-        class ProfileManager {
-            constructor() {
-                this.ui = new ProfileUI();
-                this.isLoading = false;
-            }
-            
-            /**
-             * Load user profile
-             */
-            async loadProfile() {
-                try {
-                    this.isLoading = true;
-                    
-                    // Fetch user profile
-                    const response = await ProfileService.getUserProfile();
-                    
-                    if (response.success) {
-                        // Populate UI with user data
-                        this.ui.populateUserData(response.user);
-                    } else {
-                        this.ui.showErrorToast(response.message || 'Failed to load profile data');
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    const alert = alertContainer.querySelector('.alert');
+                    if (alert) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
                     }
-                } catch (error) {
-                    console.error('Error loading profile:', error);
-                    this.ui.showErrorToast('Failed to load profile data. Please try again later.');
-                } finally {
-                    this.isLoading = false;
-                }
+                }, 5000);
             }
         }
     </script>

@@ -6,7 +6,7 @@ const { adminAPI } = require('../services/api');
 
 // Admin middleware - checks if user is admin
 const isAdmin = (req, res, next) => {
-  if (req.session.user && req.session.user.is_admin === 1) {
+  if (req.session.user && (req.session.user.role === 'admin' || req.session.user.is_admin === 1)) {
     next();
   } else {
     req.flash('error_msg', 'Access denied. Admin privileges required.');
@@ -55,6 +55,32 @@ router.get('/dashboard', async (req, res) => {
     res.status(500).render('pages/error', {
       title: 'Error',
       message: err.response?.data?.message || 'Failed to load dashboard data',
+      status: err.response?.status || 500
+    });
+  }
+});
+
+router.get('/profile', async (req, res) => {
+  try {
+    // Render the admin profile page
+    res.render('pages/admin/profile', {
+      title: 'Admin Profile',
+      user: req.session.user
+    });
+  } catch (err) {
+    console.error('API Error:', err);
+    
+    // Check if it's an authentication error
+    if (err.response && err.response.status === 401) {
+      req.session.destroy();
+      global.token = null;
+      req.flash('error_msg', 'Your session has expired. Please log in again.');
+      return res.redirect('/auth/login');
+    }
+    
+    res.status(500).render('pages/error', {
+      title: 'Error',
+      message: err.response?.data?.message || 'Failed to load profile data',
       status: err.response?.status || 500
     });
   }

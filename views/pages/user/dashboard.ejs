@@ -22,6 +22,258 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/user.css">
+    
+    <!-- Style tambahan untuk dashboard -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --info-color: #0dcaf0;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* User Layout */
+        .user-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding-left: var(--sidebar-width);
+            transition: padding-left 0.3s ease;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            z-index: 100;
+            overflow-y: auto;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar-collapsed .sidebar {
+            width: 70px;
+        }
+        
+        .sidebar-collapsed .main-content {
+            padding-left: 70px;
+        }
+        
+        .sidebar .sidebar-header {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar .sidebar-header img {
+            max-height: 50px;
+            margin-bottom: 10px;
+        }
+        
+        .sidebar .sidebar-header h5 {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        
+        .sidebar-collapsed .sidebar .sidebar-header h5 {
+            display: none;
+        }
+        
+        .sidebar .nav {
+            padding: 15px 0;
+        }
+        
+        .sidebar .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-collapsed .sidebar .nav-link span {
+            display: none;
+        }
+        
+        /* Navbar */
+        .navbar {
+            height: var(--header-height);
+            background-color: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 0 20px;
+        }
+        
+        .navbar .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar .navbar-brand img {
+            max-height: 40px;
+        }
+        
+        /* Content Wrapper */
+        .content-wrapper {
+            padding: 20px;
+            margin-top: 0;
+        }
+        
+        /* Dashboard Stats */
+        .stat-card {
+            transition: all 0.3s;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        /* Activity Cards */
+        .activity-card {
+            transition: all 0.3s;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Welcome Card */
+        .welcome-card {
+            border-radius: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), #0099ff);
+            color: white;
+        }
+        
+        /* ID Card */
+        .id-card {
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .id-card:hover {
+            transform: rotateY(10deg);
+        }
+        
+        .card-pattern {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
+            background-size: 4px 4px;
+        }
+        
+        /* Fixes for sidebar toggle on mobile */
+        #sidebarToggle {
+            background: transparent;
+            border: none;
+            color: #212529;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .avatar-placeholder {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-weight: 500;
+            overflow: hidden;
+        }
+
+        .admin-notice {
+            border-radius: 1rem;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+
+        /* Certificate Cards */
+        .certificate-card {
+            transition: all 0.3s;
+        }
+        
+        .certificate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                width: 0;
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                padding-left: 0;
+            }
+            
+            .sidebar-open .sidebar {
+                width: var(--sidebar-width);
+                transform: translateX(0);
+            }
+            
+            .sidebar-open.sidebar-collapsed .sidebar {
+                width: 70px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Preloader -->
@@ -32,39 +284,117 @@
     <!-- User Layout -->
     <div class="user-layout">
         <!-- Sidebar -->
-        <%- include('../../partials/user-sidebar') %>
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="/images/logo-white.png" alt="Organization Logo" class="img-fluid">
+                <h5 class="text-white fw-bold">
+                    <% if (user && user.is_admin === 1) { %>
+                        Admin Panel
+                    <% } else { %>
+                        User Dashboard
+                    <% } %>
+                </h5>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/user/dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/change-password">
+                        <i class="fas fa-key"></i>
+                        <span>Change Password</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/activities">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>My Activities</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/membership">
+                        <i class="fas fa-id-card"></i>
+                        <span>Membership</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/certificates">
+                        <i class="fas fa-certificate"></i>
+                        <span>Certificates</span>
+                    </a>
+                </li>
+                <% if (user && user.is_admin === 1) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/dashboard">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin Dashboard</span>
+                    </a>
+                </li>
+                <% } %>
+                <li class="nav-item mt-5">
+                    <a class="nav-link" href="/">
+                        <i class="fas fa-home"></i>
+                        <span>Back to Website</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
         
         <!-- Main Content -->
         <div class="main-content">
             <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
-                <div class="d-flex align-items-center">
-                    <button id="sidebarToggle" class="btn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h5 class="mb-0 ms-3">Dashboard Anggota</h5>
-                </div>
-                
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <% if (user.profilePicture) { %>
-                                <img src="<%= user.profilePicture %>" alt="<%= user.name %>" class="rounded-circle me-2" width="30">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div>
+                        <button id="sidebarToggle" class="btn">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <span class="ms-3 d-none d-md-inline-block fw-medium">
+                            <% if (user && user.is_admin === 1) { %>
+                                Admin Dashboard
                             <% } else { %>
-                                <div class="avatar-placeholder rounded-circle me-2 d-inline-flex align-items-center justify-content-center bg-primary text-white" style="width: 30px; height: 30px;">
-                                    <%= user.name.charAt(0).toUpperCase() %>
+                                Dashboard
+                            <% } %>
+                        </span>
+                    </div>
+                    
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownAccount" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <% if (user && user.profilePicture) { %>
+                                <img src="<%= user.profilePicture %>" alt="<%= user.name %>" class="rounded-circle me-2" width="32" height="32" style="object-fit: cover;">
+                            <% } else { %>
+                                <div class="avatar-placeholder rounded-circle me-2 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                    <span class="user-initial"><%= user.name ? user.name.charAt(0).toUpperCase() : 'U' %></span>
                                 </div>
                             <% } %>
-                            <%= user.name %>
+                            <span class="user-name"><%= user.name %></span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user me-2"></i> Profil</a></li>
-                            <li><a class="dropdown-item" href="/user/change-password"><i class="fas fa-key me-2"></i> Ubah Password</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAccount">
+                            <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/user/change-password"><i class="fas fa-key me-2"></i> Change Password</a></li>
+                            <% if (user && user.is_admin === 1) { %>
+                            <li><a class="dropdown-item" href="/admin/dashboard"><i class="fas fa-user-shield me-2"></i> Admin Dashboard</a></li>
+                            <% } %>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </nav>
             
             <!-- Dashboard Content -->
@@ -84,23 +414,43 @@
                     </div>
                 <% } %>
                 
+                <% if (user && user.is_admin === 1) { %>
+                <!-- Admin User Dashboard -->
+                <div class="admin-notice card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4 class="mb-2">Welcome, Administrator <%= user.name %>!</h4>
+                                <p class="mb-3">You're viewing your user dashboard. You can access the full admin panel with comprehensive management tools from here.</p>
+                                <a href="/admin/dashboard" class="btn btn-light mb-2">
+                                    <i class="fas fa-user-shield me-2"></i> Go to Admin Dashboard
+                                </a>
+                            </div>
+                            <div class="col-md-4 text-end d-none d-md-block">
+                                <i class="fas fa-user-shield fa-5x opacity-25"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+                
                 <!-- Welcome Card -->
                 <div class="card welcome-card mb-4 border-0 shadow-sm">
                     <div class="card-body p-4">
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h4 class="mb-1">Selamat Datang, <%= user.name %>!</h4>
-                                <p class="text-muted mb-3">Selamat datang di dashboard anggota Organisasi Indonesia. Di sini Anda dapat mengelola profil, memantau kegiatan, dan mengakses berbagai layanan.</p>
+                                <p class="text-white-50 mb-3">Selamat datang di dashboard anggota Organisasi Indonesia. Di sini Anda dapat mengelola profil, memantau kegiatan, dan mengakses berbagai layanan.</p>
                                 
                                 <div class="mb-2">
-                                    <span class="badge bg-primary me-2">Status: 
+                                    <span class="badge bg-light text-dark me-2">Status: 
                                         <% if (dashboardData && dashboardData.membershipStatus) { %>
                                             <%= dashboardData.membershipStatus %>
                                         <% } else { %>
                                             Aktif
                                         <% } %>
                                     </span>
-                                    <span class="badge bg-info">Anggota sejak: 
+                                    <span class="badge bg-light text-dark">Anggota sejak: 
                                         <% if (dashboardData && dashboardData.memberSince) { %>
                                             <%= new Date(dashboardData.memberSince).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %>
                                         <% } else { %>
@@ -109,8 +459,8 @@
                                     </span>
                                 </div>
                                 
-                                <a href="/user/profile" class="btn btn-primary btn-sm mt-2">Lihat Profil</a>
-                                <a href="#" class="btn btn-outline-primary btn-sm mt-2">Pembaruan Terbaru</a>
+                                <a href="/user/profile" class="btn btn-light btn-sm mt-2">Lihat Profil</a>
+                                <a href="#" class="btn btn-outline-light btn-sm mt-2">Pembaruan Terbaru</a>
                             </div>
                             <div class="col-md-4 text-end d-none d-md-block">
                                 <img src="/images/welcome-illustration.svg" alt="Welcome" class="welcome-illustration" width="180">

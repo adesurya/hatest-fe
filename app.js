@@ -63,8 +63,15 @@ app.post('/api/auth/login', async (req, res) => {
     const { authAPI } = require('./services/api');
     const response = await authAPI.login({ email, password });
     
-    // Store user in session
-    req.session.user = response.user;
+    // Store user in session with proper role information
+    req.session.user = {
+      id: response.user.id,
+      name: response.user.full_name,
+      email: response.user.email,
+      is_admin: response.user.is_admin,
+      role: response.user.is_admin === 1 ? 'admin' : 'user' // Explicitly set role for views
+    };
+    
     global.token = response.token;
     
     // Return JSON with user info and redirect URL

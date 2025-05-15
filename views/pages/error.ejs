@@ -1,4 +1,6 @@
-<!-- views/pages/error.ejs -->
+<!-- Error Page for 404 Not Found and other errors (continued) -->
+<!-- views/pages/error.ejs (Updated version) -->
+
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
@@ -25,9 +27,19 @@
                     <p class="lead mb-4"><%= message || 'An unexpected error has occurred.' %></p>
                     
                     <div class="error-actions">
-                        <a href="/" class="btn btn-primary me-2">
-                            <i class="fas fa-home me-2"></i> Back to Home
-                        </a>
+                        <% if (user && (user.role === 'admin' || user.is_admin === 1)) { %>
+                            <a href="/admin/dashboard" class="btn btn-primary me-2">
+                                <i class="fas fa-tachometer-alt me-2"></i> Go to Admin Dashboard
+                            </a>
+                        <% } else if (user) { %>
+                            <a href="/user/dashboard" class="btn btn-primary me-2">
+                                <i class="fas fa-tachometer-alt me-2"></i> Go to Dashboard
+                            </a>
+                        <% } else { %>
+                            <a href="/" class="btn btn-primary me-2">
+                                <i class="fas fa-home me-2"></i> Back to Home
+                            </a>
+                        <% } %>
                         <a href="/contact" class="btn btn-outline-primary">
                             <i class="fas fa-envelope me-2"></i> Contact Support
                         </a>

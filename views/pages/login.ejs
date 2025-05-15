@@ -91,16 +91,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const togglePassword = document.querySelector('.toggle-password');
     const password = document.querySelector('#password');
     
-    togglePassword.addEventListener('click', function() {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        
-        // Toggle eye icon
-        this.querySelector('i').classList.toggle('fa-eye');
-        this.querySelector('i').classList.toggle('fa-eye-slash');
-    });
+    if (togglePassword && password) {
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            // Toggle eye icon
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    }
     
-    // Function to handle API login
+    // Function to handle API login with proper role handling
     function handleApiLogin(email, password) {
         // Show loading indicator
         const loginButton = document.querySelector('#login-button');
@@ -137,15 +139,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Store token in localStorage for future API calls
                     localStorage.setItem('authToken', data.token);
                     
-                    // Store basic user info in localStorage
+                    // Store basic user info with proper role determination in localStorage
                     localStorage.setItem('user', JSON.stringify({
                         id: data.user.id,
                         name: data.user.full_name,
                         email: data.user.email,
-                        role: data.user.role
+                        is_admin: data.user.is_admin,
+                        role: data.user.is_admin === 1 ? 'admin' : 'user'
                     }));
                     
-                    // Redirect based on user role (is_admin value)
+                    // Redirect based on user role
                     if (data.user.is_admin === 1) {
                         window.location.href = '/admin/dashboard';
                     } else {

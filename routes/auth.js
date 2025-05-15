@@ -39,8 +39,15 @@ router.post('/login', async (req, res) => {
     
     const response = await authAPI.login({ email, password });
     
-    // Store user in session
-    req.session.user = response.user;
+    // Store user in session with proper role
+    req.session.user = {
+      id: response.user.id,
+      name: response.user.full_name,
+      email: response.user.email,
+      is_admin: response.user.is_admin,
+      role: response.user.is_admin === 1 ? 'admin' : 'user' // Explicitly set role for views
+    };
+    
     global.token = response.token;
     
     // Redirect based on user role
@@ -67,8 +74,15 @@ router.post('/api/login', async (req, res) => {
     
     const response = await authAPI.login({ email, password });
     
-    // Store user in session
-    req.session.user = response.user;
+    // Store user in session with proper role
+    req.session.user = {
+      id: response.user.id,
+      name: response.user.full_name,
+      email: response.user.email,
+      is_admin: response.user.is_admin,
+      role: response.user.is_admin === 1 ? 'admin' : 'user' // Explicitly set role for views
+    };
+    
     global.token = response.token;
     
     // Decide how to respond based on the Accept header
