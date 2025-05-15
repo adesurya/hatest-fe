@@ -1,4 +1,4 @@
-<!-- views/pages/user/dashboard.ejs -->
+<!-- views/pages/user/dashboard.ejs - Part 1 -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -177,18 +177,6 @@
             font-size: 24px;
         }
         
-        /* Activity Cards */
-        .activity-card {
-            transition: all 0.3s;
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-        
-        .activity-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        }
-        
         /* Welcome Card */
         .welcome-card {
             border-radius: 1rem;
@@ -196,20 +184,14 @@
             color: white;
         }
         
-        /* ID Card */
-        .id-card {
-            transition: all 0.3s;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-        
-        .id-card:hover {
-            transform: rotateY(10deg);
-        }
-        
-        .card-pattern {
-            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
-            background-size: 4px 4px;
+        /* Profile Header */
+        .profile-header {
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), #0099ff);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         /* Fixes for sidebar toggle on mobile */
@@ -241,16 +223,6 @@
             border-radius: 1rem;
             background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
-        }
-
-        /* Certificate Cards */
-        .certificate-card {
-            transition: all 0.3s;
-        }
-        
-        .certificate-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
         
         /* Responsive */
@@ -354,7 +326,6 @@
                 </li>
             </ul>
         </div>
-        
         <!-- Main Content -->
         <div class="main-content">
             <!-- Navbar -->
@@ -364,13 +335,7 @@
                         <button id="sidebarToggle" class="btn">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <span class="ms-3 d-none d-md-inline-block fw-medium">
-                            <% if (user && user.is_admin === 1) { %>
-                                Admin Dashboard
-                            <% } else { %>
-                                Dashboard
-                            <% } %>
-                        </span>
+                        <span class="ms-3 d-none d-md-inline-block fw-medium">Dashboard</span>
                     </div>
                     
                     <div class="dropdown">
@@ -382,7 +347,7 @@
                                     <span class="user-initial"><%= user.name ? user.name.charAt(0).toUpperCase() : 'U' %></span>
                                 </div>
                             <% } %>
-                            <span class="user-name"><%= user.name %></span>
+                            <span class="user-name"><%= user.name || 'User' %></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAccount">
                             <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
@@ -415,7 +380,7 @@
                 <% } %>
                 
                 <% if (user && user.is_admin === 1) { %>
-                <!-- Admin User Dashboard -->
+                <!-- Admin User Dashboard Notice -->
                 <div class="admin-notice card mb-4 border-0 shadow-sm">
                     <div class="card-body p-4">
                         <div class="row align-items-center">
@@ -468,7 +433,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <!-- Quick Stats Cards -->
                 <div class="row g-4 mb-4">
                     <div class="col-md-4">
@@ -567,7 +531,6 @@
                                                 <% } %>
                                             </p>
                                         </div>
-                                        <div class="card-pattern position-absolute top-0 end-0 w-50 h-100 opacity-10"></div>
                                     </div>
                                 </div>
                             </div>
@@ -658,7 +621,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <!-- Upcoming Activities -->
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
@@ -711,7 +673,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <img src="/images/activity-1.jpg" alt="Seminar Nasional" class="rounded me-3" width="50">
                                                     <h6 class="mb-0">Seminar Nasional Profesionalisme</h6>
-                                                </div>
+                                                    </div>
                                             </td>
                                             <td>15 Mei 2025</td>
                                             <td>Jakarta</td>
@@ -824,7 +786,6 @@
             </div>
         </div>
     </div>
-    
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -836,19 +797,87 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
             // Sidebar Toggle
             const sidebarToggle = document.getElementById('sidebarToggle');
             const userLayout = document.querySelector('.user-layout');
             
-            sidebarToggle.addEventListener('click', function() {
-                userLayout.classList.toggle('sidebar-collapsed');
-            });
+            if (sidebarToggle && userLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    userLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = userLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('user-sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('user-sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    userLayout.classList.add('sidebar-collapsed');
+                }
+            }
             
             // Initialize tooltips
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+            
+            // Handle mobile sidebar
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth < 992) {
+                    const clickedInsideSidebar = e.target.closest('.sidebar');
+                    const clickedOnToggle = e.target.closest('#sidebarToggle');
+                    
+                    if (!clickedInsideSidebar && !clickedOnToggle && userLayout.classList.contains('sidebar-open')) {
+                        userLayout.classList.remove('sidebar-open');
+                    }
+                }
+            });
+            
+            // Adjust sidebar on window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth < 992) {
+                    userLayout.classList.remove('sidebar-collapsed');
+                } else {
+                    userLayout.classList.remove('sidebar-open');
+                    
+                    // Check localStorage on resize
+                    const isCollapsed = localStorage.getItem('user-sidebar-collapsed') === 'true';
+                    if (isCollapsed) {
+                        userLayout.classList.add('sidebar-collapsed');
+                    }
+                }
+            });
+            
+            // Update user information from localStorage if available
+            const updateUserInfo = () => {
+                const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+                if (userInfo.name) {
+                    const userNameElement = document.querySelector('.user-name');
+                    if (userNameElement) {
+                        userNameElement.textContent = userInfo.name;
+                    }
+                    
+                    const userInitialElement = document.querySelector('.user-initial');
+                    if (userInitialElement && userInfo.name) {
+                        userInitialElement.textContent = userInfo.name.charAt(0).toUpperCase();
+                    }
+                }
+            };
+            
+            updateUserInfo();
         });
     </script>
 </body>
