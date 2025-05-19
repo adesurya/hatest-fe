@@ -1,0 +1,314 @@
+<!-- views/pages/admin/exams/categories/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../../partials/admin/sidebar', { path: '/admin/exams/categories' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Kategori Ujian' : 'Tambah Kategori Ujian Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/exams/categories" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit Kategori Ujian' : 'Tambah Kategori Ujian Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi kategori ujian yang sudah ada.' : 'Tambahkan kategori ujian baru ke dalam sistem.' %></p>
+                </div>
+                
+                <!-- Category Form -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="form-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-tags me-2"></i> Informasi Kategori</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <form action="<%= isEdit ? '/admin/exams/categories/' + category.id : '/admin/exams/categories' %>" method="POST" id="categoryForm" class="needs-validation" novalidate>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label required-field">Nama Kategori</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="<%= category && category.name ? category.name : '' %>" required>
+                                        <div class="invalid-feedback">
+                                            Nama kategori harus diisi.
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="description" class="form-label required-field">Deskripsi</label>
+                                        <textarea class="form-control" id="description" name="description" rows="5" required><%= category && category.description ? category.description : '' %></textarea>
+                                        <div class="invalid-feedback">
+                                            Deskripsi kategori harus diisi.
+                                        </div>
+                                        <div class="form-text help-text">
+                                            Jelaskan dengan singkat mengenai kategori ujian ini, tujuan, dan informasi relevan lainnya.
+                                        </div>
+                                    </div>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="/admin/exams/categories" class="btn btn-outline-secondary me-md-2">
+                                            <i class="fas fa-times me-2"></i> Batal
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Kategori' : 'Simpan Kategori' %>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <!-- Help Card -->
+                        <div class="form-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="note-card mb-4">
+                                    <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                    <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Kategori ujian akan digunakan untuk mengelompokkan ujian-ujian yang sejenis.</p>
+                                </div>
+                                
+                                <h6 class="mb-2">Praktik Terbaik</h6>
+                                <ul class="small ps-3 mb-0">
+                                    <li class="mb-2">Gunakan nama kategori yang jelas dan deskriptif</li>
+                                    <li class="mb-2">Berikan deskripsi yang informatif mengenai jenis ujian yang masuk dalam kategori ini</li>
+                                    <li>Hindari nama kategori yang terlalu umum atau terlalu spesifik</li>
+                                </ul>
+                                
+                                <% if (isEdit && category && category.exam_count && category.exam_count > 0) { %>
+                                    <div class="alert alert-warning mt-4">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> Kategori ini memiliki <strong><%= category.exam_count %></strong> ujian terkait. Perubahan pada nama kategori akan memengaruhi ujian-ujian tersebut.
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Form validation
+            const form = document.getElementById('categoryForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

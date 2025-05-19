@@ -1,0 +1,455 @@
+<!-- views/pages/admin/medical-faculties/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/medical-faculties' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Fakultas Medis' : 'Tambah Fakultas Medis Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/medical-faculties" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit Fakultas Medis' : 'Tambah Fakultas Medis Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi fakultas medis yang sudah ada.' : 'Tambahkan fakultas medis baru ke dalam sistem.' %></p>
+                </div>
+                
+                <!-- Medical Faculty Form -->
+                <form action="<%= isEdit ? '/admin/medical-faculties/' + faculty.id : '/admin/medical-faculties' %>" method="POST" id="facultyForm" class="needs-validation" novalidate>
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Basic Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Dasar</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="faculty_name" class="form-label required-field">Nama Fakultas</label>
+                                            <input type="text" class="form-control" id="faculty_name" name="faculty_name" value="<%= faculty ? faculty.faculty_name : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Nama fakultas harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="university_name" class="form-label required-field">Nama Universitas</label>
+                                            <input type="text" class="form-control" id="university_name" name="university_name" value="<%= faculty ? faculty.university_name : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Nama universitas harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="location" class="form-label required-field">Lokasi</label>
+                                            <input type="text" class="form-control" id="location" name="location" value="<%= faculty ? faculty.location : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Lokasi harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="established_year" class="form-label required-field">Tahun Berdiri</label>
+                                            <input type="number" class="form-control" id="established_year" name="established_year" value="<%= faculty ? faculty.established_year : '' %>" min="1800" max="<%= new Date().getFullYear() %>" required>
+                                            <div class="invalid-feedback">
+                                                Tahun berdiri harus diisi dengan angka valid.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Accreditation & Statistics -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-award me-2"></i> Akreditasi & Statistik</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="accreditation" class="form-label required-field">Akreditasi</label>
+                                            <select class="form-select" id="accreditation" name="accreditation" required>
+                                                <option value="" disabled <%= !faculty ? 'selected' : '' %>>Pilih Akreditasi</option>
+                                                <option value="A" <%= faculty && faculty.accreditation === 'A' ? 'selected' : '' %>>A</option>
+                                                <option value="B" <%= faculty && faculty.accreditation === 'B' ? 'selected' : '' %>>B</option>
+                                                <option value="C" <%= faculty && faculty.accreditation === 'C' ? 'selected' : '' %>>C</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Akreditasi harus dipilih.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="internal_grade" class="form-label required-field">Grade Internal</label>
+                                            <select class="form-select" id="internal_grade" name="internal_grade" required>
+                                                <option value="" disabled <%= !faculty ? 'selected' : '' %>>Pilih Grade</option>
+                                                <option value="A+" <%= faculty && faculty.internal_grade === 'A+' ? 'selected' : '' %>>A+</option>
+                                                <option value="A" <%= faculty && faculty.internal_grade === 'A' ? 'selected' : '' %>>A</option>
+                                                <option value="A-" <%= faculty && faculty.internal_grade === 'A-' ? 'selected' : '' %>>A-</option>
+                                                <option value="B+" <%= faculty && faculty.internal_grade === 'B+' ? 'selected' : '' %>>B+</option>
+                                                <option value="B" <%= faculty && faculty.internal_grade === 'B' ? 'selected' : '' %>>B</option>
+                                                <option value="B-" <%= faculty && faculty.internal_grade === 'B-' ? 'selected' : '' %>>B-</option>
+                                                <option value="C+" <%= faculty && faculty.internal_grade === 'C+' ? 'selected' : '' %>>C+</option>
+                                                <option value="C" <%= faculty && faculty.internal_grade === 'C' ? 'selected' : '' %>>C</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Grade internal harus dipilih.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="active_students" class="form-label required-field">Jumlah Mahasiswa Aktif</label>
+                                            <input type="number" class="form-control" id="active_students" name="active_students" value="<%= faculty ? faculty.active_students : '' %>" min="0" required>
+                                            <div class="invalid-feedback">
+                                                Jumlah mahasiswa aktif harus diisi dengan angka valid.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contact Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-address-book me-2"></i> Informasi Kontak</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="website" class="form-label required-field">Website</label>
+                                            <input type="url" class="form-control" id="website" name="website" value="<%= faculty ? faculty.website : '' %>" 
+                                                placeholder="https://example.com" 
+                                                pattern="https?://.+"
+                                                required>
+                                            <div class="invalid-feedback">
+                                                Website harus diisi dengan format URL yang valid (diawali dengan http:// atau https://).
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="contact_info" class="form-label required-field">Kontak</label>
+                                            <input type="text" class="form-control" id="contact_info" name="contact_info" value="<%= faculty ? faculty.contact_info : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Informasi kontak harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label for="notes" class="form-label">Catatan</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Masukkan catatan atau informasi tambahan tentang fakultas..."><%= faculty ? faculty.notes : '' %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Help Card -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="note-card mb-4">
+                                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                        <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Pastikan semua informasi terisi dengan benar untuk memudahkan pengelolaan data fakultas.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Panduan Akreditasi</h6>
+                                        <ul class="small ps-3 mb-0">
+                                            <li class="mb-2">Akreditasi <strong>A</strong>: Kualitas sangat baik</li>
+                                            <li class="mb-2">Akreditasi <strong>B</strong>: Kualitas baik</li>
+                                            <li>Akreditasi <strong>C</strong>: Kualitas cukup</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Panduan Grade Internal</h6>
+                                        <p class="small mb-0">Grade internal adalah penilaian berdasarkan standar institusi. Gunakan grade yang sesuai dengan kebijakan penilaian yang berlaku saat ini.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Data' : 'Simpan Data' %>
+                                    </button>
+                                    <a href="/admin/medical-faculties" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Form validation
+            const form = document.getElementById('facultyForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+            
+            // URL validation for website field
+            const websiteField = document.getElementById('website');
+            if (websiteField) {
+                websiteField.addEventListener('input', function() {
+                    // Add https:// prefix if not present
+                    if (this.value && !this.value.match(/^https?:\/\//)) {
+                        this.value = 'https://' + this.value;
+                    }
+                });
+            }
+            
+            // Number validation for active_students
+            const activeStudentsField = document.getElementById('active_students');
+            if (activeStudentsField) {
+                activeStudentsField.addEventListener('input', function() {
+                    // Allow only positive integers
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+            
+            // Year validation for established_year
+            const establishedYearField = document.getElementById('established_year');
+            if (establishedYearField) {
+                establishedYearField.addEventListener('input', function() {
+                    // Allow only positive integers
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Validate year range
+                    const yearValue = parseInt(this.value);
+                    const currentYear = new Date().getFullYear();
+                    
+                    if (yearValue > currentYear) {
+                        this.value = currentYear;
+                    } else if (yearValue < 1800) {
+                        this.setCustomValidity('Tahun berdiri tidak boleh kurang dari 1800');
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                });
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!-- views/pages/admin/webinars/user-points.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* CSS for user points page */
+        .user-header {
+            background: linear-gradient(to right, #4e73df, #36b9cc);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 200 200'%3E%3Cpath fill='%23ffffff' fill-opacity='0.1' d='M-13,20 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M21,20 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M55,20 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M89,20 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M123,20 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M157,20 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M191,20 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M-13,54 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M21,54 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M55,54 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M89,54 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M123,54 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M157,54 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M191,54 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M-13,88 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M21,88 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M55,88 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M89,88 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M123,88 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M157,88 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M191,88 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M-13,122 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M21,122 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M55,122 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M89,122 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M123,122 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M157,122 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M191,122 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M-13,156 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M21,156 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M55,156 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M89,156 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M123,156 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M157,156 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0 M191,156 a1,1 0 0,0 26,0 a1,1 0 0,0 -26,0'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            width: 200px;
+            height: 200px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .avatar-placeholder-lg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 2rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            margin-right: 1.5rem;
+        }
+        
+        .points-total {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .points-icon {
+            font-size: 2rem;
+            color: #f6c23e;
+            margin-right: 0.75rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .points-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .points-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .points-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .points-history-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e3e6f0;
+            transition: all 0.2s;
+        }
+        
+        .points-history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .points-history-item:hover {
+            background-color: #f8f9fc;
+        }
+        
+        .points-badge {
+            background-color: #fff3e0;
+            color: #e65100;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .points-badge i {
+            margin-right: 5px;
+            color: #f6c23e;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .empty-history i {
+            font-size: 4rem;
+            color: #d1d3e2;
+            margin-bottom: 1.5rem;
+        }
+        
+        .date-badge {
+            font-size: 0.75rem;
+            color: #858796;
+            display: flex;
+            align-items: center;
+        }
+        
+        .date-badge i {
+            margin-right: 5px;
+        }
+        
+        .webinar-link {
+            color: #4e73df;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .webinar-link:hover {
+            color: #2e59d9;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/webinars' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Detail Poin Pengguna</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Points Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/webinars/points/leaderboard" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali ke Leaderboard
+                        </a>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPointsModal">
+                            <i class="fas fa-plus-circle me-2"></i> Tambah Poin Bonus
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- User Header -->
+                <div class="user-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-placeholder-lg">
+                                    <% if (typeof pointsRecords !== 'undefined' && pointsRecords.length > 0 && pointsRecords[0].user_name) { %>
+                                        <%= pointsRecords[0].user_name.charAt(0).toUpperCase() %>
+                                    <% } else { %>
+                                        U
+                                    <% } %>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0">
+                                        <% if (typeof pointsRecords !== 'undefined' && pointsRecords.length > 0 && pointsRecords[0].user_name) { %>
+                                            <%= pointsRecords[0].user_name %>
+                                        <% } else { %>
+                                            User ID: <%= userId %>
+                                        <% } %>
+                                    </h4>
+                                    <p class="mb-0 opacity-75">ID Pengguna: <%= userId %></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="points-total">
+                                <div class="points-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div>
+                                    <div class="points-value"><%= totalPoints %> Poin</div>
+                                    <small class="opacity-75">
+                                        <% if (lastEarnedDate) { %>
+                                            Terakhir diperoleh pada <%= new Date(lastEarnedDate).toLocaleDateString('id-ID', { 
+                                                day: 'numeric', 
+                                                month: 'long', 
+                                                year: 'numeric' 
+                                            }) %>
+                                        <% } else { %>
+                                            Belum ada poin
+                                        <% } %>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Points History -->
+                <div class="points-card">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0"><i class="fas fa-history me-2"></i> Riwayat Poin</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <% if (typeof pointsRecords !== 'undefined' && pointsRecords.length > 0) { %>
+                            <% pointsRecords.forEach(record => { %>
+                                <div class="points-history-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-7">
+                                            <div class="d-flex align-items-start flex-column">
+                                                <% if (record.event_name) { %>
+                                                    <h6 class="mb-1">
+                                                        <a href="/admin/webinars/<%= record.event_id %>" class="webinar-link">
+                                                            <%= record.event_name %>
+                                                        </a>
+                                                    </h6>
+                                                <% } %>
+                                                <p class="mb-1"><%= record.notes || 'Poin dari mengikuti webinar' %></p>
+                                                <span class="date-badge">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <%= new Date(record.earned_date).toLocaleDateString('id-ID', { 
+                                                        day: 'numeric', 
+                                                        month: 'long', 
+                                                        year: 'numeric',
+                                                        hour: 'numeric',
+                                                        minute: 'numeric'
+                                                    }) %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 text-md-center my-2 my-md-0">
+                                            <span class="points-badge">
+                                                <i class="fas fa-trophy"></i>
+                                                <%= record.points %> Poin
+                                            </span>
+                                        </div>
+                                        <div class="col-md-2 text-end">
+                                            <button type="button" class="btn btn-sm btn-light action-btn delete-points" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deletePointsModal"
+                                                    data-point-id="<%= record.id %>"
+                                                    data-points="<%= record.points %>"
+                                                    title="Hapus Poin">
+                                                <i class="fas fa-trash-alt text-danger"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="empty-history">
+                                <i class="fas fa-trophy"></i>
+                                <h5>Belum Ada Poin</h5>
+                                <p class="text-muted">Pengguna ini belum mendapatkan poin dari webinar.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Points Modal -->
+    <div class="modal fade" id="addPointsModal" tabindex="-1" aria-labelledby="addPointsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPointsModalLabel">Tambah Poin Bonus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/admin/webinars/points/add" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="add_points" class="form-label">Jumlah Poin</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-trophy text-warning"></i></span>
+                                <input type="number" class="form-control" id="add_points" name="points" min="1" value="10" required>
+                            </div>
+                            <div class="form-text">Jumlah poin bonus yang akan ditambahkan.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="event_id" class="form-label">Webinar Terkait</label>
+                            <select class="form-select" id="event_id" name="event_id" required>
+                                <% if (typeof pointsRecords !== 'undefined' && pointsRecords.length > 0) { %>
+                                    <% 
+                                        // Create a unique list of events
+                                        const events = [];
+                                        const eventIds = new Set();
+                                        
+                                        pointsRecords.forEach(record => {
+                                            if (record.event_id && !eventIds.has(record.event_id)) {
+                                                events.push({
+                                                    id: record.event_id,
+                                                    name: record.event_name
+                                                });
+                                                eventIds.add(record.event_id);
+                                            }
+                                        });
+                                        
+                                        events.forEach(event => { 
+                                    %>
+                                        <option value="<%= event.id %>"><%= event.name %></option>
+                                    <% }); %>
+                                <% } else { %>
+                                    <option value="" disabled>Tidak ada webinar yang diikuti</option>
+                                <% } %>
+                            </select>
+                            <div class="form-text">Pilih webinar terkait dengan poin bonus ini.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Catatan</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Masukkan catatan atau alasan penambahan poin...">Bonus points for active participation</textarea>
+                            <div class="form-text">Berikan catatan mengapa poin bonus diberikan.</div>
+                        </div>
+                        <input type="hidden" name="user_id" value="<%= userId %>">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Tambah Poin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Points Modal -->
+    <div class="modal fade" id="deletePointsModal" tabindex="-1" aria-labelledby="deletePointsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deletePointsModalLabel">Konfirmasi Hapus Poin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus <strong><span id="pointsToDelete">0</span> poin</strong> ini?</p>
+                    <p class="text-danger mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="deletePointsForm" action="" method="POST">
+                        <input type="hidden" name="user_id" value="<%= userId %>">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Handle delete points modal
+            const deleteButtons = document.querySelectorAll('.delete-points');
+            if (deleteButtons.length) {
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const pointId = this.getAttribute('data-point-id');
+                        const points = this.getAttribute('data-points');
+                        
+                        document.getElementById('pointsToDelete').textContent = points;
+                        document.getElementById('deletePointsForm').action = `/admin/webinars/points/delete/${pointId}`;
+                    });
+                });
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

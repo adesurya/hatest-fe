@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const adminRouter = require('./routes/admin');
 const userRouter = require('./routes/user');
+const adminStats = require('./middleware/admin-stats');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(adminStats);
 
 // Session configuration
 app.use(session({
@@ -91,11 +93,79 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+app.get('/api/doctors', async (req, res) => {
+  try {
+    // Get query parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 100; // Fetch more doctors for the map
+    const search = req.query.search || '';
+    
+    // Import doctors API here to avoid circular dependencies
+    const { doctorsAPI } = require('./services/api');
+    
+    // Fetch doctors with locations
+    const response = await doctorsAPI.getDoctors(page, limit, search);
+    
+    // Return JSON with doctors data
+    return res.status(200).json({
+      success: true,
+      doctors: response.doctors || [],
+      pagination: response.pagination || {
+        total: response.doctors ? response.doctors.length : 0,
+        totalPages: 1,
+        currentPage: 1,
+        limit: limit
+      }
+    });
+  } catch (err) {
+    console.error('Doctors API Error:', err);
+    
+    return res.status(500).json({ 
+      success: false, 
+      message: err.message || 'Failed to fetch doctors data' 
+    });
+  }
+});
+
+
+
 // Web routes
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
 app.use('/user', userRouter);
+
+
+// Tambahkan route khusus untuk dokumen dan gambar di berbagai lokasi
+// Ini memungkinkan frontend untuk mengakses file dari berbagai path
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+app.use('/uploads/profiles', express.static(path.join(__dirname, 'public/uploads/profiles')));
+app.use('/uploads/documents', express.static(path.join(__dirname, 'public/uploads/documents')));
+
+// Route khusus untuk file yang mungkin terletak di tempat lain di sistem
+app.get('/files/*', (req, res) => {
+    // Ambil path dari URL
+    const requestedFile = req.params[0];
+    
+    // Coba cari file di berbagai lokasi
+    const possibleLocations = [
+        path.join(__dirname, 'public/uploads', requestedFile),
+        path.join(__dirname, 'public/uploads/dokter-muda/profiles', requestedFile),
+        path.join(__dirname, 'public/uploads/dokter-muda/documents', requestedFile),
+        path.join(__dirname, 'public', requestedFile)
+    ];
+    
+    // Cek tiap lokasi dan kirimkan file jika ditemukan
+    for (const location of possibleLocations) {
+        if (fs.existsSync(location)) {
+            return res.sendFile(location);
+        }
+    }
+    
+    // Jika tidak ditemukan, kirim 404
+    res.status(404).send('File tidak ditemukan');
+});
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {

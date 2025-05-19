@@ -1,0 +1,629 @@
+<!-- views/pages/admin/benefits/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+        
+        .icon-preview {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background-color: #f8f9fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #4e73df;
+            margin: 10px 0;
+        }
+        
+        .icon-option {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            margin: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #f8f9fc;
+            transition: all 0.2s;
+        }
+        
+        .icon-option:hover {
+            background-color: #e3e6f0;
+        }
+        
+        .icon-option.selected {
+            background-color: #4e73df;
+            color: white;
+        }
+        
+        .custom-switch {
+            padding-left: 2.5rem;
+        }
+        
+        .form-check-input {
+            width: 2.5em;
+            height: 1.25em;
+        }
+        
+        .form-check-input:checked {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .form-check-label {
+            margin-left: 10px;
+            font-weight: 500;
+        }
+        
+        .character-counter {
+            font-size: 0.75rem;
+            color: #6e707e;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .text-limit-reached {
+            color: #e74a3b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/benefits' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Manfaat Organisasi' : 'Tambah Manfaat Organisasi Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/benefits" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit Manfaat Organisasi' : 'Tambah Manfaat Organisasi Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi manfaat organisasi yang sudah ada.' : 'Tambahkan manfaat organisasi baru ke dalam sistem.' %></p>
+                </div>
+                
+                <!-- Benefit Form -->
+                <form action="<%= isEdit ? '/admin/benefits/' + benefit.id : '/admin/benefits' %>" method="POST" id="benefitForm" class="needs-validation" novalidate>
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Basic Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Manfaat</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="mb-4">
+                                        <label for="title" class="form-label required-field">Judul Manfaat</label>
+                                        <input type="text" class="form-control" id="title" name="title" 
+                                            value="<%= benefit ? benefit.title : '' %>" 
+                                            maxlength="100"
+                                            placeholder="Masukkan judul manfaat organisasi"
+                                            required>
+                                        <div class="character-counter">
+                                            <span id="titleCharCount">0</span>/100 karakter
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Judul manfaat harus diisi.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="description" class="form-label required-field">Deskripsi</label>
+                                        <textarea class="form-control" id="description" name="description" 
+                                            rows="4" 
+                                            maxlength="500" 
+                                            placeholder="Jelaskan detail manfaat yang ditawarkan oleh organisasi"
+                                            required><%= benefit ? benefit.description : '' %></textarea>
+                                        <div class="character-counter">
+                                            <span id="descriptionCharCount">0</span>/500 karakter
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Deskripsi manfaat harus diisi.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="icon" class="form-label required-field">Ikon</label>
+                                        <input type="hidden" id="icon" name="icon" value="<%= benefit ? benefit.icon : 'gift' %>" required>
+                                        
+                                        <div class="icon-preview mb-3" id="iconPreview">
+                                            <i class="fas fa-gift" id="previewIcon"></i>
+                                        </div>
+                                        
+                                        <div>
+                                            <div class="icon-option" data-icon="gift" title="Gift">
+                                                <i class="fas fa-gift"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="certificate" title="Certificate">
+                                                <i class="fas fa-certificate"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="network" title="Network">
+                                                <i class="fas fa-network-wired"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="research" title="Research">
+                                                <i class="fas fa-microscope"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="education" title="Education">
+                                                <i class="fas fa-graduation-cap"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="discount" title="Discount">
+                                                <i class="fas fa-tags"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="protection" title="Protection">
+                                                <i class="fas fa-shield-alt"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="health" title="Health">
+                                                <i class="fas fa-heartbeat"></i>
+                                            </div>
+                                            <div class="icon-option" data-icon="award" title="Award">
+                                                <i class="fas fa-award"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="invalid-feedback">
+                                            Ikon harus dipilih.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Display Settings -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-cog me-2"></i> Pengaturan Tampilan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="sort_order" class="form-label required-field">Urutan Tampilan</label>
+                                            <input type="number" class="form-control" id="sort_order" name="sort_order" 
+                                                value="<%= benefit ? benefit.sort_order : 0 %>" 
+                                                min="0" 
+                                                placeholder="Masukkan angka urutan (0 = paling awal)"
+                                                required>
+                                            <div class="help-text mt-1">
+                                                Angka kecil akan ditampilkan terlebih dahulu
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Urutan tampilan harus diisi dengan angka.
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3 d-flex align-items-center">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                                    <%= benefit && benefit.is_active ? 'checked' : '' %>>
+                                                <label class="form-check-label" for="is_active">Status Aktif</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Help Card -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="note-card mb-4">
+                                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                        <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Pastikan semua informasi terisi dengan benar untuk tampilan yang optimal pada halaman utama.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Panduan Ikon</h6>
+                                        <p class="small mb-0">Pilih ikon yang paling merepresentasikan manfaat yang ditawarkan. Ikon akan ditampilkan di halaman utama untuk menarik perhatian pengunjung.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Urutan Tampilan</h6>
+                                        <p class="small mb-0">Urutan tampilan menentukan posisi manfaat pada halaman utama. Semakin kecil angka, semakin awal manfaat akan ditampilkan.</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <h6 class="mb-2">Status Aktif</h6>
+                                        <p class="small mb-0">Hanya manfaat dengan status aktif yang akan ditampilkan di halaman utama. Non-aktifkan manfaat jika tidak ingin ditampilkan tanpa harus menghapusnya.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Preview Card -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-eye me-2"></i> Pratinjau</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="benefit-preview">
+                                        <div class="text-center mb-3">
+                                            <div class="d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; border-radius: 20px; background-color: rgba(78, 115, 223, 0.1);">
+                                                <i class="fas fa-gift" id="previewCardIcon" style="font-size: 40px; color: #4e73df;"></i>
+                                            </div>
+                                        </div>
+                                        <h5 class="text-center mb-2" id="previewTitle"><%= benefit ? benefit.title : 'Judul Manfaat' %></h5>
+                                        <p class="text-center text-muted small" id="previewDescription"><%= benefit ? benefit.description : 'Deskripsi manfaat akan ditampilkan di sini...' %></p>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <span class="badge <%= benefit && benefit.is_active ? 'bg-success' : 'bg-secondary' %>" id="previewStatus">
+                                            <%= benefit && benefit.is_active ? 'Aktif' : 'Tidak Aktif' %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Manfaat' : 'Simpan Manfaat' %>
+                                    </button>
+                                    <a href="/admin/benefits" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Form validation
+            const form = document.getElementById('benefitForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+            
+            // Icon selection
+            const iconOptions = document.querySelectorAll('.icon-option');
+            const iconInput = document.getElementById('icon');
+            const previewIcon = document.getElementById('previewIcon');
+            const previewCardIcon = document.getElementById('previewCardIcon');
+            
+            // Set initial selected icon
+            const currentIcon = iconInput.value;
+            iconOptions.forEach(option => {
+                if (option.getAttribute('data-icon') === currentIcon) {
+                    option.classList.add('selected');
+                    
+                    // Map icon name to Font Awesome class
+                    let iconClass = 'fa-gift'; // Default
+                    if (currentIcon === 'research') iconClass = 'fa-microscope';
+                    else if (currentIcon === 'network') iconClass = 'fa-network-wired';
+                    else if (currentIcon === 'certificate') iconClass = 'fa-certificate';
+                    else if (currentIcon === 'education') iconClass = 'fa-graduation-cap';
+                    else if (currentIcon === 'discount') iconClass = 'fa-tags';
+                    else if (currentIcon === 'protection') iconClass = 'fa-shield-alt';
+                    else if (currentIcon === 'health') iconClass = 'fa-heartbeat';
+                    else if (currentIcon === 'award') iconClass = 'fa-award';
+                    
+                    // Update preview icons
+                    previewIcon.className = `fas ${iconClass}`;
+                    previewCardIcon.className = `fas ${iconClass}`;
+                }
+            });
+            
+            iconOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    iconOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Get icon value and update hidden input
+                    const iconValue = this.getAttribute('data-icon');
+                    iconInput.value = iconValue;
+                    
+                    // Map icon name to Font Awesome class
+                    let iconClass = 'fa-gift'; // Default
+                    if (iconValue === 'research') iconClass = 'fa-microscope';
+                    else if (iconValue === 'network') iconClass = 'fa-network-wired';
+                    else if (iconValue === 'certificate') iconClass = 'fa-certificate';
+                    else if (iconValue === 'education') iconClass = 'fa-graduation-cap';
+                    else if (iconValue === 'discount') iconClass = 'fa-tags';
+                    else if (iconValue === 'protection') iconClass = 'fa-shield-alt';
+                    else if (iconValue === 'health') iconClass = 'fa-heartbeat';
+                    else if (iconValue === 'award') iconClass = 'fa-award';
+                    
+                    // Update preview icons
+                    previewIcon.className = `fas ${iconClass}`;
+                    previewCardIcon.className = `fas ${iconClass}`;
+                });
+            });
+            
+            // Character counters
+            const titleInput = document.getElementById('title');
+            const titleCharCount = document.getElementById('titleCharCount');
+            const descriptionInput = document.getElementById('description');
+            const descriptionCharCount = document.getElementById('descriptionCharCount');
+            
+            if (titleInput && titleCharCount) {
+                // Initial count
+                titleCharCount.textContent = titleInput.value.length;
+                
+                // Update on input
+                titleInput.addEventListener('input', function() {
+                    const count = this.value.length;
+                    titleCharCount.textContent = count;
+                    
+                    // Update preview
+                    const previewTitle = document.getElementById('previewTitle');
+                    if (previewTitle) {
+                        previewTitle.textContent = this.value || 'Judul Manfaat';
+                    }
+                    
+                    // Highlight counter if approaching limit
+                    if (count > 90) {
+                        titleCharCount.classList.add('text-limit-reached');
+                    } else {
+                        titleCharCount.classList.remove('text-limit-reached');
+                    }
+                });
+            }
+            
+            if (descriptionInput && descriptionCharCount) {
+                // Initial count
+                descriptionCharCount.textContent = descriptionInput.value.length;
+                
+                // Update on input
+                descriptionInput.addEventListener('input', function() {
+                    const count = this.value.length;
+                    descriptionCharCount.textContent = count;
+                    
+                    // Update preview
+                    const previewDescription = document.getElementById('previewDescription');
+                    if (previewDescription) {
+                        previewDescription.textContent = this.value || 'Deskripsi manfaat akan ditampilkan di sini...';
+                    }
+                    
+                    // Highlight counter if approaching limit
+                    if (count > 450) {
+                        descriptionCharCount.classList.add('text-limit-reached');
+                    } else {
+                        descriptionCharCount.classList.remove('text-limit-reached');
+                    }
+                });
+            }
+            
+            // Active status toggle
+            const isActiveSwitch = document.getElementById('is_active');
+            const previewStatus = document.getElementById('previewStatus');
+            
+            if (isActiveSwitch && previewStatus) {
+                isActiveSwitch.addEventListener('change', function() {
+                    if (this.checked) {
+                        previewStatus.textContent = 'Aktif';
+                        previewStatus.classList.remove('bg-secondary');
+                        previewStatus.classList.add('bg-success');
+                    } else {
+                        previewStatus.textContent = 'Tidak Aktif';
+                        previewStatus.classList.remove('bg-success');
+                        previewStatus.classList.add('bg-secondary');
+                    }
+                });
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

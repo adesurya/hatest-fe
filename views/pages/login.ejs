@@ -9,7 +9,7 @@
             <div class="col-lg-5">
                 <div class="login-card bg-white p-4 p-md-5 rounded-3 shadow">
                     <div class="text-center mb-4">
-                        <img src="/images/logo.png" alt="Organization Logo" class="img-fluid mb-4" style="height: 70px;">
+                        <img src="/images/Logo-KDI.png" alt="Organization Logo" class="img-fluid mb-4" style="height: 70px;">
                         <h2 class="fw-bold">Masuk ke Akun Anda</h2>
                         <p class="text-muted">Masukkan email dan password Anda untuk melanjutkan</p>
                     </div>
@@ -87,23 +87,75 @@
 <!-- Include the API login script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Toggle password visibility
-    const togglePassword = document.querySelector('.toggle-password');
-    const password = document.querySelector('#password');
+    // Check for saved credentials and autofill if "remember me" was checked
+    checkSavedCredentials();
     
-    if (togglePassword && password) {
-        togglePassword.addEventListener('click', function() {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
+    // Toggle password visibility - Completely rewritten implementation
+    function setupPasswordToggle() {
+        const toggleBtn = document.querySelector('.toggle-password');
+        const passwordField = document.getElementById('password');
+        
+        if (!toggleBtn || !passwordField) {
+            console.error('Password toggle elements not found');
+            return;
+        }
+        
+        // Direct click handler without any fancy logic
+        toggleBtn.onclick = function() {
+            // Toggle between password and text type
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.querySelector('i').classList.remove('fa-eye');
+                toggleBtn.querySelector('i').classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.querySelector('i').classList.remove('fa-eye-slash');
+                toggleBtn.querySelector('i').classList.add('fa-eye');
+            }
             
-            // Toggle eye icon
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
-        });
+            // Prevent the button from submitting the form
+            return false;
+        };
+    }
+    
+    // Run setup once DOM is fully loaded
+    setupPasswordToggle();
+    
+    // Function to check for saved credentials
+    function checkSavedCredentials() {
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        const savedPassword = localStorage.getItem('rememberedPassword');
+        const rememberMe = localStorage.getItem('rememberedLogin');
+        
+        if (rememberMe === 'true' && savedEmail && savedPassword) {
+            const emailField = document.getElementById('email');
+            const passwordField = document.getElementById('password');
+            const rememberMeCheckbox = document.getElementById('rememberMe');
+            
+            if (emailField && passwordField && rememberMeCheckbox) {
+                emailField.value = savedEmail;
+                passwordField.value = savedPassword;
+                rememberMeCheckbox.checked = true;
+            }
+        }
+    }
+    
+    // Function to save credentials if remember me is checked
+    function saveCredentials(email, password, remember) {
+        if (remember) {
+            localStorage.setItem('rememberedEmail', email);
+            localStorage.setItem('rememberedPassword', password);
+            localStorage.setItem('rememberedLogin', 'true');
+        } else {
+            // Clear saved credentials if remember me is unchecked
+            localStorage.removeItem('rememberedEmail');
+            localStorage.removeItem('rememberedPassword');
+            localStorage.removeItem('rememberedLogin');
+        }
     }
     
     // Function to handle API login with proper role handling
-    function handleApiLogin(email, password) {
+    function handleApiLogin(email, password, remember) {
         // Show loading indicator
         const loginButton = document.querySelector('#login-button');
         if (loginButton) {
@@ -120,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 email: email,
-                password: password
+                password: password,
+                remember: remember
             })
         };
 
@@ -136,6 +189,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 if (data.success) {
+                    // Handle Remember Me functionality
+                    const rememberMeChecked = document.getElementById('rememberMe').checked;
+                    saveCredentials(email, password, rememberMeChecked);
+                    
                     // Store token in localStorage for future API calls
                     localStorage.setItem('authToken', data.token);
                     
@@ -163,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Reset login button
                 if (loginButton) {
-                    loginButton.innerHTML = 'Login';
+                    loginButton.innerHTML = 'Masuk';
                     loginButton.disabled = false;
                 }
                 
@@ -185,7 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            handleApiLogin(email, password);
+            const remember = document.getElementById('rememberMe').checked;
+            handleApiLogin(email, password, remember);
         });
     }
 });

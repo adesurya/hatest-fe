@@ -1,0 +1,598 @@
+<!-- views/pages/admin/map.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Styles for doctor map */
+        #doctor-map {
+            height: 75vh;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            z-index: 0;
+        }
+        
+        .map-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .map-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .search-bar {
+            border-radius: 50px;
+            padding-left: 20px;
+            padding-right: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .search-bar:focus {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .doctor-counter {
+            background-color: #4e73df;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .verified {
+            background-color: #28a745;
+        }
+        
+        .pending {
+            background-color: #ffc107;
+        }
+        
+        .rejected {
+            background-color: #dc3545;
+        }
+        
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .custom-popup .leaflet-popup-content {
+            margin: 0;
+            width: 280px !important;
+        }
+        
+        .custom-popup .leaflet-popup-tip {
+            background: white;
+        }
+        
+        .popup-header {
+            background: #4e73df;
+            color: white;
+            padding: 10px 15px;
+            font-weight: 600;
+        }
+        
+        .popup-content {
+            padding: 15px;
+        }
+        
+        .popup-info {
+            margin-bottom: 8px;
+        }
+        
+        .popup-info i {
+            width: 20px;
+            margin-right: 5px;
+            color: #4e73df;
+        }
+        
+        /* Loading spinner */
+        .spinner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            border-radius: 12px;
+        }
+        
+        .spinner-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .spinner-border {
+            color: #4e73df;
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Include sidebar partial -->
+        <%- include('../../partials/admin/sidebar', { path: '/admin/map' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Map Dokter</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Map Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Page Header -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h4 class="mb-0">Peta Lokasi Praktek Dokter</h4>
+                                <p class="text-muted mb-0">Visualisasi sebaran lokasi praktek dokter</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <div class="d-flex align-items-center justify-content-md-end">
+                                    <button id="refreshMap" class="btn btn-outline-primary me-2">
+                                        <i class="fas fa-sync-alt me-1"></i> Refresh Data
+                                    </button>
+                                    <span class="ms-2">Total: <span class="doctor-counter" id="doctorCounter">0</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search & Map -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="map-card mb-4">
+                            <div class="card-header py-3">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i> Peta Sebaran Dokter</h6>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white">
+                                                <i class="fas fa-search text-muted"></i>
+                                            </span>
+                                            <input type="text" id="doctorSearch" class="form-control search-bar" placeholder="Cari dokter berdasarkan nama...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0 position-relative">
+                                <!-- Map Container -->
+                                <div id="doctor-map"></div>
+                                
+                                <!-- Map Legend -->
+                                <div class="legend">
+                                    <div class="legend-item">
+                                        <div class="legend-color verified"></div>
+                                        <span>Terverifikasi</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color pending"></div>
+                                        <span>Belum Terverifikasi</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color rejected"></div>
+                                        <span>Ditolak</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Loading Spinner -->
+                                <div class="spinner-overlay" id="mapSpinner">
+                                    <div class="spinner-container">
+                                        <div class="spinner-border mb-2" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <div>Memuat data dokter...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Initialize map
+            initDoctorMap();
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+        
+        function initDoctorMap() {
+            // Cache key for doctor data
+            const CACHE_KEY = 'doctor_map_data';
+            const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes in milliseconds
+            
+            // Map initialization
+            const map = L.map('doctor-map').setView([-2.5489, 118.0149], 5); // Indonesia center
+            
+            // Add OpenStreetMap layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Variables to track markers
+            let markers = [];
+            let markerLayer = L.layerGroup().addTo(map);
+            let allDoctors = [];
+            
+            // Load doctors data
+            loadDoctors();
+            
+            // Refresh button event listener
+            document.getElementById('refreshMap').addEventListener('click', function() {
+                clearCache();
+                loadDoctors(true);
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('doctorSearch');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                filterMarkers(searchTerm);
+            });
+            
+            function filterMarkers(searchTerm) {
+                // Clear existing markers
+                markerLayer.clearLayers();
+                
+                // Filter doctors based on search term
+                const filteredDoctors = searchTerm ? 
+                    allDoctors.filter(doctor => 
+                        doctor.full_name.toLowerCase().includes(searchTerm) || 
+                        (doctor.specialization && doctor.specialization.toLowerCase().includes(searchTerm)) ||
+                        (doctor.practice_location && doctor.practice_location.toLowerCase().includes(searchTerm))
+                    ) : allDoctors;
+                
+                // Update counter
+                document.getElementById('doctorCounter').textContent = filteredDoctors.length;
+                
+                // Add filtered markers
+                addMarkersToMap(filteredDoctors);
+                
+                // Adjust map view if we have markers
+                if (filteredDoctors.length > 0) {
+                    const group = new L.featureGroup(markers);
+                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                }
+            }
+            
+            function loadDoctors(forceRefresh = false) {
+                // Show loading spinner
+                document.getElementById('mapSpinner').style.display = 'flex';
+                
+                // Check cache if not forcing refresh
+                if (!forceRefresh) {
+                    const cachedData = getCachedData();
+                    if (cachedData) {
+                        processData(cachedData);
+                        return;
+                    }
+                }
+                
+                // Fetch from API if no cached data or forcing refresh
+                fetch('/api/doctors')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Cache the data
+                        cacheData(data);
+                        
+                        // Process the data
+                        processData(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching doctors data:', error);
+                        // Hide loading spinner
+                        document.getElementById('mapSpinner').style.display = 'none';
+                        // Show error message
+                        alert('Error loading doctor data. Please try again later.');
+                    });
+            }
+            
+            function processData(data) {
+                if (data.success && data.doctors && data.doctors.length > 0) {
+                    // Store all doctors for filtering
+                    allDoctors = data.doctors;
+                    
+                    // Update counter
+                    document.getElementById('doctorCounter').textContent = allDoctors.length;
+                    
+                    // Add markers to map
+                    addMarkersToMap(allDoctors);
+                    
+                    // Fit map to show all markers
+                    if (markers.length > 0) {
+                        const group = new L.featureGroup(markers);
+                        map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                    }
+                } else {
+                    document.getElementById('doctorCounter').textContent = '0';
+                }
+                
+                // Hide loading spinner
+                document.getElementById('mapSpinner').style.display = 'none';
+            }
+            
+            function addMarkersToMap(doctors) {
+                // Clear existing markers
+                markerLayer.clearLayers();
+                markers = [];
+                
+                // Add new markers
+                doctors.forEach(doctor => {
+                    if (doctor.latitude && doctor.longitude) {
+                        const lat = parseFloat(doctor.latitude);
+                        const lng = parseFloat(doctor.longitude);
+                        
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            // Determine marker color based on verification status
+                            let markerColor;
+                            if (doctor.verification_status === 'Terverifikasi') {
+                                markerColor = '#28a745'; // Green
+                            } else if (doctor.verification_status === 'Ditolak') {
+                                markerColor = '#dc3545'; // Red
+                            } else {
+                                markerColor = '#ffc107'; // Yellow
+                            }
+                            
+                            // Create custom icon
+                            const markerIcon = L.divIcon({
+                                className: 'custom-marker',
+                                html: `<div style="background-color: ${markerColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
+                                iconSize: [12, 12],
+                                iconAnchor: [6, 6],
+                                popupAnchor: [0, -6]
+                            });
+                            
+                            // Create marker
+                            const marker = L.marker([lat, lng], { icon: markerIcon });
+                            
+                            // Format phone number for display
+                            const phoneNumber = doctor.phone_number || '-';
+                            
+                            // Create custom popup content
+                            const popupContent = `
+                                <div class="custom-popup">
+                                    <div class="popup-header">${doctor.full_name}</div>
+                                    <div class="popup-content">
+                                        <div class="popup-info"><i class="fas fa-stethoscope"></i> ${doctor.specialization || 'Umum'}</div>
+                                        <div class="popup-info"><i class="fas fa-hospital"></i> ${doctor.practice_location || '-'}</div>
+                                        <div class="popup-info"><i class="fas fa-phone"></i> ${phoneNumber}</div>
+                                        <div class="popup-info"><i class="fas fa-id-card"></i> STR: ${doctor.str_number || '-'}</div>
+                                        <div class="mt-2">
+                                            <a href="/admin/doctors/${doctor.id}" class="btn btn-sm btn-primary w-100">
+                                                <i class="fas fa-eye me-1"></i> Lihat Detail
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            // Bind popup to marker
+                            marker.bindPopup(popupContent, {
+                                closeButton: true,
+                                className: 'custom-popup'
+                            });
+                            
+                            // Add marker to layer
+                            markerLayer.addLayer(marker);
+                            markers.push(marker);
+                        }
+                    }
+                });
+            }
+            
+            // Cache functions
+            function cacheData(data) {
+                const cacheItem = {
+                    timestamp: Date.now(),
+                    data: data
+                };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheItem));
+            }
+            
+            function getCachedData() {
+                const cachedItem = localStorage.getItem(CACHE_KEY);
+                if (!cachedItem) return null;
+                
+                try {
+                    const { timestamp, data } = JSON.parse(cachedItem);
+                    const now = Date.now();
+                    
+                    // Check if cache is still valid
+                    if (now - timestamp < CACHE_EXPIRY) {
+                        return data;
+                    }
+                } catch (e) {
+                    console.error('Error parsing cached data:', e);
+                }
+                
+                // Clear invalid cache
+                clearCache();
+                return null;
+            }
+            
+            function clearCache() {
+                localStorage.removeItem(CACHE_KEY);
+            }
+        }
+    </script>
+</body>
+</html>

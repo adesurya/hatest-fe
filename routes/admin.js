@@ -3,6 +3,26 @@
 const express = require('express');
 const router = express.Router();
 const { adminAPI } = require('../services/api');
+const doctorsRouter = require('./admin/doctors');
+const dokterMudaRouter = require('./admin/dokter-muda');
+const medicalFacultiesRouter = require('./admin/medical-faculties');
+const kurikulumMedisRouter = require('./admin/kurikulum-medis');
+const webinarsRouter = require('./admin/webinars');
+const slidersRouter = require('./admin/sliders');
+const agendaRouter = require('./admin/agenda');
+const aboutRouter = require('./admin/about');
+const articlesRouter = require('./admin/articles');
+const articleCategoriesRouter = require('./admin/article-categories');
+const organizationStructureRouter = require('./admin/organization-structure');
+const benefitsRouter = require('./admin/benefits');
+const testimonialsRouter = require('./admin/testimonials');
+const visionMissionRouter = require('./admin/vision-mission');
+const contactsRouter = require('./admin/contacts');
+const organizationHistoryRouter = require('./admin/organization-history');
+const examsRouter = require('./admin/exams');
+const examCategoriesRouter = require('./admin/exam-categories');
+const transactionsRouter = require('./admin/transactions');
+const userManagementRouter = require('./admin/users');
 
 // Admin middleware - checks if user is admin
 const isAdmin = (req, res, next) => {
@@ -316,6 +336,56 @@ router.post('/users/delete/:id', async (req, res) => {
     res.redirect('/admin/users');
   }
 });
+
+router.use('/doctors', doctorsRouter);
+router.use('/dokter-muda', dokterMudaRouter);
+router.use('/medical-faculties', medicalFacultiesRouter);
+router.use('/kurikulum-medis', kurikulumMedisRouter);
+router.use('/webinars', webinarsRouter);
+router.use('/sliders', slidersRouter);
+router.use('/agenda', agendaRouter);
+router.use('/about', aboutRouter);
+router.use('/articles', articlesRouter);
+router.use('/articles/categories', articleCategoriesRouter);
+router.use('/organization-structure', organizationStructureRouter);
+router.use('/benefits', benefitsRouter);
+router.use('/testimonials', testimonialsRouter);
+router.use('/vision-mission', visionMissionRouter);
+router.use('/contacts', contactsRouter);
+router.use('/organization-history', organizationHistoryRouter);
+router.use('/exams', examsRouter);
+router.use('/exams/categories', examCategoriesRouter);
+router.use('/transactions', transactionsRouter);
+router.use('/users', userManagementRouter);
+
+// Doctor Map route
+router.get('/map', async (req, res) => {
+  try {
+    // Render the map view with current path for active menu
+    res.render('pages/admin/map', {
+      title: 'Map Dokter',
+      user: req.session.user,
+      path: '/admin/map' // Pass path for active menu
+    });
+  } catch (err) {
+    console.error('Map rendering error:', err);
+    
+    // Check if it's an authentication error
+    if (err.response && err.response.status === 401) {
+      req.session.destroy();
+      global.token = null;
+      req.flash('error_msg', 'Your session has expired. Please log in again.');
+      return res.redirect('/auth/login');
+    }
+    
+    res.status(500).render('pages/error', {
+      title: 'Error',
+      message: err.message || 'Failed to load map',
+      status: err.response?.status || 500
+    });
+  }
+});
+
 
 // Add more admin routes as needed for other features
 

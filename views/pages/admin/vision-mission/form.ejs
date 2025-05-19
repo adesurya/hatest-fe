@@ -1,0 +1,476 @@
+<!-- views/pages/admin/vision-mission/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-card.mission .card-header {
+            color: #1cc88a;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .mission-form .form-control:focus, .mission-form .form-select:focus {
+            border-color: #a3e9cd;
+            box-shadow: 0 0 0 0.25rem rgba(28, 200, 138, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-success {
+            background-color: #1cc88a;
+            border-color: #1cc88a;
+        }
+        
+        .btn-success:hover {
+            background-color: #17a673;
+            border-color: #17a673;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .note-card.mission {
+            border-left-color: #1cc88a;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+        
+        .type-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .type-icon.vision {
+            color: #4e73df;
+        }
+        
+        .type-icon.mission {
+            color: #1cc88a;
+        }
+        
+        .type-select {
+            cursor: pointer;
+            border: 2px solid #e3e6f0;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .type-select:hover {
+            background-color: #f8f9fc;
+        }
+        
+        .type-select.selected {
+            border-color: #4e73df;
+            background-color: #f0f3ff;
+        }
+        
+        .type-select.selected.mission {
+            border-color: #1cc88a;
+            background-color: #f0fff7;
+        }
+        
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            margin-left: -3.5em;
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-color: #1cc88a;
+            border-color: #1cc88a;
+        }
+        
+        .form-switch .form-check-label {
+            margin-left: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/vision-mission' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit ' + (item.type === 'vision' ? 'Visi' : 'Misi') : 'Tambah Visi/Misi Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/vision-mission" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit ' + (item.type === 'vision' ? 'Visi' : 'Misi') : 'Tambah Visi/Misi Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi yang sudah ada.' : 'Tambahkan visi atau misi baru ke dalam sistem.' %></p>
+                </div>
+                
+                <!-- Form -->
+                <form action="<%= isEdit ? '/admin/vision-mission/' + item.id : '/admin/vision-mission' %>" method="POST" id="visionMissionForm" class="<%= isEdit && item.type === 'mission' ? 'mission-form' : '' %> needs-validation" novalidate>
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Main Information -->
+                            <div class="form-card <%= isEdit && item.type === 'mission' ? 'mission' : '' %> mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="<%= isEdit && item.type === 'mission' ? 'fas fa-bullseye' : 'fas fa-eye' %> me-2"></i> <%= isEdit ? (item.type === 'vision' ? 'Informasi Visi' : 'Informasi Misi') : 'Informasi Visi/Misi' %></h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <% if (!isEdit) { %>
+                                        <div class="row mb-4">
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label required-field">Pilih Tipe</label>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3 mb-md-0">
+                                                        <div class="type-select selected" data-type="vision">
+                                                            <i class="fas fa-eye type-icon vision"></i>
+                                                            <h5>Visi</h5>
+                                                            <p class="text-muted mb-0">Tujuan dan arah organisasi</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="type-select" data-type="mission">
+                                                            <i class="fas fa-bullseye type-icon mission"></i>
+                                                            <h5>Misi</h5>
+                                                            <p class="text-muted mb-0">Langkah untuk mencapai visi</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="type" id="typeInput" value="vision" required>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="content" class="form-label required-field">Konten</label>
+                                            <textarea class="form-control" id="content" name="content" rows="5" required><%= item ? item.content : '' %></textarea>
+                                            <div class="invalid-feedback">
+                                                Konten harus diisi.
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3">
+                                            <label for="order_number" class="form-label required-field">Urutan</label>
+                                            <input type="number" class="form-control" id="order_number" name="order_number" value="<%= item ? item.order_number : 1 %>" min="1" required <%= isEdit ? '' : '' %>>
+                                            <div class="invalid-feedback">
+                                                Urutan harus diisi dengan angka valid.
+                                            </div>
+                                            <small class="text-muted">Urutan akan menentukan posisi tampilan</small>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label required-field">Status</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="true" <%= (item && item.is_active) ? 'checked' : '' %>>
+                                                <label class="form-check-label" for="is_active">
+                                                    <span id="statusLabel"><%= (item && item.is_active) ? 'Aktif' : 'Tidak Aktif' %></span>
+                                                </label>
+                                            </div>
+                                            <small class="text-muted">Hanya item dengan status aktif yang akan ditampilkan</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Help Card -->
+                            <div class="form-card <%= isEdit && item.type === 'mission' ? 'mission' : '' %> mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="note-card <%= isEdit && item.type === 'mission' ? 'mission' : '' %> mb-4">
+                                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                        <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Pastikan semua informasi terisi dengan benar untuk memudahkan pengelolaan data.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Tentang Visi dan Misi</h6>
+                                        <ul class="small ps-3 mb-0">
+                                            <li class="mb-2"><strong>Visi</strong>: Gambaran dan tujuan yang ingin dicapai oleh organisasi di masa depan.</li>
+                                            <li><strong>Misi</strong>: Langkah-langkah konkret yang dilakukan untuk mencapai visi.</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Konten Yang Baik</h6>
+                                        <p class="small mb-0">Tuliskan konten dengan jelas, ringkas, dan mudah dipahami. Gunakan kalimat positif dan inspiratif untuk menyampaikan tujuan organisasi.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn <%= isEdit && item.type === 'mission' ? 'btn-success' : 'btn-primary' %> btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Data' : 'Simpan Data' %>
+                                    </button>
+                                    <a href="/admin/vision-mission" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Form validation
+            const form = document.getElementById('visionMissionForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+            
+            // Type selection (for new item)
+            const typeSelects = document.querySelectorAll('.type-select');
+            const typeInput = document.getElementById('typeInput');
+            
+            if (typeSelects.length && typeInput) {
+                typeSelects.forEach(select => {
+                    select.addEventListener('click', function() {
+                        // Remove selected class from all
+                        typeSelects.forEach(s => s.classList.remove('selected'));
+                        
+                        // Add selected class to clicked
+                        this.classList.add('selected');
+                        
+                        // Update hidden input
+                        const type = this.getAttribute('data-type');
+                        typeInput.value = type;
+                    });
+                });
+            }
+            
+            // Status switch
+            const statusSwitch = document.getElementById('is_active');
+            const statusLabel = document.getElementById('statusLabel');
+            
+            if (statusSwitch && statusLabel) {
+                statusSwitch.addEventListener('change', function() {
+                    statusLabel.textContent = this.checked ? 'Aktif' : 'Tidak Aktif';
+                });
+            }
+            
+            // Number validation for order_number
+            const orderNumberField = document.getElementById('order_number');
+            if (orderNumberField) {
+                orderNumberField.addEventListener('input', function() {
+                    // Allow only positive integers
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Ensure minimum value is 1
+                    if (parseInt(this.value) < 1 || this.value === '') {
+                        this.value = 1;
+                    }
+                });
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

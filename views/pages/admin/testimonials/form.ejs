@@ -1,0 +1,600 @@
+<!-- views/pages/admin/testimonials/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+        
+        .testimonial-preview {
+            background-color: #f8f9fc;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border-left: 5px solid #4e73df;
+            font-style: italic;
+            position: relative;
+            margin-top: 1rem;
+        }
+        
+        .testimonial-preview:before {
+            content: "\f10d";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 20px;
+            color: rgba(78, 115, 223, 0.2);
+        }
+        
+        .testimonial-preview:after {
+            content: "\f10e";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 20px;
+            color: rgba(78, 115, 223, 0.2);
+        }
+        
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        
+        .star-rating label {
+            color: #ddd;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0 0.1rem;
+        }
+        
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input[type="radio"]:checked ~ label {
+            color: #f6c23e;
+        }
+        
+        .logo-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 0.5rem;
+            border: 1px solid #e3e6f0;
+            padding: 0.5rem;
+            margin-top: 1rem;
+            background-color: #fff;
+        }
+        
+        .custom-file-upload {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d3e2;
+            background-color: #fff;
+            color: #6e707e;
+            transition: all 0.2s;
+        }
+        
+        .custom-file-upload:hover {
+            background-color: #f8f9fc;
+        }
+        
+        .custom-file-upload i {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/testimonials' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Testimoni' : 'Tambah Testimoni Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/testimonials" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit Testimoni' : 'Tambah Testimoni Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi testimoni yang sudah ada.' : 'Tambahkan testimoni baru dari partner atau klien.' %></p>
+                </div>
+                
+                <!-- Testimonial Form -->
+                <form action="<%= isEdit ? '/admin/testimonials/' + testimonial.id : '/admin/testimonials' %>" method="POST" id="testimonialForm" class="needs-validation" enctype="multipart/form-data" novalidate>
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Basic Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-building me-2"></i> Informasi Organisasi</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="organization_name" class="form-label required-field">Nama Organisasi</label>
+                                            <input type="text" class="form-control" id="organization_name" name="organization_name" value="<%= testimonial ? testimonial.organization_name : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Nama organisasi harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="representative_name" class="form-label required-field">Nama Perwakilan</label>
+                                            <input type="text" class="form-control" id="representative_name" name="representative_name" value="<%= testimonial ? testimonial.representative_name : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Nama perwakilan harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="representative_position" class="form-label required-field">Jabatan Perwakilan</label>
+                                            <input type="text" class="form-control" id="representative_position" name="representative_position" value="<%= testimonial ? testimonial.representative_position : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Jabatan perwakilan harus diisi.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Testimonial Content -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-quote-left me-2"></i> Isi Testimoni</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="content" class="form-label required-field">Isi Testimoni</label>
+                                            <textarea class="form-control" id="content" name="content" rows="5" maxlength="500" required><%= testimonial ? testimonial.content : '' %></textarea>
+                                            <div class="invalid-feedback">
+                                                Isi testimoni harus diisi.
+                                            </div>
+                                            <div class="mt-2 small text-muted">
+                                                <span id="charCount">0</span>/500 karakter
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label required-field">Rating</label>
+                                            <div class="star-rating">
+                                                <% for (let i = 5; i >= 1; i--) { %>
+                                                    <input type="radio" id="star<%= i %>" name="rating" value="<%= i %>" <%= testimonial && testimonial.rating === i ? 'checked' : !testimonial && i === 5 ? 'checked' : '' %> required />
+                                                    <label for="star<%= i %>"><i class="fas fa-star"></i></label>
+                                                <% } %>
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Rating harus dipilih.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Live Preview -->
+                                    <div class="testimonial-preview">
+                                        <p class="mb-1 preview-content"><%= testimonial ? testimonial.content : 'Testimoni akan ditampilkan di sini...' %></p>
+                                        <div class="mt-2">
+                                            <div class="preview-rating">
+                                                <% for (let i = 1; i <= 5; i++) { %>
+                                                    <i class="<%= testimonial && i <= testimonial.rating ? 'fas' : 'far' %> fa-star"></i>
+                                                <% } %>
+                                            </div>
+                                            <div class="preview-author mt-2">
+                                                <strong class="preview-representative"><%= testimonial ? testimonial.representative_name : 'Nama Perwakilan' %></strong>, 
+                                                <span class="preview-position"><%= testimonial ? testimonial.representative_position : 'Jabatan' %></span> - 
+                                                <span class="preview-organization"><%= testimonial ? testimonial.organization_name : 'Nama Organisasi' %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Status & Logo -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-cog me-2"></i> Status & Logo</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label required-field">Status</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" <%= !testimonial || testimonial.is_active === 1 ? 'checked' : '' %>>
+                                                <label class="form-check-label" for="is_active">Aktif</label>
+                                            </div>
+                                            <div class="help-text mt-1">
+                                                Hanya testimoni aktif yang akan ditampilkan di website.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="logo" class="form-label">Logo Organisasi</label>
+                                            <div>
+                                                <label for="logo" class="custom-file-upload">
+                                                    <i class="fas fa-upload"></i> Pilih File Logo
+                                                </label>
+                                                <input type="file" id="logo" name="logo" accept="image/*" style="display: none;">
+                                                <span id="file-name" class="ms-2 small"><%= testimonial && testimonial.logo_path ? 'Logo sudah ada' : 'Tidak ada file dipilih' %></span>
+                                            </div>
+                                            <div class="help-text mt-1">
+                                                Format: JPG, PNG, atau SVG. Ukuran maks: 2MB.
+                                            </div>
+                                            <% if (testimonial && testimonial.logo_path) { %>
+                                                <div class="mt-2">
+                                                    <img src="<%= testimonial.logo_path %>" id="logo-preview" class="logo-preview" alt="Logo Preview">
+                                                </div>
+                                            <% } else { %>
+                                                <div class="mt-2">
+                                                    <img src="" id="logo-preview" class="logo-preview" alt="Logo Preview" style="display: none;">
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Help Card -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="note-card mb-4">
+                                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                        <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Pastikan semua informasi terisi dengan benar.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Panduan Testimoni Yang Baik</h6>
+                                        <ul class="small ps-3 mb-0">
+                                            <li class="mb-2">Berisi pengalaman nyata klien dengan layanan</li>
+                                            <li class="mb-2">Spesifik dan jelas tentang nilai yang diberikan</li>
+                                            <li class="mb-2">Hindari klaim berlebihan atau tidak realistis</li>
+                                            <li>Panjang ideal 100-300 karakter</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Logo Organisasi</h6>
+                                        <p class="small mb-0">Logo akan ditampilkan di halaman testimoni website. Sebaiknya gunakan gambar dengan latar belakang transparan dan resolusi yang baik.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Testimoni' : 'Simpan Testimoni' %>
+                                    </button>
+                                    <a href="/admin/testimonials" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Form validation
+            const form = document.getElementById('testimonialForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+            
+            // Character count for testimonial content
+            const contentField = document.getElementById('content');
+            const charCount = document.getElementById('charCount');
+            
+            if (contentField && charCount) {
+                // Update on load
+                charCount.textContent = contentField.value.length;
+                
+                // Update on input
+                contentField.addEventListener('input', function() {
+                    charCount.textContent = this.value.length;
+                    
+                    // Update preview
+                    updatePreview();
+                });
+            }
+            
+            // File upload preview
+            const logoInput = document.getElementById('logo');
+            const logoPreview = document.getElementById('logo-preview');
+            const fileName = document.getElementById('file-name');
+            
+            if (logoInput && logoPreview && fileName) {
+                logoInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            logoPreview.src = e.target.result;
+                            logoPreview.style.display = 'block';
+                        };
+                        
+                        reader.readAsDataURL(this.files[0]);
+                        fileName.textContent = this.files[0].name;
+                    } else {
+                        logoPreview.src = '';
+                        logoPreview.style.display = 'none';
+                        fileName.textContent = 'Tidak ada file dipilih';
+                    }
+                });
+            }
+            
+            // Live preview update for other fields
+            const organizationField = document.getElementById('organization_name');
+            const representativeField = document.getElementById('representative_name');
+            const positionField = document.getElementById('representative_position');
+            const ratingInputs = document.querySelectorAll('input[name="rating"]');
+            
+            if (organizationField && representativeField && positionField && ratingInputs) {
+                organizationField.addEventListener('input', updatePreview);
+                representativeField.addEventListener('input', updatePreview);
+                positionField.addEventListener('input', updatePreview);
+                
+                ratingInputs.forEach(input => {
+                    input.addEventListener('change', updatePreview);
+                });
+            }
+            
+            // Update preview function
+            function updatePreview() {
+                const previewContent = document.querySelector('.preview-content');
+                const previewRating = document.querySelector('.preview-rating');
+                const previewRepresentative = document.querySelector('.preview-representative');
+                const previewPosition = document.querySelector('.preview-position');
+                const previewOrganization = document.querySelector('.preview-organization');
+                
+                if (previewContent && contentField) {
+                    previewContent.textContent = contentField.value || 'Testimoni akan ditampilkan di sini...';
+                }
+                
+                if (previewRepresentative && representativeField) {
+                    previewRepresentative.textContent = representativeField.value || 'Nama Perwakilan';
+                }
+                
+                if (previewPosition && positionField) {
+                    previewPosition.textContent = positionField.value || 'Jabatan';
+                }
+                
+                if (previewOrganization && organizationField) {
+                    previewOrganization.textContent = organizationField.value || 'Nama Organisasi';
+                }
+                
+                if (previewRating) {
+                    const selectedRating = document.querySelector('input[name="rating"]:checked');
+                    if (selectedRating) {
+                        const rating = parseInt(selectedRating.value);
+                        let starsHtml = '';
+                        
+                        for (let i = 1; i <= 5; i++) {
+                            starsHtml += `<i class="${i <= rating ? 'fas' : 'far'} fa-star"></i>`;
+                        }
+                        
+                        previewRating.innerHTML = starsHtml;
+                    }
+                }
+            }
+            
+            // Initialize preview on page load
+            updatePreview();
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

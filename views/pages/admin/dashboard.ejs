@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> | Ikatan Dokter Indonesia</title>
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
     
     <!-- Favicon -->
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
@@ -161,51 +161,7 @@
     <!-- Main Layout -->
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="py-4 px-3 text-center mb-3">
-                <img src="/images/logo-white.png" alt="Organization Logo" class="img-fluid mb-3" style="max-height: 50px;">
-                <h5 class="text-white">Admin Dashboard</h5>
-            </div>
-            
-            <div class="px-3">
-                <a href="/admin/dashboard" class="admin-sidebar-item active">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a>
-                <a href="/admin/users" class="admin-sidebar-item">
-                    <i class="fas fa-users"></i> Users
-                </a>
-                <a href="/admin/sliders" class="admin-sidebar-item">
-                    <i class="fas fa-images"></i> Sliders
-                </a>
-                <a href="/admin/articles" class="admin-sidebar-item">
-                    <i class="fas fa-newspaper"></i> Articles
-                </a>
-                <a href="/admin/activities" class="admin-sidebar-item">
-                    <i class="fas fa-calendar-alt"></i> Activities
-                </a>
-                <a href="/admin/testimonials" class="admin-sidebar-item">
-                    <i class="fas fa-comment-dots"></i> Testimonials
-                </a>
-                <a href="/admin/benefits" class="admin-sidebar-item">
-                    <i class="fas fa-gift"></i> Benefits
-                </a>
-                <a href="/admin/messages" class="admin-sidebar-item">
-                    <i class="fas fa-envelope"></i> Contact Messages
-                </a>
-                <a href="/admin/settings" class="admin-sidebar-item">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-                
-                <div class="border-top my-4 border-secondary"></div>
-                
-                <a href="/" class="admin-sidebar-item">
-                    <i class="fas fa-home"></i> Back to Website
-                </a>
-                <a href="/auth/logout" class="admin-sidebar-item">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
+        <%- include('../../partials/admin/sidebar', { path: '/admin/doctors' }) %>
         
         <!-- Main Content -->
         <div class="main-content">
@@ -728,7 +684,7 @@
                 <footer class="mt-5 mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Ikatan Dokter Indonesia. All rights reserved.</p>
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
                         </div>
                         <div class="col-md-6 text-md-end">
                             <p class="text-muted mb-0">Admin Dashboard v1.0</p>

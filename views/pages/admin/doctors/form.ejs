@@ -1,0 +1,775 @@
+<!-- views/pages/admin/doctors/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for doctor form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .profile-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #4e73df;
+            background-color: #f8f9fc;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-placeholder {
+            font-size: 3rem;
+            color: #4e73df;
+        }
+        
+        .profile-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .profile-preview:hover .profile-overlay {
+            opacity: 1;
+        }
+        
+        .profile-overlay i {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+        
+        .document-preview {
+            border: 1px dashed #bac8f3;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            background-color: #f8f9fc;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .document-preview:hover {
+            border-color: #4e73df;
+            background-color: #edf2ff;
+        }
+        
+        .document-icon {
+            font-size: 2.5rem;
+            color: #4e73df;
+            margin-bottom: 0.5rem;
+        }
+        
+        .document-text {
+            font-size: 0.9rem;
+            color: #5a5c69;
+        }
+        
+        #map {
+            height: 300px;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/doctors' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Dokter' : 'Tambah Dokter Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Doctor Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/doctors" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Doctor Form -->
+                <form action="<%= isEdit ? '/admin/doctors/' + doctor.id : '/admin/doctors' %>" method="POST" enctype="multipart/form-data" id="doctorForm">
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Personal Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-user me-2"></i> Informasi Pribadi</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="full_name" class="form-label required-field">Nama Lengkap</label>
+                                            <input type="text" class="form-control" id="full_name" name="full_name" value="<%= doctor ? doctor.full_name : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="str_number" class="form-label required-field">Nomor STR</label>
+                                            <input type="text" class="form-control" id="str_number" name="str_number" value="<%= doctor ? doctor.str_number : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="nik_number" class="form-label required-field">NIK</label>
+                                            <input type="text" class="form-control" id="nik_number" name="nik_number" value="<%= doctor ? doctor.nik_number : '' %>" 
+                                                maxlength="16" required 
+                                                pattern="[0-9]{16}" 
+                                                title="NIK harus terdiri dari 16 digit angka">
+                                            <small class="text-muted">Nomor Induk Kependudukan harus 16 digit</small>
+
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="gender" class="form-label required-field">Jenis Kelamin</label>
+                                            <select class="form-select" id="gender" name="gender" required>
+                                                <option value="" disabled <%= !doctor ? 'selected' : '' %>>Pilih Jenis Kelamin</option>
+                                                <option value="Laki-laki" <%= doctor && doctor.gender === 'Laki-laki' ? 'selected' : '' %>>Laki-laki</option>
+                                                <option value="Perempuan" <%= doctor && doctor.gender === 'Perempuan' ? 'selected' : '' %>>Perempuan</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="birth_date" class="form-label required-field">Tanggal Lahir</label>
+                                            <input type="date" class="form-control" id="birth_date" name="birth_date" value="<%= doctor && doctor.birth_date ? new Date(doctor.birth_date).toISOString().split('T')[0] : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="birth_place" class="form-label required-field">Tempat Lahir</label>
+                                            <input type="text" class="form-control" id="birth_place" name="birth_place" value="<%= doctor ? doctor.birth_place : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="membership_status" class="form-label required-field">Status Keanggotaan</label>
+                                            <select class="form-select" id="membership_status" name="membership_status" required>
+                                                <option value="" disabled <%= !doctor ? 'selected' : '' %>>Pilih Status Keanggotaan</option>
+                                                <option value="Aktif" <%= doctor && doctor.membership_status === 'Aktif' ? 'selected' : '' %>>Aktif</option>
+                                                <option value="Non-Aktif" <%= doctor && doctor.membership_status === 'Non-Aktif' ? 'selected' : '' %>>Non-Aktif</option>
+                                                <option value="Belum Anggota" <%= doctor && doctor.membership_status === 'Belum Anggota' ? 'selected' : '' %>>Belum Anggota</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label for="address" class="form-label required-field">Alamat</label>
+                                            <textarea class="form-control" id="address" name="address" rows="3" required><%= doctor ? doctor.address : '' %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contact Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-address-book me-2"></i> Informasi Kontak</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="email" class="form-label required-field">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email" value="<%= doctor ? doctor.email : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phone_number" class="form-label required-field">Nomor Telepon</label>
+                                            <input type="tel" class="form-control" id="phone_number" name="phone_number" value="<%= doctor ? doctor.phone_number : '' %>" required>
+                                            <small class="text-muted">Format: 08xxxxxxxxxx</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Professional Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-stethoscope me-2"></i> Informasi Profesional</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="specialization" class="form-label required-field">Spesialisasi</label>
+                                            <input type="text" class="form-control" id="specialization" name="specialization" value="<%= doctor ? doctor.specialization : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="education_institution" class="form-label required-field">Institusi Pendidikan</label>
+                                            <input type="text" class="form-control" id="education_institution" name="education_institution" value="<%= doctor ? doctor.education_institution : '' %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="graduation_year" class="form-label required-field">Tahun Lulus</label>
+                                            <input type="number" class="form-control" id="graduation_year" name="graduation_year" value="<%= doctor ? doctor.graduation_year : '' %>" min="1950" max="<%= new Date().getFullYear() %>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="practice_location" class="form-label required-field">Lokasi Praktek</label>
+                                            <input type="text" class="form-control" id="practice_location" name="practice_location" value="<%= doctor ? doctor.practice_location : '' %>" required>
+                                        </div>
+                                        
+                                        <!-- Map and Coordinates -->
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label">Lokasi di Peta</label>
+                                            <div id="map"></div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="latitude" class="form-label">Latitude</label>
+                                                    <input type="text" class="form-control" id="latitude" name="latitude" value="<%= doctor ? doctor.latitude : '' %>" readonly>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="longitude" class="form-label">Longitude</label>
+                                                    <input type="text" class="form-control" id="longitude" name="longitude" value="<%= doctor ? doctor.longitude : '' %>">
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">Klik pada peta untuk menandai lokasi praktek</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Profile Photo Upload -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-image me-2"></i> Foto Profil</h6>
+                                </div>
+                                <div class="card-body p-4 text-center">
+                                    <div class="profile-preview" id="profilePreview">
+                                        <% if (doctor && doctor.profile_photo) { %>
+                                            <img src="<%= doctor.profile_photo %>" alt="Profile Preview" id="profileImage" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <% } else { %>
+                                            <i class="fas fa-user-circle profile-placeholder" id="profilePlaceholder"></i>
+                                        <% } %>
+                                        <div class="profile-overlay" id="profileOverlay">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-3">Unggah foto profil dokter</p>
+                                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="d-none">
+                                    <button type="button" id="browseProfileBtn" class="btn btn-outline-primary">
+                                        <i class="fas fa-upload me-2"></i> Pilih Foto
+                                    </button>
+                                    <% if (doctor && doctor.profile_photo) { %>
+                                        <button type="button" id="removeProfileBtn" class="btn btn-outline-danger ms-2">
+                                            <i class="fas fa-trash-alt me-1"></i> Hapus
+                                        </button>
+                                    <% } %>
+                                    <input type="hidden" id="remove_profile" name="remove_profile" value="0">
+                                </div>
+                            </div>
+                            
+                            <!-- Document Upload -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-file-alt me-2"></i> Dokumen Pendukung</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <label class="document-preview" id="documentPreview" for="supporting_document">
+                                        <% if (doctor && doctor.supporting_document) { %>
+                                            <div id="documentIcon" class="document-icon">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </div>
+                                            <div id="documentText" class="document-text mb-2">
+                                                Dokumen telah diunggah. Klik untuk mengganti.
+                                            </div>
+                                            <a href="<%= doctor.supporting_document %>" target="_blank" class="btn btn-sm btn-outline-primary mb-2">
+                                                <i class="fas fa-eye me-1"></i> Lihat Dokumen
+                                            </a>
+                                        <% } else { %>
+                                            <div id="documentIcon" class="document-icon">
+                                                <i class="fas fa-upload"></i>
+                                            </div>
+                                            <div id="documentText" class="document-text">
+                                                Klik untuk mengunggah dokumen pendukung<br>
+                                                (PDF, DOC, DOCX maks. 5MB)
+                                            </div>
+                                        <% } %>
+                                    </label>
+                                    <input type="file" id="supporting_document" name="supporting_document" accept=".pdf,.doc,.docx" class="d-none">
+                                    <small class="text-muted d-block">Sertakan dokumen pendukung seperti sertifikat, ijazah, atau surat rekomendasi</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Verification Status -->
+                            <% if (isEdit) { %>
+                                <div class="form-card mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="mb-0"><i class="fas fa-clipboard-check me-2"></i> Status Verifikasi</h6>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="mb-3">
+                                            <label for="verification_status" class="form-label">Status Verifikasi</label>
+                                            <select class="form-select" id="verification_status" name="verification_status">
+                                                <option value="Belum Terverifikasi" <%= doctor && doctor.verification_status === 'Belum Terverifikasi' ? 'selected' : '' %>>Belum Terverifikasi</option>
+                                                <option value="Terverifikasi" <%= doctor && doctor.verification_status === 'Terverifikasi' ? 'selected' : '' %>>Terverifikasi</option>
+                                                <option value="Ditolak" <%= doctor && doctor.verification_status === 'Ditolak' ? 'selected' : '' %>>Ditolak</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="verification_notes" class="form-label">Catatan Verifikasi</label>
+                                            <textarea class="form-control" id="verification_notes" name="verification_notes" rows="3"><%= doctor && doctor.verification_notes ? doctor.verification_notes : '' %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Dokter' : 'Simpan Dokter' %>
+                                    </button>
+                                    <a href="/admin/doctors" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Profile photo upload
+            const profilePhoto = document.getElementById('profile_photo');
+            const browseProfileBtn = document.getElementById('browseProfileBtn');
+            const profilePreview = document.getElementById('profilePreview');
+            const profileImage = document.getElementById('profileImage');
+            const profilePlaceholder = document.getElementById('profilePlaceholder');
+            
+            // Click on profile preview or button triggers file input
+            profilePreview.addEventListener('click', function() {
+                profilePhoto.click();
+            });
+            
+            browseProfileBtn.addEventListener('click', function() {
+                profilePhoto.click();
+            });
+            
+            // Handle profile photo change
+            profilePhoto.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        if (!profileImage) {
+                            const img = document.createElement('img');
+                            img.id = 'profileImage';
+                            img.alt = 'Profile Preview';
+                            profilePreview.appendChild(img);
+                            profileImage = img;
+                            
+                            if (profilePlaceholder) {
+                                profilePlaceholder.style.display = 'none';
+                            }
+                        }
+                        
+                        profileImage.src = e.target.result;
+                        profileImage.style.display = 'block';
+                        
+                        // Add remove button if it doesn't exist
+                        if (!document.getElementById('removeProfileBtn')) {
+                            const removeBtn = document.createElement('button');
+                            removeBtn.type = 'button';
+                            removeBtn.id = 'removeProfileBtn';
+                            removeBtn.className = 'btn btn-outline-danger ms-2';
+                            removeBtn.innerHTML = '<i class="fas fa-trash-alt me-1"></i> Hapus';
+                            removeBtn.addEventListener('click', removeProfilePhoto);
+                            
+                            browseProfileBtn.insertAdjacentElement('afterend', removeBtn);
+                        }
+                        
+                        // Reset remove flag
+                        document.getElementById('remove_profile').value = '0';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Remove profile photo
+            const removeProfileBtn = document.getElementById('removeProfileBtn');
+            if (removeProfileBtn) {
+                removeProfileBtn.addEventListener('click', removeProfilePhoto);
+            }
+            
+            function removeProfilePhoto(e) {
+                e.stopPropagation();
+                
+                const removeFlag = document.getElementById('remove_profile');
+                removeFlag.value = '1';
+                
+                if (profileImage) {
+                    profileImage.style.display = 'none';
+                    profileImage.src = '';
+                    profilePhoto.value = '';
+                }
+                
+                if (profilePlaceholder) {
+                    profilePlaceholder.style.display = 'block';
+                } else {
+                    const placeholder = document.createElement('i');
+                    placeholder.className = 'fas fa-user-circle profile-placeholder';
+                    placeholder.id = 'profilePlaceholder';
+                    profilePreview.appendChild(placeholder);
+                }
+                
+                this.style.display = 'none';
+            }
+            
+            // Document upload
+            const supportingDocument = document.getElementById('supporting_document');
+            const documentPreview = document.getElementById('documentPreview');
+            const documentIcon = document.getElementById('documentIcon');
+            const documentText = document.getElementById('documentText');
+            
+            supportingDocument.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    let icon = 'fa-file';
+                    
+                    if (file.name.endsWith('.pdf')) {
+                        icon = 'fa-file-pdf';
+                    } else if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                        icon = 'fa-file-word';
+                    }
+                    
+                    documentIcon.innerHTML = `<i class="fas ${icon}"></i>`;
+                    documentText.innerHTML = `${file.name}<br><small>(${formatFileSize(file.size)})</small>`;
+                }
+            });
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Inisialisasi map
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                // Tentukan lokasi default atau gunakan data dokter jika ada
+                let lat = <%= doctor && doctor.latitude ? doctor.latitude : -6.2088 %>;
+                let lng = <%= doctor && doctor.longitude ? doctor.longitude : 106.8456 %>;
+                
+                // Buat map
+                const map = L.map('map').setView([lat, lng], 12);
+                
+                // Tambahkan tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+                
+                // Tambahkan marker jika koordinat sudah ada
+                let marker;
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    marker = L.marker([lat, lng]).addTo(map);
+                }
+                
+                // Tambahkan event handler untuk klik pada map
+                map.on('click', function(e) {
+                    // Hapus marker lama jika ada
+                    if (marker) {
+                        map.removeLayer(marker);
+                    }
+                    
+                    // Tambahkan marker baru
+                    marker = L.marker(e.latlng).addTo(map);
+                    
+                    // Update nilai latitude dan longitude di form
+                    document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+                    document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+                    
+                    // Tambahkan popup untuk menampilkan koordinat
+                    marker.bindPopup(`Latitude: ${e.latlng.lat.toFixed(6)}<br>Longitude: ${e.latlng.lng.toFixed(6)}`).openPopup();
+                });
+                
+                // Fix rendering issues
+                setTimeout(function() {
+                    map.invalidateSize();
+                }, 100);
+            }
+            
+            // Form validation
+            const doctorForm = document.getElementById('doctorForm');
+            if (doctorForm) {
+                doctorForm.addEventListener('submit', function(e) {
+                    // Validasi NIK
+                    if (nikField && nikField.value.trim().length > 0 && nikField.value.trim().length !== 16) {
+                        e.preventDefault();
+                        nikField.classList.add('is-invalid');
+                        document.getElementById('nik-feedback') || createNikFeedback(nikField);
+                        nikField.focus();
+                        
+                        // Scroll ke field dengan error
+                        nikField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Tampilkan alert
+                        alert('NIK harus terdiri dari 16 digit angka');
+                    }
+                });
+            }
+            
+            // Phone number validation
+            const phoneField = document.getElementById('phone_number');
+            phoneField.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+            
+            // NIK validation
+            const nikField = document.getElementById('nik_number');
+                if (nikField) {
+                    // Tambahkan validasi saat input
+                    nikField.addEventListener('input', function() {
+                        // Hapus karakter non-digit
+                        this.value = this.value.replace(/[^0-9]/g, '');
+                        
+                        // Batasi panjang maksimal 16 digit
+                        if (this.value.length > 16) {
+                            this.value = this.value.slice(0, 16);
+                        }
+                        
+                        // Tampilkan feedback validasi
+                        const nikFeedback = document.getElementById('nik-feedback');
+                        if (this.value.length > 0 && this.value.length !== 16) {
+                            this.classList.add('is-invalid');
+                            if (!nikFeedback) {
+                                const feedback = document.createElement('div');
+                                feedback.id = 'nik-feedback';
+                                feedback.className = 'invalid-feedback';
+                                feedback.textContent = 'NIK harus terdiri dari 16 digit angka';
+                                this.parentNode.appendChild(feedback);
+                            }
+                        } else {
+                            this.classList.remove('is-invalid');
+                            if (nikFeedback) {
+                                nikFeedback.remove();
+                            }
+                        }
+                    });
+                    
+                    // Validasi saat blur (keluar dari field)
+                    nikField.addEventListener('blur', function() {
+                        if (this.value.length > 0 && this.value.length !== 16) {
+                            this.classList.add('is-invalid');
+                            document.getElementById('nik-feedback') || createNikFeedback(this);
+                        }
+                    });
+                    
+                    function createNikFeedback(element) {
+                        const feedback = document.createElement('div');
+                        feedback.id = 'nik-feedback';
+                        feedback.className = 'invalid-feedback';
+                        feedback.textContent = 'NIK harus terdiri dari 16 digit angka';
+                        element.parentNode.appendChild(feedback);
+                    }
+                }
+
+
+
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

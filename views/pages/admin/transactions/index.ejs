@@ -1,0 +1,665 @@
+<!-- views/pages/admin/transactions/index.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for transaction management */
+        .transaction-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .transaction-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4e73df;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-pending {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .status-failed {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .status-expired {
+            background-color: #e0e0e0;
+            color: #616161;
+        }
+        
+        .search-bar {
+            border-radius: 50px;
+            padding-left: 20px;
+            padding-right: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .search-bar:focus {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: #344767;
+        }
+        
+        .dataTables_wrapper .row {
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .page-link {
+            color: #4e73df;
+        }
+        
+        .form-select, .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+        
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .stats-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stats-icon {
+            font-size: 32px;
+            color: #4e73df;
+        }
+        
+        .stats-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #344767;
+        }
+        
+        .stats-title {
+            font-size: 14px;
+            color: #67748e;
+        }
+        
+        .table th {
+            white-space: nowrap;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .amount-text {
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        
+        .filter-dropdown {
+            border-radius: 50px;
+            padding: 10px 15px;
+            background-color: #f8f9fc;
+            border: 1px solid #e3e6f0;
+        }
+        
+        .filter-dropdown:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/transactions' }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Manajemen Transaksi</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Transactions Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-primary-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-receipt text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count"><%= transactions ? transactions.length : 0 %></div>
+                                        <div class="stats-title">Total Transaksi</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-success-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count">
+                                            <%= transactions ? transactions.filter(tx => tx.status === 'success').length : 0 %>
+                                        </div>
+                                        <div class="stats-title">Transaksi Sukses</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-info-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-money-bill-wave text-info"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count">
+                                            <span class="text-success">Rp <%= new Intl.NumberFormat('id-ID').format(totalSuccessAmount || 0) %></span>
+                                        </div>
+                                        <div class="stats-title">Total Pendapatan</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Page Header -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h4 class="mb-0">Daftar Transaksi</h4>
+                                <p class="text-muted mb-0">Kelola data transaksi pembayaran dalam sistem</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search & Filter -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form action="/admin/transactions" method="GET" id="searchForm">
+                            <div class="row align-items-center">
+                                <div class="col-md-8 mb-3 mb-md-0">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-search text-muted"></i>
+                                        </span>
+                                        <input type="text" name="search" id="searchInput" class="form-control search-bar" placeholder="Cari transaksi berdasarkan kode order, nama pengguna, email, metode pembayaran..." value="<%= search || '' %>">
+                                        <button type="submit" class="btn btn-primary px-4">Cari</button>
+                                        <% if (search || status) { %>
+                                            <a href="/admin/transactions" class="btn btn-outline-secondary px-3 ms-2">
+                                                <i class="fas fa-times me-1"></i> Reset
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select filter-dropdown" name="status" id="statusFilter" onchange="this.form.submit()">
+                                        <option value="" <%= !status ? 'selected' : '' %>>Semua Status</option>
+                                        <option value="success" <%= status === 'success' ? 'selected' : '' %>>Sukses</option>
+                                        <option value="pending" <%= status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                        <option value="failed" <%= status === 'failed' ? 'selected' : '' %>>Gagal</option>
+                                        <option value="expired" <%= status === 'expired' ? 'selected' : '' %>>Kedaluwarsa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Transactions Table -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="transactionsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">ID Order</th>
+                                        <th>Pengguna</th>
+                                        <th>Ujian</th>
+                                        <th>Jumlah</th>
+                                        <th>Metode Pembayaran</th>
+                                        <th>Status</th>
+                                        <th>Tanggal Transaksi</th>
+                                        <th class="text-end pe-4">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (transactions && transactions.length > 0) { %>
+                                        <% transactions.forEach(transaction => { %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="transaction-icon me-3">
+                                                            <i class="fas fa-receipt"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0"><%= transaction.merchant_order_id %></h6>
+                                                            <small class="text-muted">
+                                                                <span>
+                                                                    <i class="fas fa-hashtag me-1"></i>ID: <%= transaction.id %>
+                                                                </span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <h6 class="mb-0"><%= transaction.user_name %></h6>
+                                                        <small class="text-muted"><%= transaction.email %></small>
+                                                    </div>
+                                                </td>
+                                                <td><%= transaction.exam_name || '-' %></td>
+                                                <td>
+                                                    <span class="amount-text">Rp <%= new Intl.NumberFormat('id-ID').format(parseFloat(transaction.amount)) %></span>
+                                                </td>
+                                                <td>
+                                                    <span><%= transaction.payment_method_name %></span>
+                                                </td>
+                                                <td>
+                                                    <% let statusClass = 'status-pending'; %>
+                                                    <% if (transaction.status === 'success') { %>
+                                                        <% statusClass = 'status-success'; %>
+                                                    <% } else if (transaction.status === 'failed') { %>
+                                                        <% statusClass = 'status-failed'; %>
+                                                    <% } else if (transaction.status === 'expired') { %>
+                                                        <% statusClass = 'status-expired'; %>
+                                                    <% } %>
+                                                    <span class="status-badge <%= statusClass %>">
+                                                        <% if (transaction.status === 'success') { %>
+                                                            <i class="fas fa-check-circle me-1"></i>
+                                                        <% } else if (transaction.status === 'pending') { %>
+                                                            <i class="fas fa-clock me-1"></i>
+                                                        <% } else if (transaction.status === 'failed') { %>
+                                                            <i class="fas fa-times-circle me-1"></i>
+                                                        <% } else if (transaction.status === 'expired') { %>
+                                                            <i class="fas fa-calendar-times me-1"></i>
+                                                        <% } %>
+                                                        <%= transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(transaction.transaction_date).toLocaleDateString('id-ID', {
+                                                        day: 'numeric',
+                                                        month: 'short',
+                                                        year: 'numeric'
+                                                    }) %>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        <%= new Date(transaction.transaction_date).toLocaleTimeString('id-ID', {
+                                                            hour: '2-digit',
+                                                            minute: '2-digit'
+                                                        }) %>
+                                                    </small>
+                                                </td>
+                                                <!-- <td class="text-end pe-4">
+                                                    <a href="/admin/transactions/<%= transaction.id %>" class="btn btn-sm btn-light action-btn" title="Lihat Detail">
+                                                        <i class="fas fa-eye text-primary"></i>
+                                                    </a>
+                                                </td> -->
+                                            </tr>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="8" class="text-center py-5">
+                                                <div class="py-5">
+                                                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                                    <h5>Tidak ada data transaksi ditemukan</h5>
+                                                    <p class="text-muted">Silakan ubah filter pencarian</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <% if (pagination && pagination.totalPages > 1) { %>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div>
+                            <span class="text-muted">Menampilkan <%= (pagination.page-1) * pagination.limit + 1 %> - <%= Math.min(pagination.page * pagination.limit, pagination.totalItems) %> dari <%= pagination.totalItems %> transaksi</span>
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item <%= pagination.page <= 1 ? 'disabled' : '' %>">
+                                    <a class="page-link" href="<%= pagination.page <= 1 ? '#' : '/admin/transactions?page=' + (pagination.page - 1) + (search ? '&search=' + search : '') + (status ? '&status=' + status : '') %>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                
+                                <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+                                    <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                        <a class="page-link" href="/admin/transactions?page=<%= i %><%= search ? '&search=' + search : '' %><%= status ? '&status=' + status : '' %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                <% } %>
+                                
+                                <li class="page-item <%= pagination.page >= pagination.totalPages ? 'disabled' : '' %>">
+                                    <a class="page-link" href="<%= pagination.page >= pagination.totalPages ? '#' : '/admin/transactions?page=' + (pagination.page + 1) + (search ? '&search=' + search : '') + (status ? '&status=' + status : '') %>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                <% } %>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Check if table exists and initialize DataTable
+            $.fn.dataTable.ext.errMode = 'none'; // Disable error messages
+            const tableElement = document.getElementById('transactionsTable');
+            if (tableElement && typeof $.fn.DataTable !== 'undefined') {
+                // Initialize DataTable
+                const dataTable = $(tableElement).DataTable({
+                    responsive: true,
+                    paging: false,
+                    searching: false,
+                    info: false,
+                    language: {
+                        emptyTable: "Tidak ada data transaksi ditemukan",
+                        zeroRecords: "Tidak ada data transaksi yang cocok dengan pencarian"
+                    }
+                });
+            } else {
+                // Setup manual sorting if DataTables isn't available
+                const headers = tableElement.querySelectorAll('thead th');
+                headers.forEach((header, index) => {
+                    // Don't add sorting to action column (last column)
+                    if (index === headers.length - 1) return;
+                    
+                    header.style.cursor = 'pointer';
+                    header.addEventListener('click', function() {
+                        sortTable(index);
+                    });
+                    
+                    // Add sort icon if not exists
+                    if (!header.querySelector('.sort-icon')) {
+                        const sortIcon = document.createElement('span');
+                        sortIcon.className = 'ms-1 text-muted sort-icon';
+                        sortIcon.innerHTML = '<i class="fas fa-sort"></i>';
+                        header.appendChild(sortIcon);
+                    }
+                });
+            }
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        document.getElementById('searchForm').submit();
+                    }
+                });
+            }
+        });
+        
+        // Function to sort table
+        function sortTable(columnIndex) {
+            const table = document.getElementById('transactionsTable');
+            if (!table) return;
+            
+            const isAscending = !table.getAttribute('data-sort-asc') || 
+                                table.getAttribute('data-sort-asc') === 'false';
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            
+            // Remove sort indicators from all headers
+            const sortIcons = table.querySelectorAll('.sort-icon');
+            sortIcons.forEach(icon => {
+                icon.innerHTML = '<i class="fas fa-sort"></i>';
+            });
+            
+            // Set sort indicator on active header
+            const headers = table.querySelectorAll('thead th');
+            const sortIcon = headers[columnIndex].querySelector('.sort-icon');
+            if (sortIcon) {
+                sortIcon.innerHTML = isAscending ? 
+                    '<i class="fas fa-sort-up"></i>' : 
+                    '<i class="fas fa-sort-down"></i>';
+            }
+            
+            // Sort rows
+            rows.sort((rowA, rowB) => {
+                // Get values from the column being sorted
+                const cellA = rowA.querySelectorAll('td')[columnIndex];
+                const cellB = rowB.querySelectorAll('td')[columnIndex];
+                
+                if (!cellA || !cellB) return 0;
+                
+                let valueA = cellA.textContent.trim();
+                let valueB = cellB.textContent.trim();
+                
+                // Convert to date if format looks like a date
+                if (valueA.match(/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}$/)) {
+                    valueA = new Date(valueA);
+                    valueB = new Date(valueB);
+                }
+                // Convert to number if both values are numeric
+                else if (!isNaN(valueA) && !isNaN(valueB)) {
+                    valueA = parseFloat(valueA);
+                    valueB = parseFloat(valueB);
+                }
+                
+                // Perform comparison
+                if (valueA < valueB) return isAscending ? -1 : 1;
+                if (valueA > valueB) return isAscending ? 1 : -1;
+                return 0;
+            });
+            
+            // Update table with sorted rows
+            const tbody = table.querySelector('tbody');
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Update sorting attributes
+            table.setAttribute('data-sort-asc', isAscending.toString());
+            table.setAttribute('data-sort-col', columnIndex.toString());
+        }
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

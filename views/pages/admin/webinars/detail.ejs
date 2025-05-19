@@ -1,0 +1,770 @@
+<!-- views/pages/admin/webinars/detail.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* CSS for webinar detail page */
+        .profile-header {
+            background: linear-gradient(to right, #4e73df, #36b9cc);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .webinar-icon-lg {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: 1rem;
+        }
+        
+        .webinar-image-lg {
+            width: 140px;
+            height: 140px;
+            border-radius: 15px;
+            object-fit: cover;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .webinar-info-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .webinar-info-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
+        
+        .fee-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .fee-free {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .fee-paid {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+            list-style: none;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0.75rem;
+            bottom: 0;
+            width: 1px;
+            background-color: #e3e6f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #4e73df;
+            border: 3px solid #fff;
+            z-index: 1;
+        }
+        
+        .timeline-card {
+            margin-left: 0.75rem;
+            padding-left: 1rem;
+        }
+        
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4e73df;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stats-label {
+            font-size: 0.875rem;
+            color: #5a5c69;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #4e73df;
+            color: white;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .points-badge {
+            background-color: #fff3e0;
+            color: #e65100;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .points-badge i {
+            margin-right: 8px;
+        }
+        
+        .document-link {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f1f3f9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #4e73df;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .document-link:hover {
+            background-color: #e3e6f0;
+            transform: translateY(-2px);
+        }
+        
+        .document-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .countdown-timer {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 10px 15px;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .countdown-timer i {
+            margin-right: 8px;
+        }
+        
+        .time-box {
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 5px;
+            border-radius: 5px;
+            min-width: 40px;
+            text-align: center;
+            margin: 0 3px;
+            font-weight: 700;
+        }
+        
+        .event-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/webinars' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Detail Webinar</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Webinar Detail Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/webinars" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                    <div>
+                        <div class="btn-group">
+                            <a href="/admin/webinars/<%= webinar.id %>/registrations" class="btn btn-info">
+                                <i class="fas fa-users me-2"></i> Daftar Peserta
+                            </a>
+                            <a href="/admin/webinars/edit/<%= webinar.id %>" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash-alt me-2"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Header -->
+                <div class="profile-header mb-4 position-relative">
+                    <% 
+                        const now = new Date();
+                        const eventDate = new Date(webinar.event_date);
+                        const isUpcoming = eventDate > now;
+                        const isActive = webinar.is_active === 1 || webinar.is_active === true;
+                        const statusClass = isActive ? (isUpcoming ? 'bg-success' : 'bg-secondary') : 'bg-danger';
+                        const statusText = isActive ? (isUpcoming ? 'Akan Datang' : 'Selesai') : 'Nonaktif';
+                    %>
+                    
+                    <div class="event-status <%= statusClass %> text-white">
+                        <i class="fas <%= isUpcoming && isActive ? 'fa-calendar-alt' : 'fa-check-circle' %> me-1"></i>
+                        <%= statusText %>
+                    </div>
+                    
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+                            <% if (webinar.image) { %>
+                                <img src="<%= webinar.image %>" alt="<%= webinar.name %>" class="webinar-image-lg mx-auto mx-md-0">
+                            <% } else { %>
+                                <div class="webinar-icon-lg mx-auto mx-md-0">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="mb-1"><%= webinar.name %></h3>
+                            <h6 class="mb-3 opacity-75">Dibuat oleh <%= webinar.created_by_name || 'Admin' %></h6>
+                            
+                            <p class="mb-1">
+                                <i class="fas fa-calendar me-2"></i> 
+                                <%= new Date(webinar.event_date).toLocaleDateString('id-ID', { 
+                                    weekday: 'long', 
+                                    day: 'numeric', 
+                                    month: 'long', 
+                                    year: 'numeric'
+                                }) %> | 
+                                <%= new Date(webinar.event_date).toLocaleTimeString('id-ID', { 
+                                    hour: '2-digit', 
+                                    minute: '2-digit'
+                                }) %> WIB
+                            </p>
+                            <p class="mb-2">
+                                <i class="fas fa-map-marker-alt me-2"></i> 
+                                <%= webinar.location || 'Online' %>
+                            </p>
+                            
+                            <div>
+                                <% 
+                                    const feeValue = parseFloat(webinar.fee);
+                                    const isFree = feeValue === 0 || isNaN(feeValue);
+                                %>
+                                <span class="fee-badge-lg <%= isFree ? 'fee-free' : 'fee-paid' %>">
+                                    <i class="<%= isFree ? 'fas fa-tag' : 'fas fa-money-bill-wave' %> me-1"></i>
+                                    <%= isFree ? 'Gratis' : `Rp ${feeValue.toLocaleString('id-ID')}` %>
+                                </span>
+                                
+                                <span class="points-badge ms-3">
+                                    <i class="fas fa-trophy"></i>
+                                    <%= webinar.points || 0 %> Poin
+                                </span>
+                            </div>
+                            
+                            <% if (isUpcoming && isActive) { %>
+                                <div class="countdown-timer mt-3" id="countdown-container">
+                                    <i class="fas fa-clock"></i>
+                                    <div class="d-flex">
+                                        <div class="text-center mx-1">
+                                            <div class="time-box" id="days">00</div>
+                                            <small>Hari</small>
+                                        </div>
+                                        <div class="text-center mx-1">
+                                            <div class="time-box" id="hours">00</div>
+                                            <small>Jam</small>
+                                        </div>
+                                        <div class="text-center mx-1">
+                                            <div class="time-box" id="minutes">00</div>
+                                            <small>Menit</small>
+                                        </div>
+                                        <div class="text-center mx-1">
+                                            <div class="time-box" id="seconds">00</div>
+                                            <small>Detik</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Left Column - Description & Information -->
+                    <div class="col-md-8">
+                        <!-- Description -->
+                        <div class="webinar-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Deskripsi Webinar</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="description">
+                                    <% if (webinar.description && webinar.description.length > 0) { %>
+                                        <p><%= webinar.description %></p>
+                                    <% } else { %>
+                                        <p class="text-muted">Tidak ada deskripsi tersedia.</p>
+                                    <% } %>
+                                </div>
+                                
+                                <% if (webinar.supporting_document) { %>
+                                    <div class="mt-4">
+                                        <h6 class="mb-3">Dokumen Pendukung:</h6>
+                                        <a href="<%= webinar.supporting_document %>" target="_blank" class="document-link">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span>Dokumen Pendukung Webinar</span>
+                                        </a>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                        <!-- Webinar Information -->
+                        <div class="webinar-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-calendar-alt me-2"></i> Informasi Webinar</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nama Webinar</div>
+                                            <div class="detail-value"><%= webinar.name %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Tanggal & Waktu</div>
+                                            <div class="detail-value">
+                                                <%= new Date(webinar.event_date).toLocaleDateString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric'
+                                                }) %>, 
+                                                <%= new Date(webinar.event_date).toLocaleTimeString('id-ID', { 
+                                                    hour: '2-digit', 
+                                                    minute: '2-digit'
+                                                }) %> WIB
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Lokasi</div>
+                                            <div class="detail-value"><%= webinar.location || 'Online' %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Biaya</div>
+                                            <div class="detail-value">
+                                                <% 
+                                                    const feeCost = parseFloat(webinar.fee);
+                                                    const isFeeZero = feeCost === 0 || isNaN(feeCost);
+                                                %>
+                                                <span class="badge <%= isFeeZero ? 'bg-success' : 'bg-primary' %>">
+                                                    <%= isFeeZero ? 'Gratis' : `Rp ${feeCost.toLocaleString('id-ID')}` %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Poin</div>
+                                            <div class="detail-value">
+                                                <span class="badge bg-warning text-dark">
+                                                    <%= webinar.points || 0 %> Poin
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= statusClass %>">
+                                                    <%= statusText %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Key Highlights -->
+                        <div class="webinar-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-star me-2"></i> Informasi Penting</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar-check fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Tanggal Pelaksanaan</h6>
+                                        <p class="mb-0 text-muted">Webinar ini dijadwalkan pada tanggal <%= new Date(webinar.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %>.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="info-icon">
+                                        <i class="fas fa-map-marked-alt fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Lokasi</h6>
+                                        <p class="mb-0 text-muted">Webinar akan diadakan secara <%= webinar.location.includes('Online') ? 'online' : 'offline' %> di <%= webinar.location %>.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="info-icon">
+                                        <i class="fas fa-trophy fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Poin Kehadiran</h6>
+                                        <p class="mb-0 text-muted">Peserta akan mendapatkan <%= webinar.points || 0 %> poin setelah menghadiri webinar ini.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-start">
+                                    <div class="info-icon">
+                                        <i class="fas fa-coins fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Biaya Pendaftaran</h6>
+                                        <p class="mb-0 text-muted">
+                                            <% 
+                                                const feeAmount = parseFloat(webinar.fee);
+                                                const isZeroFee = feeAmount === 0 || isNaN(feeAmount);
+                                            %>
+                                            <%= isZeroFee ? 'Webinar ini gratis untuk diikuti oleh semua peserta.' : `Webinar ini memerlukan biaya pendaftaran sebesar Rp ${feeAmount.toLocaleString('id-ID')}.` %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Timeline & Actions -->
+                    <div class="col-md-4">
+                        <!-- Quick Actions -->
+                        <div class="webinar-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-tasks me-2"></i> Aksi Cepat</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-grid gap-2">
+                                    <a href="/admin/webinars/<%= webinar.id %>/registrations" class="btn btn-info">
+                                        <i class="fas fa-users me-2"></i> Lihat Daftar Peserta
+                                    </a>
+                                    <a href="/admin/webinars/edit/<%= webinar.id %>" class="btn btn-primary">
+                                        <i class="fas fa-edit me-2"></i> Edit Data Webinar
+                                    </a>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash-alt me-2"></i> Hapus Webinar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Timeline -->
+                        <div class="webinar-info-card">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-history me-2"></i> Riwayat Aktivitas</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="timeline">
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Data Diperbarui</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(webinar.updated_at || webinar.created_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Webinar Dibuat</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(webinar.created_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Webinar Dijadwalkan</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(webinar.event_date).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus webinar <strong><%= webinar.name %></strong>?</p>
+                    <p class="text-danger mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="/admin/webinars/delete/<%= webinar.id %>" method="POST">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Initialize countdown timer if event is upcoming
+            const countdownContainer = document.getElementById('countdown-container');
+            if (countdownContainer) {
+                const eventDate = new Date("<%= webinar.event_date %>");
+                
+                // Update countdown every second
+                updateCountdown();
+                const countdownInterval = setInterval(updateCountdown, 1000);
+                
+                function updateCountdown() {
+                    const now = new Date();
+                    const diff = eventDate - now;
+                    
+                    // If event date is past, stop countdown
+                    if (diff <= 0) {
+                        clearInterval(countdownInterval);
+                        document.getElementById('days').textContent = '00';
+                        document.getElementById('hours').textContent = '00';
+                        document.getElementById('minutes').textContent = '00';
+                        document.getElementById('seconds').textContent = '00';
+                        return;
+                    }
+                    
+                    // Calculate time units
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    
+                    // Update display
+                    document.getElementById('days').textContent = days < 10 ? '0' + days : days;
+                    document.getElementById('hours').textContent = hours < 10 ? '0' + hours : hours;
+                    document.getElementById('minutes').textContent = minutes < 10 ? '0' + minutes : minutes;
+                    document.getElementById('seconds').textContent = seconds < 10 ? '0' + seconds : seconds;
+                }
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

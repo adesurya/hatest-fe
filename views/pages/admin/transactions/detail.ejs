@@ -1,0 +1,719 @@
+<!-- views/pages/admin/transactions/detail.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* CSS for transaction detail page */
+        .profile-header {
+            background: linear-gradient(to right, #4e73df, #36b9cc);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .transaction-icon-lg {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: 1rem;
+        }
+        
+        .transaction-info-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .transaction-info-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
+        
+        .status-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-pending {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .status-failed {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .status-expired {
+            background-color: #e0e0e0;
+            color: #616161;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+            list-style: none;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0.75rem;
+            bottom: 0;
+            width: 1px;
+            background-color: #e3e6f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #4e73df;
+            border: 3px solid #fff;
+            z-index: 1;
+        }
+        
+        .timeline-card {
+            margin-left: 0.75rem;
+            padding-left: 1rem;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #4e73df;
+            color: white;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .amount-text-lg {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 0;
+        }
+        
+        .payment-details-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .payment-details-item:last-child {
+            border-bottom: none;
+        }
+        
+        .payment-detail-label {
+            color: #6e707e;
+            font-weight: 500;
+        }
+        
+        .payment-detail-value {
+            font-weight: 600;
+            color: #5a5c69;
+        }
+        
+        .qr-code-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+        
+        .qr-code-image {
+            max-width: 200px;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e3e6f0;
+            padding: 0.5rem;
+        }
+        
+        .copy-button {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .copy-button:hover {
+            color: #4e73df;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/transactions' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Detail Transaksi</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Transaction Detail Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/transactions" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Profile Header -->
+                <div class="profile-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+                            <div class="transaction-icon-lg mx-auto mx-md-0">
+                                <% if (transaction.status === 'success') { %>
+                                    <i class="fas fa-check-circle"></i>
+                                <% } else if (transaction.status === 'pending') { %>
+                                    <i class="fas fa-clock"></i>
+                                <% } else if (transaction.status === 'failed') { %>
+                                    <i class="fas fa-times-circle"></i>
+                                <% } else if (transaction.status === 'expired') { %>
+                                    <i class="fas fa-calendar-times"></i>
+                                <% } else { %>
+                                    <i class="fas fa-receipt"></i>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="mb-1">Transaksi #<%= transaction.id %></h3>
+                            <h5 class="mb-3"><%= transaction.merchant_order_id %></h5>
+                            <p class="mb-1"><i class="fas fa-user me-2"></i> <%= transaction.user_name %> (<%= transaction.email %>)</p>
+                            <p class="mb-1"><i class="fas fa-book me-2"></i> <%= transaction.exam_name %></p>
+                            <p class="mb-2"><i class="fas fa-money-bill-wave me-2"></i> <%= transaction.payment_method_name %></p>
+                            
+                            <div class="mt-3">
+                                <% let statusClass = 'status-pending'; %>
+                                <% if (transaction.status === 'success') { %>
+                                    <% statusClass = 'status-success'; %>
+                                <% } else if (transaction.status === 'failed') { %>
+                                    <% statusClass = 'status-failed'; %>
+                                <% } else if (transaction.status === 'expired') { %>
+                                    <% statusClass = 'status-expired'; %>
+                                <% } %>
+                                <span class="status-badge-lg <%= statusClass %>">
+                                    <% if (transaction.status === 'success') { %>
+                                        <i class="fas fa-check-circle me-1"></i>
+                                    <% } else if (transaction.status === 'pending') { %>
+                                        <i class="fas fa-clock me-1"></i>
+                                    <% } else if (transaction.status === 'failed') { %>
+                                        <i class="fas fa-times-circle me-1"></i>
+                                    <% } else if (transaction.status === 'expired') { %>
+                                        <i class="fas fa-calendar-times me-1"></i>
+                                    <% } %>
+                                    <%= transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) %>
+                                </span>
+                                
+                                <span class="ms-3 badge bg-light text-dark fs-6 px-3 py-2">
+                                    <i class="fas fa-calendar-alt me-1"></i> <%= new Date(transaction.transaction_date).toLocaleDateString('id-ID', {
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric'
+                                    }) %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Left Column - Transaction Details -->
+                    <div class="col-md-8">
+                        <!-- Payment Summary -->
+                        <div class="transaction-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-money-check-alt me-2"></i> Ringkasan Pembayaran</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="text-center mb-4">
+                                    <h6 class="text-muted mb-2">Jumlah Pembayaran</h6>
+                                    <h2 class="amount-text-lg">Rp <%= new Intl.NumberFormat('id-ID').format(parseFloat(transaction.amount)) %></h2>
+                                </div>
+                                
+                                <div class="payment-details">
+                                    <div class="payment-details-item">
+                                        <div class="payment-detail-label">ID Transaksi</div>
+                                        <div class="payment-detail-value"><%= transaction.id %></div>
+                                    </div>
+                                    <div class="payment-details-item">
+                                        <div class="payment-detail-label">Order ID</div>
+                                        <div class="payment-detail-value"><%= transaction.merchant_order_id %></div>
+                                    </div>
+                                    <div class="payment-details-item">
+                                        <div class="payment-detail-label">Tanggal Transaksi</div>
+                                        <div class="payment-detail-value">
+                                            <%= new Date(transaction.transaction_date).toLocaleDateString('id-ID', {
+                                                day: 'numeric',
+                                                month: 'long',
+                                                year: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric'
+                                            }) %>
+                                        </div>
+                                    </div>
+                                    <% if (transaction.payment_date) { %>
+                                    <div class="payment-details-item">
+                                        <div class="payment-detail-label">Tanggal Pembayaran</div>
+                                        <div class="payment-detail-value">
+                                            <%= new Date(transaction.payment_date).toLocaleDateString('id-ID', {
+                                                day: 'numeric',
+                                                month: 'long',
+                                                year: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric'
+                                            }) %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                    <div class="payment-details-item">
+                                        <div class="payment-detail-label">Metode Pembayaran</div>
+                                        <div class="payment-detail-value"><%= transaction.payment_method_name %></div>
+                                    </div>
+                                    <div class="payment-details-item">
+                                        <div class="payment-detail-label">Status</div>
+                                        <div class="payment-detail-value">
+                                            <% let statusColor = ''; %>
+                                            <% if (transaction.status === 'success') { %>
+                                                <% statusColor = 'text-success'; %>
+                                            <% } else if (transaction.status === 'pending') { %>
+                                                <% statusColor = 'text-warning'; %>
+                                            <% } else if (transaction.status === 'failed') { %>
+                                                <% statusColor = 'text-danger'; %>
+                                            <% } else if (transaction.status === 'expired') { %>
+                                                <% statusColor = 'text-secondary'; %>
+                                            <% } %>
+                                            <span class="<%= statusColor %> fw-bold">
+                                                <%= transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Method Details -->
+                        <div class="transaction-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i> Detail Metode Pembayaran</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Metode Pembayaran</div>
+                                            <div class="detail-value"><%= transaction.payment_method_name %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Kode Pembayaran</div>
+                                            <div class="detail-value"><%= transaction.payment_code %></div>
+                                        </div>
+                                    </div>
+                                    <% if (transaction.va_number) { %>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nomor Virtual Account</div>
+                                            <div class="detail-value">
+                                                <div class="d-flex align-items-center">
+                                                    <span id="vaNumber"><%= transaction.va_number %></span>
+                                                    <i class="fas fa-copy ms-2 text-primary copy-button" 
+                                                       onclick="copyToClipboard('vaNumber')" 
+                                                       title="Salin ke clipboard"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                    <% if (transaction.reference) { %>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nomor Referensi</div>
+                                            <div class="detail-value"><%= transaction.reference %></div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                    <% if (transaction.expiry_date) { %>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Batas Waktu Pembayaran</div>
+                                            <div class="detail-value">
+                                                <%= new Date(transaction.expiry_date).toLocaleDateString('id-ID', {
+                                                    day: 'numeric',
+                                                    month: 'long',
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                    <% if (transaction.payment_url) { %>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">URL Pembayaran</div>
+                                            <div class="detail-value">
+                                                <a href="<%= transaction.payment_url %>" target="_blank" class="text-primary">
+                                                    <i class="fas fa-external-link-alt me-1"></i> Buka URL Pembayaran
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                </div>
+                                
+                                <% if (transaction.qr_image_path) { %>
+                                <div class="qr-code-container">
+                                    <img src="<%= transaction.qr_image_path %>" alt="QR Code Pembayaran" class="qr-code-image">
+                                    <p class="text-muted mb-0">Scan QR code untuk melakukan pembayaran</p>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                        <!-- User & Exam Info -->
+                        <div class="transaction-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-user me-2"></i> Informasi Pengguna & Ujian</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nama Pengguna</div>
+                                            <div class="detail-value"><%= transaction.user_name %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Email</div>
+                                            <div class="detail-value"><%= transaction.email %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">ID Pengguna</div>
+                                            <div class="detail-value"><%= transaction.user_id %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nama Ujian</div>
+                                            <div class="detail-value"><%= transaction.exam_name %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">ID Ujian</div>
+                                            <div class="detail-value"><%= transaction.exam_id %></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Timeline & Actions -->
+                    <div class="col-md-4">
+                        <!-- Transaction Status -->
+                        <div class="transaction-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Status Transaksi</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="text-center mb-3">
+                                    <% if (transaction.status === 'success') { %>
+                                        <div class="mb-3">
+                                            <i class="fas fa-check-circle fa-5x text-success"></i>
+                                        </div>
+                                        <h5>Pembayaran Berhasil</h5>
+                                        <p class="text-muted">Transaksi telah berhasil diproses dan pembayaran telah diterima.</p>
+                                    <% } else if (transaction.status === 'pending') { %>
+                                        <div class="mb-3">
+                                            <i class="fas fa-clock fa-5x text-warning"></i>
+                                        </div>
+                                        <h5>Menunggu Pembayaran</h5>
+                                        <p class="text-muted">Transaksi sedang menunggu pembayaran dari pengguna.</p>
+                                    <% } else if (transaction.status === 'failed') { %>
+                                        <div class="mb-3">
+                                            <i class="fas fa-times-circle fa-5x text-danger"></i>
+                                        </div>
+                                        <h5>Pembayaran Gagal</h5>
+                                        <p class="text-muted">Transaksi gagal diproses atau pembayaran ditolak oleh penyedia pembayaran.</p>
+                                    <% } else if (transaction.status === 'expired') { %>
+                                        <div class="mb-3">
+                                            <i class="fas fa-calendar-times fa-5x text-secondary"></i>
+                                        </div>
+                                        <h5>Pembayaran Kedaluwarsa</h5>
+                                        <p class="text-muted">Batas waktu pembayaran telah berakhir sebelum pembayaran dilakukan.</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline -->
+                        <div class="transaction-info-card">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-history me-2"></i> Riwayat Transaksi</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="timeline">
+                                    <% if (transaction.payment_date && transaction.status === 'success') { %>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Pembayaran Berhasil</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(transaction.payment_date).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Transaksi Dibuat</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(transaction.transaction_date).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <% if (transaction.status === 'expired') { %>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Batas Waktu Pembayaran</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(transaction.expiry_date).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+        
+        // Function to copy text to clipboard
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.innerText;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                // Show feedback
+                const originalIcon = element.nextElementSibling.classList.value;
+                element.nextElementSibling.classList.remove('fa-copy');
+                element.nextElementSibling.classList.add('fa-check');
+                element.nextElementSibling.style.color = '#28a745';
+                
+                // Reset after 2 seconds
+                setTimeout(function() {
+                    element.nextElementSibling.classList.remove('fa-check');
+                    element.nextElementSibling.classList.add('fa-copy');
+                    element.nextElementSibling.style.color = '';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>

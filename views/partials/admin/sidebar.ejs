@@ -1,0 +1,203 @@
+<!-- views/partials/admin/sidebar.ejs -->
+<div class="sidebar bg-dark text-white">
+    <div class="sidebar-header p-3 text-center">
+        <img src="/images/Logo-KDI.png" alt="Organization Logo" class="img-fluid mb-3" style="max-height: 50px;">
+        <h5 class="fw-bold mb-0">Admin Dashboard</h5>
+    </div>
+    <hr class="bg-light my-0">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path === '/admin/dashboard' ? 'active' : '' %>" href="/admin/dashboard">
+                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path === '/admin/map' ? 'active' : '' %>" href="/admin/map">
+                <i class="fas fa-map-marker-alt me-2"></i> Map Dokter
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path.startsWith('/admin/users') ? 'active' : '' %>" href="/admin/users">
+                <i class="fas fa-users fa-fw"></i>
+                <span>Users</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path === '/admin/doctors' ? 'active' : '' %>" href="/admin/doctors">
+                <i class="fas fa-user-md me-2"></i> Dokter
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white  <%= path === '/admin/dokter-muda' ? 'active' : '' %>" href="/admin/dokter-muda">
+                <i class="fas fa-user-md me-2"></i> Dokter Muda
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path === '/admin/medical-faculties' ? 'active' : '' %>" href="/admin/medical-faculties">
+                <i class="fas fa-university me-2"></i> Fakultas Medis
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path === '/admin/kurikulum-medis' ? 'active' : '' %>" href="/admin/kurikulum-medis">
+                <i class="fas fa-book-open me-2"></i>
+                <span>Kurikulum Medis</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path.includes('/admin/webinars') ? 'active' : '' %>" href="/admin/webinars">
+                <i class="fas fa-video"></i>
+                <span>Webinar</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white <%= path === '/admin/transactions' ? 'active' : '' %>" href="/admin/transactions">
+                <i class="fas fa-money-bill-wave fa-fw me-2"></i>
+                <span>Transaksi</span>
+            </a>
+        </li>
+        <hr class="bg-light my-0">
+        <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#testParentMenu" role="button" aria-expanded="false" aria-controls="testParentMenu">
+                <span><i class="fas fa-clipboard-check fa-fw"></i>Ujian</span>
+                <i class="fas fa-chevron-down small"></i>
+            </a>
+            <div class="collapse ps-3" id="testParentMenu">
+                <ul class="nav flex-column">
+                        <!-- <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/exams/categories' ? 'active' : '' %>" href="/admin/exams/categories">
+                                <i class="fas fa-tags fa-fw me-1"></i> List Kategori
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/exams/categories/create' ? 'active' : '' %>" href="/admin/exams/categories/create">
+                                <i class="fas fa-info-circle"></i>Buat Kategori
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/exams' ? 'active' : '' %>" href="/admin/exams">
+                                <i class="fas fa-list fa-fw me-1"></i> List Ujian
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white <%= path === '/admin/exams/create' ? 'active' : '' %>" href="/admin/exams/create">
+                                <i class="fas fa-sitemap me-2"></i> Buat Ujian
+                            </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
+        <hr class="bg-light my-0">
+        <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#testParentMenu" role="button" aria-expanded="false" aria-controls="testParentMenu">
+                <span><i class="fas fa-folder-open me-2"></i> CMS Website</span>
+                <i class="fas fa-chevron-down small"></i>
+            </a>
+            <div class="collapse ps-3" id="testParentMenu">
+                <ul class="nav flex-column">
+                    <!-- <li class="nav-item">
+                        <a class="nav-link text-white <%= path === '/admin/test-child' ? 'active' : '' %>" href="/admin/test-child">
+                            <i class="fas fa-circle-notch me-2 small"></i> Test Child
+                        </a>
+                    </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link text-white <%= path === '/admin/sliders' ? 'active' : '' %>" href="/admin/sliders">
+                                <i class="fas fa-images me-2"></i> Sliders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white <%= path === '/admin/agenda' ? 'active' : '' %>" href="/admin/agenda">
+                                <i class="fas fa-calendar-alt me-2"></i> Agenda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= path && path.startsWith('/admin/about') ? 'active' : '' %>" href="/admin/about">
+                                <i class="fas fa-info-circle"></i>About
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                                    <a class="nav-link dropdown-toggle <%= path.includes('/admin/articles') ? 'active' : '' %>" href="#articlesSubmenu" data-bs-toggle="collapse" aria-expanded="<%= path.includes('/admin/articles') ? 'true' : 'false' %>">
+                                        <i class="fas fa-newspaper me-2"></i> Berita
+                                    </a>
+                                    <div class="collapse ps-4" ></div>
+                                    <ul class="nav collapse <%= path.includes('/admin/articles') ? 'show' : '' %>" id="articlesSubmenu">
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link <%= path === '/admin/articles' ? 'active' : '' %>" href="/admin/articles">
+                                                <i class="fas fa-list-alt me-2"></i> Daftar Berita
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">                                            
+                                            <a class="nav-link <%= path === '/admin/articles/create' ? 'active' : '' %>" href="/admin/articles/create">
+                                                <i class="fas fa-plus-circle me-2"></i> + Berita
+                                            </a>
+                                        </li>
+                                        <!-- <li class="nav-item">
+                                            <a class="nav-link <%= path === '/admin/articles/categories' ? 'active' : '' %>" href="/admin/articles/categories">
+                                                <i class="fas fa-tags me-2"></i> Kategori Berita
+                                            </a>
+                                        </li> -->
+                                        <!-- <li class="nav-item">
+                                            <a class="nav-link <%= path === '/admin/articles/categories/create' ? 'active' : '' %>" href="/admin/articles/categories/create">
+                                                <i class="fas fa-tags me-2"></i> + Kategori
+                                            </a>
+                                        </li> -->
+                                    </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-white <%= path === '/admin/organization-structure' ? 'active' : '' %>" href="/admin/organization-structure">
+                                <i class="fas fa-sitemap me-2"></i> Struktur
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/benefits' ? 'active' : '' %>" href="/admin/benefits">
+                                <i class="fas fa-gift me-2"></i> Manfaat
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/testimonials' ? 'active' : '' %>" href="/admin/testimonials">
+                                <i class="fas fa-comment-dots  me-2"></i> Testimoni
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/vision-mission' ? 'active' : '' %>" href="/admin/vision-mission">
+                                <i class="fas fa-lightbulb me-2"></i> Visi & Misi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/contacts' ? 'active' : '' %>" href="/admin/contacts">
+                                <i class="fas fa-address-book me-2"></i> Kontak
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <%= path === '/admin/organization-history' ? 'active' : '' %>" href="/admin/organization-history">
+                                <i class="fas fa-history me-2"></i> Sejarah Organisasi
+                            </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
+        
+        <!-- <li class="nav-item">
+            <a class="nav-link text-white <%= path === '/admin/settings' ? 'active' : '' %>" href="/admin/settings">
+                <i class="fas fa-cog me-2"></i> Settings
+            </a>
+        </li> -->
+        <hr class="bg-light my-0">
+        <ul class="nav flex-column">
+
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/">
+                <i class="fas fa-home me-2"></i> Back to Website
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/auth/logout">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>

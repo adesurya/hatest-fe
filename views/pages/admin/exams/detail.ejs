@@ -1,0 +1,713 @@
+<!-- views/pages/admin/exams/detail.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* CSS for exam detail page */
+        .profile-header {
+            background: linear-gradient(to right, #4e73df, #36b9cc);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .exam-icon-lg {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: 1rem;
+        }
+        
+        .exam-info-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .exam-info-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
+        
+        .category-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+            list-style: none;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0.75rem;
+            bottom: 0;
+            width: 1px;
+            background-color: #e3e6f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #4e73df;
+            border: 3px solid #fff;
+            z-index: 1;
+        }
+        
+        .timeline-card {
+            margin-left: 0.75rem;
+            padding-left: 1rem;
+        }
+        
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4e73df;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stats-label {
+            font-size: 0.875rem;
+            color: #5a5c69;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #4e73df;
+            color: white;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .fee-badge {
+            padding: 10px 16px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .document-card {
+            border-radius: 10px;
+            border: 1px dashed #d1d3e2;
+            padding: 1.5rem;
+            background-color: #f8f9fc;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .document-card:hover {
+            background-color: #eaecf4;
+            border-color: #b7b9cc;
+        }
+        
+        .document-icon {
+            font-size: 2rem;
+            color: #4e73df;
+            margin-right: 1rem;
+        }
+        
+        .status-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .status-upcoming-lg {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-active-lg {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .status-completed-lg {
+            background-color: #e0e0e0;
+            color: #616161;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/exams' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Detail Ujian</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Exam Detail Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/exams" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                    <div>
+                        <div class="btn-group">
+                            <a href="/admin/exams/edit/<%= exam.id %>" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash-alt me-2"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Header -->
+                <div class="profile-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+                            <div class="exam-icon-lg mx-auto mx-md-0">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="mb-1"><%= exam.name %></h3>
+                            <h5 class="mb-3"><%= exam.category_name %></h5>
+                            <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i> <%= exam.location %></p>
+                            <p class="mb-2"><i class="fas fa-calendar-alt me-2"></i> <%= new Date(exam.exam_date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+                            
+                            <div class="mt-3 d-flex flex-wrap">
+                                <span class="fee-badge me-3">
+                                    <i class="fas fa-money-bill-wave me-1"></i> Rp <%= parseFloat(exam.fee).toLocaleString('id-ID') %>
+                                </span>
+                                
+                                <% 
+                                    const today = new Date();
+                                    const examDate = new Date(exam.exam_date);
+                                    let statusClass = '';
+                                    let statusText = '';
+                                    
+                                    if (examDate > today) {
+                                        statusClass = 'status-upcoming-lg';
+                                        statusText = 'Mendatang';
+                                    } else if (examDate.toDateString() === today.toDateString()) {
+                                        statusClass = 'status-active-lg';
+                                        statusText = 'Hari Ini';
+                                    } else {
+                                        statusClass = 'status-completed-lg';
+                                        statusText = 'Selesai';
+                                    }
+                                %>
+                                <span class="status-badge-lg <%= statusClass %>">
+                                    <i class="fas fa-clock me-1"></i> <%= statusText %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Left Column - Information -->
+                    <div class="col-md-8">
+                        <!-- Detailed Information -->
+                        <div class="exam-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Ujian</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nama Ujian</div>
+                                            <div class="detail-value"><%= exam.name %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Kategori</div>
+                                            <div class="detail-value"><%= exam.category_name %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Lokasi</div>
+                                            <div class="detail-value"><%= exam.location %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Tanggal Ujian</div>
+                                            <div class="detail-value">
+                                                <%= new Date(exam.exam_date).toLocaleDateString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric'
+                                                }) %>
+                                                <span class="text-muted ms-2">
+                                                    (<%= new Date(exam.exam_date).toLocaleTimeString('id-ID', { 
+                                                        hour: '2-digit', 
+                                                        minute: '2-digit'
+                                                    }) %> WIB)
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Biaya</div>
+                                            <div class="detail-value">
+                                                <span class="badge bg-success px-3 py-2">
+                                                    <i class="fas fa-money-bill-wave me-1"></i> Rp <%= parseFloat(exam.fee).toLocaleString('id-ID') %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= statusClass === 'status-upcoming-lg' ? 'bg-success' : statusClass === 'status-active-lg' ? 'bg-primary' : 'bg-secondary' %> px-3 py-2">
+                                                    <i class="fas fa-clock me-1"></i> <%= statusText %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div>
+                                            <div class="detail-label">Deskripsi</div>
+                                            <div class="detail-value">
+                                                <%= exam.description || '-' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Requirements Information -->
+                        <div class="exam-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-clipboard-list me-2"></i> Persyaratan Ujian</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <p><%= exam.requirements || 'Tidak ada persyaratan khusus.' %></p>
+                                
+                                <% if (exam.supporting_document) { %>
+                                    <h6 class="mt-4 mb-3">Dokumen Pendukung</h6>
+                                    <a href="/uploads/exams/<%= exam.supporting_document %>" target="_blank" class="document-card text-decoration-none">
+                                        <div class="document-icon">
+                                            <% 
+                                                let iconClass = 'fa-file';
+                                                const fileExt = exam.supporting_document.split('.').pop().toLowerCase();
+                                                
+                                                if (['pdf'].includes(fileExt)) {
+                                                    iconClass = 'fa-file-pdf';
+                                                } else if (['doc', 'docx'].includes(fileExt)) {
+                                                    iconClass = 'fa-file-word';
+                                                } else if (['xls', 'xlsx'].includes(fileExt)) {
+                                                    iconClass = 'fa-file-excel';
+                                                } else if (['ppt', 'pptx'].includes(fileExt)) {
+                                                    iconClass = 'fa-file-powerpoint';
+                                                }
+                                            %>
+                                            <i class="fas <%= iconClass %>"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Dokumen Pendukung</h6>
+                                            <small class="text-muted">Klik untuk melihat atau mengunduh dokumen</small>
+                                        </div>
+                                    </a>
+                                <% } else { %>
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-info-circle me-2"></i> Tidak ada dokumen pendukung terlampir.
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                        <!-- Key Highlights -->
+                        <div class="exam-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-star me-2"></i> Informasi Penting</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar-day fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Tanggal Pelaksanaan</h6>
+                                        <p class="mb-0 text-muted">Ujian akan dilaksanakan pada <%= new Date(exam.exam_date).toLocaleDateString('id-ID', { 
+                                            weekday: 'long', 
+                                            day: 'numeric', 
+                                            month: 'long', 
+                                            year: 'numeric'
+                                        }) %> pukul <%= new Date(exam.exam_date).toLocaleTimeString('id-ID', { 
+                                            hour: '2-digit', 
+                                            minute: '2-digit'
+                                        }) %> WIB.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="info-icon">
+                                        <i class="fas fa-map-marker-alt fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Lokasi</h6>
+                                        <p class="mb-0 text-muted">Ujian akan diadakan di <%= exam.location %>.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="info-icon">
+                                        <i class="fas fa-money-bill-wave fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Biaya Pendaftaran</h6>
+                                        <p class="mb-0 text-muted">Biaya pendaftaran ujian sebesar Rp <%= parseFloat(exam.fee).toLocaleString('id-ID') %>.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-start">
+                                    <div class="info-icon">
+                                        <i class="fas fa-clipboard-list fa-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Persyaratan</h6>
+                                        <p class="mb-0 text-muted"><%= exam.requirements || 'Tidak ada persyaratan khusus.' %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Quick Actions & Timeline -->
+                    <div class="col-md-4">
+                        <!-- Quick Actions -->
+                        <div class="exam-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-tasks me-2"></i> Aksi Cepat</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-grid gap-2">
+                                    <a href="/admin/exams/edit/<%= exam.id %>" class="btn btn-primary">
+                                        <i class="fas fa-edit me-2"></i> Edit Data Ujian
+                                    </a>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash-alt me-2"></i> Hapus Ujian
+                                    </button>
+                                    <% if (exam.supporting_document) { %>
+                                        <a href="/uploads/exams/<%= exam.supporting_document %>" target="_blank" class="btn btn-outline-primary">
+                                            <i class="fas fa-download me-2"></i> Unduh Dokumen
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Status Information -->
+                        <div class="exam-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-clipboard-check me-2"></i> Status Ujian</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <% 
+                                    // Deklarasi ulang currentDate (karena berbeda scope)
+                                    const currentDate = new Date();
+                                    // Redefinisi examDate tidak diperlukan karena sudah dalam scope yang sama
+                                    
+                                    const daysRemaining = Math.floor((examDate - currentDate) / (1000 * 60 * 60 * 24));
+                                    
+                                    let statusTitle = '';
+                                    let statusDesc = '';
+                                    let progressPercent = 0;
+                                    let progressClass = '';
+                                    
+                                    if (examDate > currentDate) {
+                                        statusTitle = 'Mendatang';
+                                        statusDesc = `Ujian akan dilaksanakan dalam ${daysRemaining} hari lagi.`;
+                                        progressPercent = 25;
+                                        progressClass = 'bg-success';
+                                    } else if (examDate.toDateString() === currentDate.toDateString()) {
+                                        statusTitle = 'Hari Ini';
+                                        statusDesc = 'Ujian dilaksanakan hari ini.';
+                                        progressPercent = 50;
+                                        progressClass = 'bg-primary';
+                                    } else {
+                                        statusTitle = 'Selesai';
+                                        statusDesc = `Ujian telah dilaksanakan pada ${new Date(exam.exam_date).toLocaleDateString('id-ID', { 
+                                            day: 'numeric', 
+                                            month: 'long', 
+                                            year: 'numeric'
+                                        })}.`;
+                                        progressPercent = 100;
+                                        progressClass = 'bg-secondary';
+                                    }
+                                %>
+                                <h5 class="mb-2"><i class="fas fa-circle <%= statusTitle === 'Mendatang' ? 'text-success' : statusTitle === 'Hari Ini' ? 'text-primary' : 'text-secondary' %> me-2"></i> <%= statusTitle %></h5>
+                                <p class="text-muted mb-3"><%= statusDesc %></p>
+                                
+                                <div class="progress mb-3" style="height: 10px;">
+                                    <div class="progress-bar <%= progressClass %>" role="progressbar" style="width: <%= progressPercent %>%" aria-valuenow="<%= progressPercent %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <span class="small text-muted">Terjadwal</span>
+                                    <span class="small text-muted">Hari Ini</span>
+                                    <span class="small text-muted">Selesai</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Timeline -->
+                        <div class="exam-info-card">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-history me-2"></i> Riwayat Aktivitas</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="timeline">
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Data Diperbarui</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(exam.updated_at || exam.created_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Ujian Dibuat</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(exam.created_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                            <p class="text-muted small mb-0">
+                                                Oleh: <%= exam.created_by_name %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus ujian <strong><%= exam.name %></strong>?</p>
+                    <p class="text-danger mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="/admin/exams/delete/<%= exam.id %>" method="POST">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

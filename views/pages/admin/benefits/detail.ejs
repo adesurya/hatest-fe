@@ -1,0 +1,659 @@
+<!-- views/pages/admin/benefits/detail.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* CSS for benefit detail page */
+        .profile-header {
+            background: linear-gradient(to right, #4e73df, #36b9cc);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .benefit-icon-lg {
+            width: 100px;
+            height: 100px;
+            border-radius: 25%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-info-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .benefit-info-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
+        
+        .status-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-inactive {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+            list-style: none;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0.75rem;
+            bottom: 0;
+            width: 1px;
+            background-color: #e3e6f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #4e73df;
+            border: 3px solid #fff;
+            z-index: 1;
+        }
+        
+        .timeline-card {
+            margin-left: 0.75rem;
+            padding-left: 1rem;
+        }
+        
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4e73df;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stats-label {
+            font-size: 0.875rem;
+            color: #5a5c69;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #4e73df;
+            color: white;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .display-preview {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background-color: #f8f9fc;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .preview-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            margin: 0 auto 1.5rem;
+            background-color: rgba(78, 115, 223, 0.1);
+            color: #4e73df;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #344767;
+            margin-bottom: 1rem;
+        }
+        
+        .preview-description {
+            font-size: 0.9rem;
+            color: #67748e;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .sort-badge {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            font-size: 0.875rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-right: 0.5rem;
+        }
+        
+        .action-btn.btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .action-btn.btn-primary:hover {
+            background-color: #3a57c8;
+            border-color: #3a57c8;
+        }
+        
+        .action-btn.btn-danger {
+            background-color: #e74a3b;
+            border-color: #e74a3b;
+        }
+        
+        .action-btn.btn-danger:hover {
+            background-color: #d42d1d;
+            border-color: #d42d1d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/benefits' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Detail Manfaat Organisasi</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Benefit Detail Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/benefits" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                    <div>
+                        <div class="btn-group">
+                            <a href="/admin/benefits/edit/<%= benefit.id %>" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash-alt me-2"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Header -->
+                <div class="profile-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+                            <div class="benefit-icon-lg mx-auto mx-md-0">
+                                <% 
+                                // Map benefit icon to Font Awesome icon
+                                let iconClass = 'fa-gift'; // Default icon
+                                
+                                if (benefit.icon === 'research') iconClass = 'fa-microscope';
+                                else if (benefit.icon === 'network') iconClass = 'fa-network-wired';
+                                else if (benefit.icon === 'certificate') iconClass = 'fa-certificate';
+                                else if (benefit.icon === 'education') iconClass = 'fa-graduation-cap';
+                                else if (benefit.icon === 'discount') iconClass = 'fa-tags';
+                                else if (benefit.icon === 'protection') iconClass = 'fa-shield-alt';
+                                else if (benefit.icon === 'health') iconClass = 'fa-heartbeat';
+                                else if (benefit.icon === 'award') iconClass = 'fa-award';
+                                %>
+                                <i class="fas <%= iconClass %>"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="mb-3"><%= benefit.title %></h3>
+                            <p class="mb-1"><%= benefit.description %></p>
+                            
+                            <div class="mt-3 d-flex flex-wrap align-items-center">
+                                <span class="status-badge-lg <%= benefit.is_active ? 'status-active' : 'status-inactive' %>">
+                                    <i class="fas <%= benefit.is_active ? 'fa-check-circle' : 'fa-times-circle' %> me-1"></i>
+                                    <%= benefit.is_active ? 'Aktif' : 'Tidak Aktif' %>
+                                </span>
+                                
+                                <span class="ms-3 sort-badge">
+                                    <i class="fas fa-sort-amount-up me-1"></i> Urutan #<%= benefit.sort_order %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Left Column - Statistics & Information -->
+                    <div class="col-md-8">
+                        <!-- Detailed Information -->
+                        <div class="benefit-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Detail</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Judul</div>
+                                            <div class="detail-value"><%= benefit.title %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= benefit.is_active ? 'bg-success' : 'bg-secondary' %>">
+                                                    <%= benefit.is_active ? 'Aktif' : 'Tidak Aktif' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Ikon</div>
+                                            <div class="detail-value">
+                                                <span class="badge bg-primary text-white">
+                                                    <i class="fas <%= iconClass %> me-1"></i> <%= benefit.icon %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Urutan Tampilan</div>
+                                            <div class="detail-value"><%= benefit.sort_order %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div>
+                                            <div class="detail-label">Deskripsi</div>
+                                            <div class="detail-value">
+                                                <%= benefit.description || '-' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Display Preview -->
+                        <div class="benefit-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-eye me-2"></i> Pratinjau Tampilan Frontend</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="display-preview">
+                                    <div class="preview-icon">
+                                        <i class="fas <%= iconClass %>"></i>
+                                    </div>
+                                    <h4 class="preview-title"><%= benefit.title %></h4>
+                                    <p class="preview-description"><%= benefit.description %></p>
+                                </div>
+                                
+                                <div class="small text-muted text-center">
+                                    <i class="fas fa-info-circle me-1"></i> Ini adalah pratinjau tampilan manfaat pada halaman utama website
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Management -->
+                        <div class="benefit-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-database me-2"></i> Informasi Data</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">ID</div>
+                                            <div class="detail-value"><code><%= benefit.id %></code></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Tanggal Dibuat</div>
+                                            <div class="detail-value">
+                                                <%= new Date(benefit.created_at).toLocaleString('id-ID', {
+                                                    weekday: 'long',
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                }) %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Tanggal Diperbarui</div>
+                                            <div class="detail-value">
+                                                <%= new Date(benefit.updated_at).toLocaleString('id-ID', {
+                                                    weekday: 'long',
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                }) %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Dibuat Oleh</div>
+                                            <div class="detail-value">
+                                                <%= benefit.created_by_name || 'Tidak diketahui' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Actions & History -->
+                    <div class="col-md-4">
+                        <!-- Quick Actions -->
+                        <div class="benefit-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-tasks me-2"></i> Aksi Cepat</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-grid gap-3">
+                                    <a href="/admin/benefits/edit/<%= benefit.id %>" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-edit me-2"></i> Edit Manfaat Ini
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash-alt me-2"></i> Hapus Manfaat
+                                    </button>
+                                    <a href="/admin/benefits" class="btn btn-outline-secondary">
+                                        <i class="fas fa-list me-2"></i> Lihat Semua Manfaat
+                                    </a>
+                                    <a href="/admin/benefits/create" class="btn btn-outline-primary">
+                                        <i class="fas fa-plus-circle me-2"></i> Tambah Manfaat Baru
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Status Card -->
+                        <div class="benefit-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-toggle-on me-2"></i> Status Tampilan</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <div class="mb-3">
+                                        <% if (benefit.is_active) { %>
+                                            <div class="alert alert-success mb-3" role="alert">
+                                                <i class="fas fa-check-circle me-2"></i> Manfaat ini aktif dan ditampilkan di halaman utama
+                                            </div>
+                                        <% } else { %>
+                                            <div class="alert alert-secondary mb-3" role="alert">
+                                                <i class="fas fa-times-circle me-2"></i> Manfaat ini tidak aktif dan tidak ditampilkan di halaman utama
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                    
+                                    <a href="/admin/benefits/edit/<%= benefit.id %>" class="btn btn-outline-primary">
+                                        <i class="fas fa-toggle-on me-2"></i> Ubah Status
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Timeline -->
+                        <div class="benefit-info-card">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-history me-2"></i> Riwayat Aktivitas</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="timeline">
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Data Diperbarui</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(benefit.updated_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Manfaat Dibuat</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(benefit.created_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus manfaat <strong><%= benefit.title %></strong>?</p>
+                    <p class="text-danger mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="/admin/benefits/delete/<%= benefit.id %>" method="POST">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

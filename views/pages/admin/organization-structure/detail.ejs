@@ -1,0 +1,511 @@
+<!-- views/pages/admin/organization-structure/detail.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* CSS for structure detail page */
+        .structure-header {
+            background: linear-gradient(to right, #4e73df, #36b9cc);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .structure-icon-lg {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: 1rem;
+        }
+        
+        .structure-info-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .structure-info-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
+        
+        .status-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-inactive {
+            background-color: #fbe9e7;
+            color: #c62828;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+            list-style: none;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0.75rem;
+            bottom: 0;
+            width: 1px;
+            background-color: #e3e6f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #4e73df;
+            border: 3px solid #fff;
+            z-index: 1;
+        }
+        
+        .timeline-card {
+            margin-left: 0.75rem;
+            padding-left: 1rem;
+        }
+        
+        .structure-image {
+            width: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        }
+        
+        .structure-image img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #4e73df;
+            color: white;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .position-badge-lg {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background-color: #f0f2f5;
+            color: #4a5568;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/organization-structure' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Detail Struktur Organisasi</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Structure Detail Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/organization-structure" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                    <div>
+                        <div class="btn-group">
+                            <a href="/admin/organization-structure/edit/<%= structure.id %>" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash-alt me-2"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Structure Header -->
+                <div class="structure-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+                            <div class="structure-icon-lg mx-auto mx-md-0">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="mb-3"><%= structure.title %></h3>
+                            <p class="mb-1"><i class="fas fa-info-circle me-2"></i> <%= structure.description %></p>
+                            <p class="mb-2">
+                                <i class="fas fa-user me-2"></i> Dibuat oleh: 
+                                <strong><%= structure.created_by_name || 'Admin' %></strong>
+                            </p>
+                            
+                            <div class="mt-3">
+                                <span class="status-badge-lg <%= structure.is_active === 1 ? 'status-active' : 'status-inactive' %>">
+                                    <i class="fas <%= structure.is_active === 1 ? 'fa-check-circle' : 'fa-times-circle' %> me-1"></i>
+                                    <%= structure.is_active === 1 ? 'Aktif' : 'Tidak Aktif' %>
+                                </span>
+                                
+                                <span class="ms-3 position-badge-lg">
+                                    <i class="fas fa-sort me-1"></i> Posisi: <%= structure.position %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Left Column - Image & Information -->
+                    <div class="col-md-8">
+                        <!-- Structure Image -->
+                        <div class="structure-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-image me-2"></i> Gambar Struktur Organisasi</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="structure-image">
+                                    <% if (structure.image_path) { %>
+                                        <img src="<%= structure.image_path %>" alt="<%= structure.title %>" class="img-fluid">
+                                    <% } else { %>
+                                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                                            <div class="text-center text-muted">
+                                                <i class="fas fa-image fa-4x mb-3"></i>
+                                                <p>Tidak ada gambar</p>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Detailed Information -->
+                        <div class="structure-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Detail</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Judul</div>
+                                            <div class="detail-value"><%= structure.title %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Posisi</div>
+                                            <div class="detail-value"><%= structure.position %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Status</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= structure.is_active === 1 ? 'bg-success' : 'bg-danger' %>">
+                                                    <%= structure.is_active === 1 ? 'Aktif' : 'Tidak Aktif' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Dibuat Oleh</div>
+                                            <div class="detail-value"><%= structure.created_by_name || 'Admin' %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div>
+                                            <div class="detail-label">Deskripsi</div>
+                                            <div class="detail-value">
+                                                <%= structure.description || '-' %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Timeline & Actions -->
+                    <div class="col-md-4">
+                        <!-- Quick Actions -->
+                        <div class="structure-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-tasks me-2"></i> Aksi Cepat</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-grid gap-2">
+                                    <a href="/admin/organization-structure/edit/<%= structure.id %>" class="btn btn-primary">
+                                        <i class="fas fa-edit me-2"></i> Edit Struktur Organisasi
+                                    </a>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash-alt me-2"></i> Hapus Struktur
+                                    </button>
+                                    <% if (structure.is_active === 1) { %>
+                                        <a href="#" class="btn btn-outline-warning" onclick="event.preventDefault(); document.getElementById('toggle-status-form').submit();">
+                                            <i class="fas fa-times-circle me-2"></i> Nonaktifkan
+                                        </a>
+                                        <form id="toggle-status-form" action="/admin/organization-structure/toggle-status/<%= structure.id %>" method="POST" style="display: none;">
+                                            <input type="hidden" name="is_active" value="0">
+                                        </form>
+                                    <% } else { %>
+                                        <a href="#" class="btn btn-outline-success" onclick="event.preventDefault(); document.getElementById('toggle-status-form').submit();">
+                                            <i class="fas fa-check-circle me-2"></i> Aktifkan
+                                        </a>
+                                        <form id="toggle-status-form" action="/admin/organization-structure/toggle-status/<%= structure.id %>" method="POST" style="display: none;">
+                                            <input type="hidden" name="is_active" value="1">
+                                        </form>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Timeline -->
+                        <div class="structure-info-card">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-history me-2"></i> Riwayat Aktivitas</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="timeline">
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Data Diperbarui</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(structure.updated_at || structure.created_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Struktur Organisasi Dibuat</h6>
+                                            <p class="text-muted small mb-0">
+                                                <%= new Date(structure.created_at).toLocaleString('id-ID', { 
+                                                    weekday: 'long', 
+                                                    day: 'numeric', 
+                                                    month: 'long', 
+                                                    year: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus struktur organisasi <strong><%= structure.title %></strong>?</p>
+                    <p class="text-danger mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="/admin/organization-structure/delete/<%= structure.id %>" method="POST">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

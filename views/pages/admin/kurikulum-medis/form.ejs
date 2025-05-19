@@ -1,0 +1,588 @@
+<!-- views/pages/admin/kurikulum-medis/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .form-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.25rem 2.25rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+        
+        .custom-file-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-right: 90px;
+        }
+        
+        .file-upload-container {
+            border: 2px dashed #d1d3e2;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            background-color: #f8f9fc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-container:hover {
+            border-color: #4e73df;
+            background-color: #f1f5ff;
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            color: #4e73df;
+            margin-bottom: 1rem;
+        }
+        
+        .current-file {
+            padding: 0.75rem 1rem;
+            background-color: #e8f5e9;
+            border-radius: 0.5rem;
+            border: 1px solid #c8e6c9;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .current-file i {
+            font-size: 1.5rem;
+            color: #2e7d32;
+            margin-right: 1rem;
+        }
+        
+        .currency-input-group {
+            position: relative;
+        }
+        
+        .currency-input-group .form-control {
+            padding-left: 3rem;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: #5a5c69;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/kurikulum-medis' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Kurikulum Medis' : 'Tambah Kurikulum Medis Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/kurikulum-medis" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit Kurikulum Medis' : 'Tambah Kurikulum Medis Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi kurikulum medis yang sudah ada.' : 'Tambahkan kurikulum medis baru ke dalam sistem.' %></p>
+                </div>
+                
+                <!-- Kurikulum Form -->
+                <form action="<%= isEdit ? '/admin/kurikulum-medis/' + kurikulum.id : '/admin/kurikulum-medis' %>" method="POST" id="kurikulumForm" class="needs-validation" enctype="multipart/form-data" novalidate>
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Basic Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Dasar</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label for="nama_fakultas" class="form-label required-field">Nama Fakultas</label>
+                                            <input type="text" class="form-control" id="nama_fakultas" name="nama_fakultas" value="<%= kurikulum ? kurikulum.nama_fakultas : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Nama fakultas harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="tahun_kurikulum" class="form-label required-field">Tahun Kurikulum</label>
+                                            <input type="number" class="form-control" id="tahun_kurikulum" name="tahun_kurikulum" value="<%= kurikulum ? kurikulum.tahun_kurikulum : currentYear %>" min="2000" max="<%= currentYear + 5 %>" required>
+                                            <div class="invalid-feedback">
+                                                Tahun kurikulum harus diisi dengan angka valid.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <label for="deskripsi_kurikulum" class="form-label required-field">Deskripsi Kurikulum</label>
+                                            <textarea class="form-control" id="deskripsi_kurikulum" name="deskripsi_kurikulum" rows="4" required><%= kurikulum ? kurikulum.deskripsi_kurikulum : '' %></textarea>
+                                            <div class="invalid-feedback">
+                                                Deskripsi kurikulum harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="biaya_semester" class="form-label required-field">Biaya per Semester</label>
+                                            <div class="currency-input-group">
+                                                <span class="currency-symbol">Rp</span>
+                                                <input type="text" class="form-control" id="biaya_semester" name="biaya_semester" 
+                                                       value="<%= kurikulum ? parseFloat(kurikulum.biaya_semester).toLocaleString('id-ID').replace(/\./g, ',') : '' %>" 
+                                                       required>
+                                                <div class="invalid-feedback">
+                                                    Biaya per semester harus diisi.
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">Contoh: 15.000.000</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Additional Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-clipboard-list me-2"></i> Informasi Tambahan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="catatan" class="form-label">Catatan</label>
+                                            <textarea class="form-control" id="catatan" name="catatan" rows="4" placeholder="Masukkan catatan atau informasi tambahan tentang kurikulum..."><%= kurikulum ? kurikulum.catatan : '' %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Document Upload -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-file-upload me-2"></i> Dokumen Kurikulum</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="file-upload-container" id="fileUploadContainer">
+                                        <input type="file" id="file_kurikulum" name="file_kurikulum" class="d-none" accept=".pdf,.doc,.docx">
+                                        <div class="file-upload-icon">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                        <h5>Unggah Dokumen Kurikulum</h5>
+                                        <p class="text-muted mb-0">Klik disini untuk memilih file atau seret dan lepas file (PDF, DOC, DOCX)</p>
+                                        <small class="text-muted mt-2 d-block">Ukuran maksimal: 10MB</small>
+                                    </div>
+                                    
+                                    <div id="selectedFile" class="mt-3" style="display: none;">
+                                        <p class="mb-1">File yang dipilih:</p>
+                                        <div class="current-file">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <div>
+                                                <p class="mb-0 fw-semibold" id="selectedFileName"></p>
+                                                <small class="text-muted" id="selectedFileSize"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <% if (kurikulum && kurikulum.file_kurikulum) { %>
+                                        <div class="current-file mt-3">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <div>
+                                                <p class="mb-0 fw-semibold">Dokumen saat ini</p>
+                                                <small class="text-muted">
+                                                    <!-- Mostrar la ruta completa para depuración (puedes quitar esto después) -->
+                                                    <span class="d-none"><%= kurikulum.file_kurikulum %></span>
+                                                    <!-- Mostrar solo el nombre del archivo para la UI -->
+                                                    <%= kurikulum.file_kurikulum ? kurikulum.file_kurikulum.split('/').pop() : 'No file' %>
+                                                </small>
+                                                <div class="mt-2">
+                                                    <a href="<%= kurikulum.file_kurikulum %>" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye me-1"></i> Lihat
+                                                    </a>
+                                                    <span class="ms-2 text-muted">Unggah dokumen baru untuk mengganti</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Help Card -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="note-card mb-4">
+                                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                        <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Pastikan semua informasi terisi dengan benar untuk memudahkan pengelolaan data kurikulum.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Format Dokumen</h6>
+                                        <ul class="small ps-3 mb-0">
+                                            <li class="mb-2">Format yang diizinkan: PDF, DOC, DOCX</li>
+                                            <li class="mb-2">Ukuran maksimal: 10MB</li>
+                                            <li>Pastikan dokumen berisi informasi lengkap tentang kurikulum</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mb-0">
+                                        <h6 class="mb-2">Tips</h6>
+                                        <ul class="small ps-3 mb-0">
+                                            <li class="mb-2">Deskripsi kurikulum sebaiknya mencakup tujuan, fokus, dan keunggulan kurikulum</li>
+                                            <li class="mb-2">Masukkan biaya semester dalam format angka (contoh: 15000000)</li>
+                                            <li>Gunakan catatan untuk informasi tambahan seperti tanggal penerapan</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Data' : 'Simpan Data' %>
+                                    </button>
+                                    <a href="/admin/kurikulum-medis" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Form validation
+            const form = document.getElementById('kurikulumForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    // Format the biaya_semester field before submitting
+                    const biayaField = document.getElementById('biaya_semester');
+                    if (biayaField) {
+                        // Remove all dots and replace commas with dots for proper numerical format
+                        biayaField.value = biayaField.value.replace(/\./g, '').replace(/,/g, '');
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+            
+            // File upload functionality
+            const fileUploadContainer = document.getElementById('fileUploadContainer');
+            const fileInput = document.getElementById('file_kurikulum');
+            const selectedFileSection = document.getElementById('selectedFile');
+            const selectedFileName = document.getElementById('selectedFileName');
+            const selectedFileSize = document.getElementById('selectedFileSize');
+            
+            if (fileUploadContainer && fileInput) {
+                // Click on the container to trigger file input
+                fileUploadContainer.addEventListener('click', function() {
+                    fileInput.click();
+                });
+                
+                // Handle file selection
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+                        selectedFileName.textContent = file.name;
+                        selectedFileSize.textContent = formatFileSize(file.size);
+                        selectedFileSection.style.display = 'block';
+                        
+                        // Change container style to indicate file selected
+                        fileUploadContainer.style.borderColor = '#4e73df';
+                        fileUploadContainer.style.backgroundColor = '#f1f5ff';
+                    } else {
+                        selectedFileSection.style.display = 'none';
+                    }
+                });
+                
+                // Drag and drop functionality
+                fileUploadContainer.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.style.borderColor = '#4e73df';
+                    this.style.backgroundColor = '#f1f5ff';
+                });
+                
+                fileUploadContainer.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.style.borderColor = '#d1d3e2';
+                    this.style.backgroundColor = '#f8f9fc';
+                });
+                
+                fileUploadContainer.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.style.borderColor = '#4e73df';
+                    this.style.backgroundColor = '#f1f5ff';
+                    
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    if (files.length > 0) {
+                        fileInput.files = files;
+                        const file = files[0];
+                        selectedFileName.textContent = file.name;
+                        selectedFileSize.textContent = formatFileSize(file.size);
+                        selectedFileSection.style.display = 'block';
+                    }
+                });
+            }
+            
+            // Format file size to readable format
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Format currency input for biaya_semester
+            const biayaInput = document.getElementById('biaya_semester');
+            if (biayaInput) {
+                biayaInput.addEventListener('input', function(e) {
+                    // Get the input value and remove all non-numeric characters
+                    let value = this.value.replace(/\D/g, '');
+                    
+                    // Format the number with thousand separators
+                    if (value) {
+                        value = parseInt(value, 10).toLocaleString('id-ID');
+                    }
+                    
+                    // Update the input value
+                    this.value = value;
+                });
+                
+                // On focus, remove the formatting for better editing
+                biayaInput.addEventListener('focus', function() {
+                    const value = this.value.replace(/\./g, '');
+                    this.value = value;
+                });
+                
+                // On blur, reformat the value
+                biayaInput.addEventListener('blur', function() {
+                    if (this.value) {
+                        const value = parseInt(this.value.replace(/\D/g, ''), 10);
+                        this.value = value.toLocaleString('id-ID');
+                    }
+                });
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

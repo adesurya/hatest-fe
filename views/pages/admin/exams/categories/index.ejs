@@ -1,0 +1,663 @@
+<!-- views/pages/admin/exams/categories/index.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for categories management */
+        .category-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .category-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4e73df;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .count-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .search-bar {
+            border-radius: 50px;
+            padding-left: 20px;
+            padding-right: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .search-bar:focus {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: #344767;
+        }
+        
+        .dataTables_wrapper .row {
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .page-link {
+            color: #4e73df;
+        }
+        
+        .form-select, .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+        
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .stats-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stats-icon {
+            font-size: 32px;
+            color: #4e73df;
+        }
+        
+        .stats-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #344767;
+        }
+        
+        .stats-title {
+            font-size: 14px;
+            color: #67748e;
+        }
+        
+        .table th {
+            white-space: nowrap;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../../partials/admin/sidebar', { path: '/admin/exams/categories' }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Manajemen Kategori Ujian</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Categories Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-primary-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-tags text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count"><%= categories ? categories.length : 0 %></div>
+                                        <div class="stats-title">Total Kategori Ujian</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-success-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-clipboard-check text-success"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count">
+                                            <!-- Count implementation would depend on your API data -->
+                                            <% 
+                                                let examTotal = 0;
+                                                if (categories && categories.length > 0) {
+                                                    categories.forEach(category => {
+                                                        if (category.exam_count) {
+                                                            examTotal += category.exam_count;
+                                                        }
+                                                    });
+                                                }
+                                            %>
+                                            <%= examTotal %>
+                                        </div>
+                                        <div class="stats-title">Total Ujian Terdaftar</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Page Header -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h4 class="mb-0">Daftar Kategori Ujian</h4>
+                                <p class="text-muted mb-0">Kelola kategori ujian dalam sistem</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <a href="/admin/exams/categories/create" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-2"></i> Tambah Kategori Baru
+                                </a>
+                                <a href="/admin/exams" class="btn btn-outline-primary ms-2">
+                                    <i class="fas fa-clipboard-check me-2"></i> Kelola Ujian
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search & Filter -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form action="/admin/exams/categories" method="GET" id="searchForm">
+                            <div class="row align-items-center">
+                                <div class="col-md-9 mb-3 mb-md-0">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-search text-muted"></i>
+                                        </span>
+                                        <input type="text" name="search" id="searchInput" class="form-control search-bar" placeholder="Cari kategori berdasarkan nama atau deskripsi..." value="<%= search || '' %>">
+                                        <button type="submit" class="btn btn-primary px-4">Cari</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-md-end">
+                                    <% if (search) { %>
+                                        <a href="/admin/exams/categories" class="btn btn-outline-secondary w-100">
+                                            <i class="fas fa-times me-1"></i> Reset
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Categories Table -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="categoriesTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Nama Kategori</th>
+                                        <th>Deskripsi</th>
+                                        <th>Jumlah Ujian</th>
+                                        <th>Tanggal Dibuat</th>
+                                        <th class="text-end pe-4">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (categories && categories.length > 0) { %>
+                                        <% categories.forEach(category => { %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="category-icon me-3">
+                                                            <i class="fas fa-tags"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0"><%= category.name %></h6>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><%= category.description ? (category.description.length > 100 ? category.description.substring(0, 100) + '...' : category.description) : '-' %></td>
+                                                <td>
+                                                    <span class="count-badge">
+                                                        <%= category.exam_count || 0 %> Ujian
+                                                    </span>
+                                                </td>
+                                                <td><%= category.created_at ? new Date(category.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-' %></td>
+                                                <td class="text-end pe-4">
+                                                    <a href="/admin/exams/categories/edit/<%= category.id %>" class="btn btn-sm btn-light action-btn me-1" title="Edit">
+                                                        <i class="fas fa-edit text-success"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-light action-btn delete-category" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#deleteModal" 
+                                                        data-id="<%= category.id %>" 
+                                                        data-name="<%= category.name %>"
+                                                        data-count="<%= category.exam_count || 0 %>"
+                                                        title="Hapus">
+                                                        <i class="fas fa-trash-alt text-danger"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5" class="text-center py-5">
+                                                <div class="py-5">
+                                                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                                    <h5>Tidak ada data kategori ujian ditemukan</h5>
+                                                    <p class="text-muted">Silakan tambahkan kategori baru atau ubah filter pencarian</p>
+                                                    <a href="/admin/exams/categories/create" class="btn btn-primary mt-2">
+                                                        Tambah Kategori Baru
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <% if (pagination && pagination.totalPages > 1) { %>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div>
+                            <span class="text-muted">Menampilkan <%= (pagination.page-1) * pagination.limit + 1 %> - <%= Math.min(pagination.page * pagination.limit, pagination.totalItems) %> dari <%= pagination.totalItems %> kategori</span>
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item <%= pagination.page <= 1 ? 'disabled' : '' %>">
+                                    <a class="page-link" href="<%= pagination.page <= 1 ? '#' : `/admin/exams/categories?page=${pagination.page - 1}${search ? '&search=' + search : ''}` %>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                
+                                <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+                                    <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                        <a class="page-link" href="/admin/exams/categories?page=<%= i %><%= search ? '&search=' + search : '' %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                <% } %>
+                                
+                                <li class="page-item <%= pagination.page >= pagination.totalPages ? 'disabled' : '' %>">
+                                    <a class="page-link" href="<%= pagination.page >= pagination.totalPages ? '#' : `/admin/exams/categories?page=${pagination.page + 1}${search ? '&search=' + search : ''}` %>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                <% } %>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus kategori <strong id="categoryNameToDelete"></strong>?</p>
+                    <div id="categoryWarning" class="alert alert-warning d-none">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Kategori ini memiliki <strong id="examCountWarning"></strong> ujian terkait. Menghapus kategori ini akan memengaruhi ujian tersebut.
+                    </div>
+                    <p class="text-danger mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="deleteForm" action="" method="POST">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Check if table exists and initialize DataTable
+            $.fn.dataTable.ext.errMode = 'none'; // Menonaktifkan pesan error
+            const tableElement = document.getElementById('categoriesTable');
+            if (tableElement && typeof $.fn.DataTable !== 'undefined') {
+                // Initialize DataTable
+                const dataTable = $(tableElement).DataTable({
+                    responsive: true,
+                    paging: false,
+                    searching: false,
+                    info: false,
+                    language: {
+                        emptyTable: "Tidak ada data kategori ujian ditemukan",
+                        zeroRecords: "Tidak ada data kategori ujian yang cocok dengan pencarian"
+                    }
+                });
+            } else {
+                // Setup manual sorting if DataTables isn't available
+                const headers = tableElement.querySelectorAll('thead th');
+                headers.forEach((header, index) => {
+                    // Don't add sorting to action column (last column)
+                    if (index === headers.length - 1) return;
+                    
+                    header.style.cursor = 'pointer';
+                    header.addEventListener('click', function() {
+                        sortTable(index);
+                    });
+                    
+                    // Add sort icon if not exists
+                    if (!header.querySelector('.sort-icon')) {
+                        const sortIcon = document.createElement('span');
+                        sortIcon.className = 'ms-1 text-muted sort-icon';
+                        sortIcon.innerHTML = '<i class="fas fa-sort"></i>';
+                        header.appendChild(sortIcon);
+                    }
+                });
+            }
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        document.getElementById('searchForm').submit();
+                    }
+                });
+            }
+            
+            // Delete category confirmation
+            const deleteButtons = document.querySelectorAll('.delete-category');
+            if (deleteButtons.length) {
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const categoryId = this.getAttribute('data-id');
+                        const categoryName = this.getAttribute('data-name');
+                        const examCount = parseInt(this.getAttribute('data-count') || '0');
+                        
+                        const categoryNameToDelete = document.getElementById('categoryNameToDelete');
+                        if (categoryNameToDelete) {
+                            categoryNameToDelete.textContent = categoryName;
+                        }
+                        
+                        // Show warning if category has related exams
+                        const categoryWarning = document.getElementById('categoryWarning');
+                        const examCountWarning = document.getElementById('examCountWarning');
+                        if (categoryWarning && examCountWarning) {
+                            if (examCount > 0) {
+                                categoryWarning.classList.remove('d-none');
+                                examCountWarning.textContent = examCount;
+                            } else {
+                                categoryWarning.classList.add('d-none');
+                            }
+                        }
+                        
+                        const deleteForm = document.getElementById('deleteForm');
+                        if (deleteForm) {
+                            deleteForm.action = `/admin/exams/categories/delete/${categoryId}`;
+                        }
+                    });
+                });
+            }
+        });
+        
+        // Function to sort table
+        function sortTable(columnIndex) {
+            const table = document.getElementById('categoriesTable');
+            if (!table) return;
+            
+            const isAscending = !table.getAttribute('data-sort-asc') || 
+                                table.getAttribute('data-sort-asc') === 'false';
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            
+            // Remove sort indicators from all headers
+            const sortIcons = table.querySelectorAll('.sort-icon');
+            sortIcons.forEach(icon => {
+                icon.innerHTML = '<i class="fas fa-sort"></i>';
+            });
+            
+            // Set sort indicator on active header
+            const headers = table.querySelectorAll('thead th');
+            const sortIcon = headers[columnIndex].querySelector('.sort-icon');
+            if (sortIcon) {
+                sortIcon.innerHTML = isAscending ? 
+                    '<i class="fas fa-sort-up"></i>' : 
+                    '<i class="fas fa-sort-down"></i>';
+            }
+            
+            // Sort rows
+            rows.sort((rowA, rowB) => {
+                // Get values from the column being sorted
+                const cellA = rowA.querySelectorAll('td')[columnIndex];
+                const cellB = rowB.querySelectorAll('td')[columnIndex];
+                
+                if (!cellA || !cellB) return 0;
+                
+                let valueA = cellA.textContent.trim();
+                let valueB = cellB.textContent.trim();
+                
+                // Special handling for count column (index 2)
+                if (columnIndex === 2) {
+                    // Extract numeric value from "X Ujian" format
+                    valueA = parseInt(valueA.replace(/[^\d]/g, ''));
+                    valueB = parseInt(valueB.replace(/[^\d]/g, ''));
+                }
+                // Convert to date if format looks like a date (index 3 - Tanggal Dibuat)
+                else if (columnIndex === 3) {
+                    // Convert dates in "DD MMM YYYY" format
+                    const parseDateString = (dateStr) => {
+                        const months = {
+                            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
+                            'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11
+                        };
+                        const parts = dateStr.split(' ');
+                        if (parts.length === 3) {
+                            return new Date(parts[2], months[parts[1]], parts[0]);
+                        }
+                        return new Date(0); // fallback
+                    };
+                    
+                    valueA = parseDateString(valueA);
+                    valueB = parseDateString(valueB);
+                }
+                // Convert to number if both values are numeric
+                else if (!isNaN(valueA) && !isNaN(valueB)) {
+                    valueA = parseFloat(valueA);
+                    valueB = parseFloat(valueB);
+                }
+                
+                // Perform comparison
+                if (valueA < valueB) return isAscending ? -1 : 1;
+                if (valueA > valueB) return isAscending ? 1 : -1;
+                return 0;
+            });
+            
+            // Update table with sorted rows
+            const tbody = table.querySelector('tbody');
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Update sorting attributes
+            table.setAttribute('data-sort-asc', isAscending.toString());
+            table.setAttribute('data-sort-col', columnIndex.toString());
+        }
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,732 @@
+<!-- views/pages/admin/users/detail.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* CSS for user detail page */
+        .profile-header {
+            background: linear-gradient(to right, #4e73df, #36b9cc);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-avatar-lg {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .user-info-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-info-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
+        
+        .role-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .role-admin {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .role-doctor {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .role-user {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .role-other {
+            background-color: #f5f5f5;
+            color: #616161;
+        }
+        
+        .verification-badge-lg {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+        
+        .verified {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .unverified {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+            list-style: none;
+        }
+        
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0.75rem;
+            bottom: 0;
+            width: 1px;
+            background-color: #e3e6f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-badge {
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #4e73df;
+            border: 3px solid #fff;
+            z-index: 1;
+        }
+        
+        .timeline-card {
+            margin-left: 0.75rem;
+            padding-left: 1rem;
+        }
+        
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4e73df;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stats-label {
+            font-size: 0.875rem;
+            color: #5a5c69;
+        }
+        
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #4e73df;
+            color: white;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .profile-image {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/users' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Detail User</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Detail Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/users" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Profile Header -->
+                <div class="profile-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center text-md-start mb-4 mb-md-0">
+                            <% if (userData.profile_photo) { %>
+                                <img src="<%= userData.profile_photo %>" alt="<%= userData.full_name %>" class="profile-image mx-auto mx-md-0">
+                            <% } else { %>
+                                <div class="user-avatar-lg mx-auto mx-md-0">
+                                    <%= userData.full_name.charAt(0).toUpperCase() %>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="mb-1"><%= userData.full_name %></h3>
+                            <p class="mb-1"><i class="fas fa-envelope me-2"></i> <%= userData.email %></p>
+                            <p class="mb-1"><i class="fas fa-phone me-2"></i> <%= userData.phone_number || '-' %></p>
+                            <% if (userData.institution) { %>
+                                <p class="mb-1"><i class="fas fa-building me-2"></i> <%= userData.institution %></p>
+                            <% } %>
+                            
+                            <div class="mt-3">
+                                <% 
+                                let roleBadgeClass = '';
+                                if (userData.is_admin === 1 || userData.role === 'Administrator') {
+                                    roleBadgeClass = 'role-admin';
+                                } else if (userData.role === 'Dokter') {
+                                    roleBadgeClass = 'role-doctor';
+                                } else if (userData.role === 'dokterMuda') {
+                                    roleBadgeClass = 'role-doctor';
+                                } else if (userData.role === 'User') {
+                                    roleBadgeClass = 'role-user';
+                                } else {
+                                    roleBadgeClass = 'role-other';
+                                }
+                                %>
+                                <span class="role-badge-lg <%= roleBadgeClass %>">
+                                    <i class="fas fa-user-tag me-1"></i>
+                                    <% if (userData.is_admin === 1 && !userData.role) { %>
+                                        Administrator
+                                    <% } else { %>
+                                        <%= userData.role === 'dokterMuda' ? 'Dokter Muda' : userData.role || 'User' %>
+                                    <% } %>
+                                </span>
+                                
+                                <span class="ms-3 verification-badge-lg <%= userData.is_verified === 1 ? 'verified' : 'unverified' %>">
+                                    <i class="fas fa-<%= userData.is_verified === 1 ? 'check-circle' : 'times-circle' %> me-1"></i> 
+                                    <%= userData.is_verified === 1 ? 'Terverifikasi' : 'Belum Terverifikasi' %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Left Column - Information -->
+                    <div class="col-md-8">
+                        <!-- Profile Information -->
+                        <div class="user-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-id-card me-2"></i> Informasi Profil</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nama Lengkap</div>
+                                            <div class="detail-value"><%= userData.full_name %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Email</div>
+                                            <div class="detail-value"><%= userData.email %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Nomor Telepon</div>
+                                            <div class="detail-value"><%= userData.phone_number || '-' %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Peran</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= userData.is_admin === 1 || userData.role === 'Administrator' ? 'bg-success' : userData.role === 'Dokter' || userData.role === 'dokterMuda' ? 'bg-primary' : 'bg-warning' %>">
+                                                    <% if (userData.is_admin === 1 && !userData.role) { %>
+                                                        Administrator
+                                                    <% } else { %>
+                                                        <%= userData.role === 'dokterMuda' ? 'Dokter Muda' : userData.role || 'User' %>
+                                                    <% } %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Status Verifikasi</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= userData.is_verified === 1 ? 'bg-success' : 'bg-danger' %>">
+                                                    <%= userData.is_verified === 1 ? 'Terverifikasi' : 'Belum Terverifikasi' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Status Admin</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= userData.is_admin === 1 ? 'bg-success' : 'bg-secondary' %>">
+                                                    <%= userData.is_admin === 1 ? 'Ya' : 'Tidak' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Status Keanggotaan</div>
+                                            <div class="detail-value">
+                                                <span class="badge <%= userData.membership_status === 'active' ? 'bg-success' : 'bg-secondary' %>">
+                                                    <%= userData.membership_status === 'active' ? 'Aktif' : 'Tidak Aktif' %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% if (userData.category_id) { %>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <div class="detail-label">Kategori ID</div>
+                                                <div class="detail-value"><%= userData.category_id %></div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <% if (userData.institution) { %>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <div class="detail-label">Institusi</div>
+                                                <div class="detail-value"><%= userData.institution %></div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Personal Information -->
+                        <div class="user-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-user me-2"></i> Informasi Pribadi</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Tempat Lahir</div>
+                                            <div class="detail-value"><%= userData.birth_place || '-' %></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="detail-label">Tanggal Lahir</div>
+                                            <div class="detail-value">
+                                                <% if (userData.birth_date) { %>
+                                                    <% 
+                                                    const birth_date = new Date(userData.birth_date);
+                                                    const formattedBirthDate = birth_date.toLocaleDateString('id-ID', { 
+                                                        day: 'numeric', 
+                                                        month: 'long', 
+                                                        year: 'numeric' 
+                                                    });
+                                                    %>
+                                                    <%= formattedBirthDate %>
+                                                <% } else { %>
+                                                    -
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <% if (userData.collegium_certificate_number) { %>
+                                    <div class="mt-3">
+                                        <div class="detail-label">Nomor Sertifikat Kolegium</div>
+                                        <div class="detail-value"><%= userData.collegium_certificate_number %></div>
+                                    </div>
+                                <% } %>
+                                
+                                <% if (userData.id_card_photo || userData.profile_photo) { %>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="detail-label mb-3">Dokumen & Foto</div>
+                                        </div>
+                                        <% if (userData.profile_photo) { %>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card">
+                                                    <div class="card-header py-2 px-3 bg-light">
+                                                        <small class="text-muted"><i class="fas fa-id-badge me-1"></i> Foto Profil</small>
+                                                    </div>
+                                                    <div class="card-body p-0">
+                                                        <img src="<%= userData.profile_photo %>" alt="Foto Profil" class="img-fluid w-100" style="max-height: 200px; object-fit: cover;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                        <% if (userData.id_card_photo) { %>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card">
+                                                    <div class="card-header py-2 px-3 bg-light">
+                                                        <small class="text-muted"><i class="fas fa-id-card me-1"></i> Foto KTP</small>
+                                                    </div>
+                                                    <div class="card-body p-0">
+                                                        <img src="<%= userData.id_card_photo %>" alt="Foto KTP" class="img-fluid w-100" style="max-height: 200px; object-fit: cover;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                        <% if (userData.role === 'Dokter') { %>
+                            <!-- Professional Information (Only for Doctors) -->
+                            <div class="user-info-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-stethoscope me-2"></i> Informasi Profesional</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div>
+                                                <div class="detail-label">Spesialisasi</div>
+                                                <div class="detail-value"><%= userData.specialization || '-' %></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <div class="detail-label">Pengalaman</div>
+                                                <div class="detail-value"><%= userData.experience_years ? userData.experience_years + ' tahun' : '-' %></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <div class="detail-label">Lisensi Praktik</div>
+                                                <div class="detail-value"><%= userData.license_number || '-' %></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Right Column - Additional Information -->
+                    <div class="col-md-4">
+                        <!-- Quick Actions -->
+                        <div class="user-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-tasks me-2"></i> Aksi Cepat</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-grid gap-2">
+                                    <a href="/admin/users" class="btn btn-outline-primary">
+                                        <i class="fas fa-arrow-left me-2"></i> Kembali ke Daftar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Account Status -->
+                        <div class="user-info-card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-user-shield me-2"></i> Status Akun</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="info-icon">
+                                            <i class="fas fa-shield-alt fa-sm"></i>
+                                        </div>
+                                        <h6 class="mb-0">Status Verifikasi</h6>
+                                    </div>
+                                    <p class="mb-0 ps-4 text-<%= userData.is_verified === 1 ? 'success' : 'danger' %>">
+                                        <i class="fas fa-<%= userData.is_verified === 1 ? 'check-circle' : 'times-circle' %> me-1"></i>
+                                        <%= userData.is_verified === 1 ? 'Akun telah terverifikasi' : 'Akun belum terverifikasi' %>
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="info-icon">
+                                            <i class="fas fa-user-cog fa-sm"></i>
+                                        </div>
+                                        <h6 class="mb-0">Peran Pengguna</h6>
+                                    </div>
+                                    <p class="mb-0 ps-4">
+                                        <i class="fas fa-user-tag me-1"></i>
+                                        <% if (userData.is_admin === 1 && !userData.role) { %>
+                                            Administrator
+                                        <% } else { %>
+                                            <%= userData.role === 'dokterMuda' ? 'Dokter Muda' : userData.role || 'User' %>
+                                        <% } %>
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="info-icon">
+                                            <i class="fas fa-key fa-sm"></i>
+                                        </div>
+                                        <h6 class="mb-0">Hak Akses</h6>
+                                    </div>
+                                    <p class="mb-0 ps-4">
+                                        <i class="fas fa-<%= userData.is_admin === 1 ? 'crown text-warning' : 'user text-primary' %> me-1"></i>
+                                        <%= userData.is_admin === 1 ? 'Akses Admin' : 'Akses Standar' %>
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="info-icon">
+                                            <i class="fas fa-id-card fa-sm"></i>
+                                        </div>
+                                        <h6 class="mb-0">Status Keanggotaan</h6>
+                                    </div>
+                                    <p class="mb-0 ps-4 text-<%= userData.membership_status === 'active' ? 'success' : 'secondary' %>">
+                                        <i class="fas fa-<%= userData.membership_status === 'active' ? 'check-circle' : 'times-circle' %> me-1"></i>
+                                        <%= userData.membership_status === 'active' ? 'Keanggotaan Aktif' : 'Keanggotaan Tidak Aktif' %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Timeline -->
+                        <div class="user-info-card">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0"><i class="fas fa-history me-2"></i> Aktivitas</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <% 
+                                // Get registration date from user data
+                                const registrationDate = userData.created_at ? new Date(userData.created_at) : new Date();
+                                const formattedRegistrationDate = registrationDate.toLocaleString('id-ID', { 
+                                    weekday: 'long', 
+                                    day: 'numeric', 
+                                    month: 'long', 
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric'
+                                });
+                                
+                                // Get last login date (if available)
+                                const lastLoginDate = userData.last_login ? new Date(userData.last_login) : null;
+                                const formattedLastLoginDate = lastLoginDate ? lastLoginDate.toLocaleString('id-ID', { 
+                                    weekday: 'long', 
+                                    day: 'numeric', 
+                                    month: 'long', 
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric'
+                                }) : null;
+                                
+                                // Get verification date (if available)
+                                const verificationDate = userData.verified_at ? new Date(userData.verified_at) : null;
+                                const formattedVerificationDate = verificationDate ? verificationDate.toLocaleString('id-ID', { 
+                                    weekday: 'long', 
+                                    day: 'numeric', 
+                                    month: 'long', 
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric'
+                                }) : null;
+                                %>
+                                
+                                <ul class="timeline">
+                                    <% if (formattedLastLoginDate) { %>
+                                        <li class="timeline-item">
+                                            <div class="timeline-badge"></div>
+                                            <div class="timeline-card">
+                                                <h6 class="mb-1">Login Terakhir</h6>
+                                                <p class="text-muted small mb-0"><%= formattedLastLoginDate %></p>
+                                            </div>
+                                        </li>
+                                    <% } %>
+                                    
+                                    <% if (userData.is_verified === 1 && formattedVerificationDate) { %>
+                                        <li class="timeline-item">
+                                            <div class="timeline-badge"></div>
+                                            <div class="timeline-card">
+                                                <h6 class="mb-1">Akun Terverifikasi</h6>
+                                                <p class="text-muted small mb-0"><%= formattedVerificationDate %></p>
+                                            </div>
+                                        </li>
+                                    <% } %>
+                                    
+                                    <li class="timeline-item">
+                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-card">
+                                            <h6 class="mb-1">Akun Terdaftar</h6>
+                                            <p class="text-muted small mb-0"><%= formattedRegistrationDate %></p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

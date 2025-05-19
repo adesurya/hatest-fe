@@ -1,0 +1,622 @@
+<!-- views/pages/admin/webinars/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+        
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            border: 1px dashed #d1d3e2;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f8f9fc;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .file-upload-input {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-upload-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 38px;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e3e6f0;
+            background-color: #fff;
+            color: #6e707e;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .custom-file-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 38px;
+            padding: 0.375rem 0.75rem;
+            background-color: #4e73df;
+            color: #fff;
+            border: none;
+            border-radius: 0 0.5rem 0.5rem 0;
+            z-index: 2;
+        }
+        
+        .custom-file-button:hover {
+            background-color: #2e59d9;
+        }
+        
+        .custom-file {
+            position: relative;
+        }
+        
+        .custom-file-input {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: calc(1.5em + 0.75rem + 2px);
+            margin: 0;
+            opacity: 0;
+        }
+        
+        .custom-file-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            height: calc(1.5em + 0.75rem + 2px);
+            padding: 0.375rem 0.75rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #6e707e;
+            background-color: #fff;
+            border: 1px solid #e3e6f0;
+            border-radius: 0.5rem;
+        }
+        
+        .custom-file-input:lang(en)~.custom-file-label::after {
+            content: "Browse";
+        }
+        
+        .custom-file-label::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+            display: block;
+            height: calc(1.5em + 0.75rem);
+            padding: 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #fff;
+            content: "Browse";
+            background-color: #4e73df;
+            border-left: inherit;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        
+        .document-preview {
+            display: none;
+            padding: 1rem;
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .document-preview.show {
+            display: flex;
+            align-items: center;
+        }
+        
+        .document-preview i {
+            font-size: 24px;
+            margin-right: 1rem;
+            color: #4e73df;
+        }
+        
+        .points-icon {
+            font-size: 24px;
+            color: #f6c23e;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/webinars' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Webinar' : 'Tambah Webinar Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/webinars" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit Webinar' : 'Tambah Webinar Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi webinar yang sudah ada.' : 'Tambahkan webinar baru ke dalam sistem.' %></p>
+                </div>
+                
+                <!-- Webinar Form -->
+                <form action="<%= isEdit ? '/admin/webinars/' + webinar.id : '/admin/webinars' %>" method="POST" id="webinarForm" class="needs-validation" enctype="multipart/form-data" novalidate>
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Basic Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Dasar</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="name" class="form-label required-field">Nama Webinar</label>
+                                            <input type="text" class="form-control" id="name" name="name" value="<%= webinar ? webinar.name : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Nama webinar harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <label for="description" class="form-label required-field">Deskripsi</label>
+                                            <textarea class="form-control" id="description" name="description" rows="5" required><%= webinar ? webinar.description : '' %></textarea>
+                                            <div class="invalid-feedback">
+                                                Deskripsi webinar harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="event_date" class="form-label required-field">Tanggal & Waktu</label>
+                                            <input type="text" class="form-control datetimepicker" id="event_date" name="event_date" 
+                                                value="<%= webinar ? new Date(webinar.event_date).toISOString().slice(0, 16).replace('T', ' ') : '' %>" 
+                                                placeholder="YYYY-MM-DD HH:MM" required>
+                                            <div class="invalid-feedback">
+                                                Tanggal dan waktu webinar harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="location" class="form-label required-field">Lokasi</label>
+                                            <input type="text" class="form-control" id="location" name="location" value="<%= webinar ? webinar.location : 'Online Zoom Meeting' %>" required>
+                                            <div class="invalid-feedback">
+                                                Lokasi webinar harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="fee" class="form-label required-field">Biaya</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">Rp</span>
+                                                <input type="number" class="form-control" id="fee" name="fee" value="<%= webinar ? (webinar.fee || 0) : 0 %>" min="0" step="1000" required>
+                                                <div class="invalid-feedback">
+                                                    Biaya webinar harus diisi dengan angka valid.
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">Isi dengan 0 untuk webinar gratis.</small>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="points" class="form-label required-field">Poin</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-trophy text-warning"></i></span>
+                                                <input type="number" class="form-control" id="points" name="points" value="<%= webinar ? (webinar.points || 0) : 0 %>" min="0" required>
+                                                <div class="invalid-feedback">
+                                                    Poin webinar harus diisi dengan angka valid.
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">Jumlah poin yang akan diberikan kepada peserta.</small>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="is_active" class="form-label">Status</label>
+                                            <select class="form-select" id="is_active" name="is_active">
+                                                <option value="1" <%= webinar && (webinar.is_active === 1 || webinar.is_active === true) ? 'selected' : '' %>>Aktif</option>
+                                                <option value="0" <%= webinar && (webinar.is_active === 0 || webinar.is_active === false) ? 'selected' : '' %>>Nonaktif</option>
+                                            </select>
+                                            <small class="form-text text-muted">Status webinar (aktif/nonaktif).</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Files Upload -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-file-upload me-2"></i> Unggah Berkas</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <label for="image" class="form-label">Gambar Webinar</label>
+                                            <div class="custom-file mb-2">
+                                                <input type="file" class="custom-file-input" id="image" name="image" accept="image/*">
+                                                <label class="custom-file-label" for="image">Pilih Gambar</label>
+                                            </div>
+                                            <small class="form-text text-muted">Format yang didukung: JPG, PNG, GIF. Ukuran maksimum: 5MB.</small>
+                                            
+                                            <div class="image-preview mt-3" id="imagePreview">
+                                                <% if (webinar && webinar.image) { %>
+                                                    <img src="<%= webinar.image %>" alt="Preview">
+                                                <% } else { %>
+                                                    <i class="fas fa-image text-muted fa-3x"></i>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <label for="supporting_document" class="form-label">Dokumen Pendukung</label>
+                                            <div class="custom-file mb-2">
+                                                <input type="file" class="custom-file-input" id="supporting_document" name="supporting_document" accept=".pdf,.doc,.docx">
+                                                <label class="custom-file-label" for="supporting_document">Pilih Dokumen</label>
+                                            </div>
+                                            <small class="form-text text-muted">Format yang didukung: PDF, DOC, DOCX. Ukuran maksimum: 10MB.</small>
+                                            
+                                            <div class="document-preview mt-3 <%= webinar && webinar.supporting_document ? 'show' : '' %>" id="documentPreview">
+                                                <i class="fas fa-file-pdf"></i>
+                                                <span id="documentName">
+                                                    <% if (webinar && webinar.supporting_document) { %>
+                                                        Dokumen Pendukung
+                                                        <a href="<%= webinar.supporting_document %>" target="_blank" class="ms-2"><i class="fas fa-external-link-alt"></i></a>
+                                                    <% } %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Help Card -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="note-card mb-4">
+                                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                        <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Pastikan semua informasi terisi dengan benar untuk memudahkan pengelolaan data webinar.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Format Tanggal</h6>
+                                        <p class="small mb-0">Format tanggal yang digunakan adalah YYYY-MM-DD HH:MM (contoh: 2023-12-31 14:30). Gunakan picker tanggal yang tersedia untuk memudahkan pengisian.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Gambar Webinar</h6>
+                                        <p class="small mb-0">Unggah gambar dengan rasio 16:9 untuk tampilan optimal. Ukuran disarankan: 1280 x 720 piksel.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Dokumen Pendukung</h6>
+                                        <p class="small mb-0">Dokumen pendukung dapat berupa materi presentasi, panduan peserta, atau dokumen lain yang relevan dengan webinar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Data' : 'Simpan Data' %>
+                                    </button>
+                                    <a href="/admin/webinars" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Initialize date/time picker
+            flatpickr('.datetimepicker', {
+                enableTime: true,
+                dateFormat: 'Y-m-d H:i',
+                time_24hr: true,
+                minDate: 'today'
+            });
+            
+            // File upload preview for image
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('imagePreview');
+            const imageLabel = document.querySelector('label[for="image"]').nextElementSibling;
+            
+            if (imageInput) {
+                imageInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                            imageLabel.textContent = file.name;
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    } else {
+                        imagePreview.innerHTML = `<i class="fas fa-image text-muted fa-3x"></i>`;
+                        imageLabel.textContent = 'Pilih Gambar';
+                    }
+                });
+            }
+            
+            // File upload preview for document
+            const documentInput = document.getElementById('supporting_document');
+            const documentPreview = document.getElementById('documentPreview');
+            const documentName = document.getElementById('documentName');
+            const documentLabel = document.querySelector('label[for="supporting_document"]').nextElementSibling;
+            
+            if (documentInput) {
+                documentInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        documentPreview.classList.add('show');
+                        documentName.textContent = file.name;
+                        documentLabel.textContent = file.name;
+                    } else {
+                        documentPreview.classList.remove('show');
+                        documentName.textContent = '';
+                        documentLabel.textContent = 'Pilih Dokumen';
+                    }
+                });
+            }
+            
+            // Form validation
+            const form = document.getElementById('webinarForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+            
+            // Custom file input style
+            document.querySelectorAll('.custom-file-input').forEach(function(input) {
+                input.addEventListener('change', function(e) {
+                    const fileName = this.files[0]?.name || 'No file chosen';
+                    const label = this.nextElementSibling;
+                    label.textContent = fileName;
+                });
+            });
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

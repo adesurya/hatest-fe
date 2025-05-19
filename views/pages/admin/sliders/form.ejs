@@ -1,0 +1,593 @@
+<!-- views/pages/admin/sliders/form.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for form */
+        .form-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-card .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-color: #e3e6f0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d1d3e2;
+            color: #6e707e;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fc;
+            color: #3a3b45;
+        }
+        
+        .note-card {
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid #4e73df;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6e707e;
+        }
+        
+        .image-preview-container {
+            width: 100%;
+            max-width: 500px;
+            height: 280px;
+            border: 2px dashed #d1d3e2;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            background-color: #f8f9fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .preview-placeholder {
+            color: #6e707e;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .preview-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .custom-file-upload {
+            display: inline-block;
+            cursor: pointer;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #6e707e;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .custom-file-upload:hover {
+            background-color: #f8f9fc;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+          
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+          
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+          
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+          
+        input:checked + .toggle-slider {
+            background-color: #4e73df;
+        }
+          
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px #4e73df;
+        }
+          
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .toggle-label {
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .order-info {
+            font-size: 0.875rem;
+            color: #6e707e;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/sliders' }) %>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3"><%= isEdit ? 'Edit Slider' : 'Tambah Slider Baru' %></h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Form Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div>
+                        <a href="/admin/sliders" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Page Title and Description -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <h4 class="mb-2"><%= isEdit ? 'Edit Slider' : 'Tambah Slider Baru' %></h4>
+                    <p class="text-muted mb-0"><%= isEdit ? 'Perbarui informasi slider yang sudah ada.' : 'Tambahkan gambar slider baru untuk halaman utama website.' %></p>
+                </div>
+                
+                <!-- Slider Form -->
+                <form action="<%= isEdit ? '/admin/sliders/' + slider.id : '/admin/sliders' %>" method="POST" id="sliderForm" class="needs-validation" enctype="multipart/form-data" novalidate>
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Basic Information -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Informasi Dasar</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="title" class="form-label required-field">Judul Slider</label>
+                                            <input type="text" class="form-control" id="title" name="title" value="<%= slider ? slider.title : '' %>" required>
+                                            <div class="invalid-feedback">
+                                                Judul slider harus diisi.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <label for="description" class="form-label required-field">Deskripsi</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3" required><%= slider ? slider.description : '' %></textarea>
+                                            <div class="invalid-feedback">
+                                                Deskripsi slider harus diisi.
+                                            </div>
+                                            <div class="help-text mt-1">
+                                                Deskripsi singkat yang akan ditampilkan bersama judul pada slider.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="order_number" class="form-label required-field">Urutan Tampil</label>
+                                            <input type="number" class="form-control" id="order_number" name="order_number" value="<%= slider ? slider.order_number : '' %>" min="1" required>
+                                            <div class="invalid-feedback">
+                                                Urutan tampil harus diisi dengan angka valid.
+                                            </div>
+                                            <div class="order-info">
+                                                Urutan menentukan posisi slider ditampilkan. Angka yang lebih kecil akan ditampilkan lebih dulu.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label d-block required-field">Status</label>
+                                            <div class="d-flex align-items-center">
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="is_active" name="is_active" value="true" <%= slider && slider.is_active ? 'checked' : '' %>>
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label" id="status-label"><%= slider && slider.is_active ? 'Aktif' : 'Tidak Aktif' %></span>
+                                            </div>
+                                            <div class="order-info">
+                                                Slider yang aktif akan ditampilkan di halaman utama website.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slider Image -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-image me-2"></i> Gambar Slider</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="image" class="form-label <%= isEdit ? '' : 'required-field' %>">Pilih Gambar</label>
+                                            <div class="image-preview-container mb-3" id="imagePreviewContainer">
+                                                <% if (slider && slider.image_path) { %>
+                                                    <img src="<%= slider.image_path %>" alt="Preview" class="image-preview" id="imagePreview">
+                                                <% } else { %>
+                                                    <div class="preview-placeholder" id="previewPlaceholder">
+                                                        <i class="fas fa-image"></i>
+                                                        <p>Pratinjau gambar akan ditampilkan di sini</p>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                            
+                                            <div class="input-group">
+                                                <label class="custom-file-upload" for="image">
+                                                    <i class="fas fa-upload me-2"></i> Pilih Gambar
+                                                </label>
+                                                <input type="file" class="form-control d-none" id="image" name="image" accept="image/*" <%= isEdit ? '' : 'required' %>>
+                                                <span class="ms-2 align-self-center" id="selectedFileName">
+                                                    <%= slider && slider.image_path ? 'File saat ini: ' + slider.image_path.split('/').pop() : 'Tidak ada file yang dipilih' %>
+                                                </span>
+                                            </div>
+                                            
+                                            <% if (slider && slider.image_path) { %>
+                                                <input type="hidden" name="existing_image" value="<%= slider.image_path %>">
+                                            <% } %>
+                                            
+                                            <div class="invalid-feedback">
+                                                Gambar slider harus dipilih.
+                                            </div>
+                                            
+                                            <div class="note-card mt-3">
+                                                <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Ketentuan Gambar</h6>
+                                                <ul class="mb-0 ps-3 small">
+                                                    <li>Format yang diperbolehkan: JPG, JPEG, PNG, GIF, WEBP</li>
+                                                    <li>Ukuran maksimal file: 5MB</li>
+                                                    <li>Resolusi yang disarankan: 1920 x 600 piksel (Rasio 16:5)</li>
+                                                    <li>Untuk hasil terbaik, gunakan gambar beresolusi tinggi dengan pencahayaan yang baik</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Help Card -->
+                            <div class="form-card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i> Informasi & Bantuan</h6>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="note-card mb-4">
+                                        <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i> Petunjuk Pengisian</h6>
+                                        <p class="mb-0 small">Lengkapi semua informasi yang ditandai dengan tanda bintang (*) karena merupakan data wajib. Pastikan semua informasi terisi dengan benar untuk tampilan slider yang optimal.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Tips Slider yang Baik</h6>
+                                        <ul class="small ps-3 mb-0">
+                                            <li class="mb-2">Gunakan judul yang singkat dan menarik</li>
+                                            <li class="mb-2">Atur urutan slider sesuai prioritas konten</li>
+                                            <li class="mb-2">Gunakan gambar berkualitas tinggi</li>
+                                            <li>Pastikan teks di slider mudah terbaca</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6 class="mb-2">Perhatian</h6>
+                                        <p class="small mb-0">Slider akan ditampilkan di halaman utama website. Pastikan konten yang ditampilkan sudah sesuai dengan kebijakan dan standar yang berlaku.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-card mb-4">
+                                <div class="card-body p-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-save me-2"></i> <%= isEdit ? 'Perbarui Slider' : 'Simpan Slider' %>
+                                    </button>
+                                    <a href="/admin/sliders" class="btn btn-outline-secondary w-100 mt-3">
+                                        <i class="fas fa-times me-2"></i> Batal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Form validation
+            const form = document.getElementById('sliderForm');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                });
+            }
+            
+            // Image preview
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewPlaceholder = document.getElementById('previewPlaceholder');
+            const selectedFileName = document.getElementById('selectedFileName');
+            
+            if (imageInput) {
+                imageInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const file = this.files[0];
+                        selectedFileName.textContent = file.name;
+                        
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            if (!imagePreview) {
+                                // Create image preview if it doesn't exist
+                                const newImagePreview = document.createElement('img');
+                                newImagePreview.id = 'imagePreview';
+                                newImagePreview.className = 'image-preview';
+                                newImagePreview.alt = 'Preview';
+                                
+                                const previewContainer = document.getElementById('imagePreviewContainer');
+                                if (previewContainer) {
+                                    // Clear placeholder if exists
+                                    if (previewPlaceholder) {
+                                        previewPlaceholder.style.display = 'none';
+                                    }
+                                    
+                                    previewContainer.appendChild(newImagePreview);
+                                    newImagePreview.src = e.target.result;
+                                }
+                            } else {
+                                // Update existing preview
+                                if (previewPlaceholder) {
+                                    previewPlaceholder.style.display = 'none';
+                                }
+                                
+                                imagePreview.src = e.target.result;
+                                imagePreview.style.display = 'block';
+                            }
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    } else {
+                        selectedFileName.textContent = 'Tidak ada file yang dipilih';
+                        
+                        if (imagePreview) {
+                            imagePreview.style.display = 'none';
+                        }
+                        
+                        if (previewPlaceholder) {
+                            previewPlaceholder.style.display = 'block';
+                        }
+                    }
+                });
+            }
+            
+            // Status toggle
+            const statusToggle = document.getElementById('is_active');
+            const statusLabel = document.getElementById('status-label');
+            
+            if (statusToggle && statusLabel) {
+                statusToggle.addEventListener('change', function() {
+                    statusLabel.textContent = this.checked ? 'Aktif' : 'Tidak Aktif';
+                });
+            }
+            
+            // Number validation for order_number
+            const orderNumberField = document.getElementById('order_number');
+            if (orderNumberField) {
+                orderNumberField.addEventListener('input', function() {
+                    // Allow only positive integers
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Don't allow 0 as first digit
+                    if (this.value === '0') {
+                        this.value = '';
+                    }
+                });
+            }
+        });
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!-- views/pages/admin/articles/index.ejs -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Kolegium Dokter Indonesia</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/admin.css">
+    
+    <style>
+        /* Additional styles for article management */
+        .article-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .article-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .article-thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-published {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-draft {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .search-bar {
+            border-radius: 50px;
+            padding-left: 20px;
+            padding-right: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .search-bar:focus {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: #344767;
+        }
+        
+        .dataTables_wrapper .row {
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .page-link {
+            color: #4e73df;
+        }
+        
+        .form-select, .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+        
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .stats-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stats-icon {
+            font-size: 32px;
+            color: #4e73df;
+        }
+        
+        .stats-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #344767;
+        }
+        
+        .stats-title {
+            font-size: 14px;
+            color: #67748e;
+        }
+        
+        .table th {
+            white-space: nowrap;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .article-title {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .category-badge {
+            background-color: #f0f2f5;
+            color: #5a5c69;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('../../../partials/admin/sidebar', { path: '/admin/articles' }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h5 class="mb-0 ms-3">Manajemen Berita</h5>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-placeholder rounded-circle me-2 d-flex align-items-center justify-content-center bg-primary text-white" style="width: 32px; height: 32px;">
+                                <%= user.name.charAt(0).toUpperCase() %>
+                            </div>
+                            <span class="d-none d-md-block"><%= user.name %></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/admin/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/admin/settings"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Articles Content -->
+            <div class="content-wrapper p-4">
+                <!-- Flash Messages -->
+                <% if (typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error_msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-primary-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-newspaper text-primary"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count"><%= articles ? articles.length : 0 %></div>
+                                        <div class="stats-title">Total Berita</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-success-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count">
+                                            <%= articles ? articles.filter(article => article.status === 'published').length : 0 %>
+                                        </div>
+                                        <div class="stats-title">Berita Publikasi</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-white stats-card">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center bg-info-soft" style="width: 56px; height: 56px;">
+                                            <i class="fas fa-tags text-info"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="stats-count">
+                                            <% 
+                                                const uniqueCategories = new Set();
+                                                if (articles && articles.length > 0) {
+                                                    articles.forEach(article => {
+                                                        if (article.category_name) {
+                                                            uniqueCategories.add(article.category_name);
+                                                        }
+                                                    });
+                                                }
+                                            %>
+                                            <%= uniqueCategories.size %>
+                                        </div>
+                                        <div class="stats-title">Kategori Aktif</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Page Header -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h4 class="mb-0">Daftar Berita</h4>
+                                <p class="text-muted mb-0">Kelola artikel dan berita dalam sistem</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <div class="d-flex justify-content-md-end">
+                                    <a href="/admin/articles/create" class="btn btn-primary me-2">
+                                        <i class="fas fa-plus-circle me-2"></i> Tambah Berita
+                                    </a>
+                                    <!-- <a href="/admin/articles/categories" class="btn btn-outline-primary">
+                                        <i class="fas fa-tags me-2"></i> Kelola Kategori
+                                    </a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search & Filter -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form action="/admin/articles" method="GET" id="searchForm">
+                            <div class="row align-items-center">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-search text-muted"></i>
+                                        </span>
+                                        <input type="text" name="search" id="searchInput" class="form-control search-bar" placeholder="Cari berita berdasarkan judul, kategori, penulis..." value="<%= search || '' %>">
+                                        <button type="submit" class="btn btn-primary px-4">Cari</button>
+                                        <% if (search) { %>
+                                            <a href="/admin/articles" class="btn btn-outline-secondary px-3 ms-2">
+                                                <i class="fas fa-times me-1"></i> Reset
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Articles Table -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="articlesTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Judul</th>
+                                        <th>Gambar</th>
+                                        <th>Kategori</th>
+                                        <th>Status</th>
+                                        <th>Penulis</th>
+                                        <th>Tanggal Publikasi</th>
+                                        <th class="text-end pe-4">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (articles && articles.length > 0) { %>
+                                        <% articles.forEach(article => { %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <div class="article-title">
+                                                        <h6 class="mb-0"><%= article.title %></h6>
+                                                        <small class="text-muted"><%= article.slug %></small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <% if (article.featured_image) { %>
+                                                        <img src="<%= article.featured_image %>" alt="<%= article.title %>" class="article-thumbnail">
+                                                    <% } else { %>
+                                                        <div class="article-thumbnail d-flex align-items-center justify-content-center">
+                                                            <i class="fas fa-image text-muted"></i>
+                                                        </div>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <span class="category-badge">
+                                                        <%= article.category_name || 'Tidak ada kategori' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge <%= article.status === 'published' ? 'status-published' : 'status-draft' %>">
+                                                        <i class="fas <%= article.status === 'published' ? 'fa-check-circle' : 'fa-clock' %> me-1"></i>
+                                                        <%= article.status === 'published' ? 'Publikasi' : 'Draft' %>
+                                                    </span>
+                                                </td>
+                                                <td><%= article.author_name || 'Unknown' %></td>
+                                                <td>
+                                                    <% if (article.published_at) { %>
+                                                        <%= new Date(article.published_at).toLocaleDateString('id-ID', { 
+                                                            day: 'numeric', 
+                                                            month: 'short', 
+                                                            year: 'numeric' 
+                                                        }) %>
+                                                    <% } else { %>
+                                                        -
+                                                    <% } %>
+                                                </td>
+                                                <td class="text-end pe-4">
+                                                    <a href="/admin/articles/<%= article.id %>" class="btn btn-sm btn-light action-btn me-1" title="Lihat Detail">
+                                                        <i class="fas fa-eye text-primary"></i>
+                                                    </a>
+                                                    <a href="/admin/articles/edit/<%= article.id %>" class="btn btn-sm btn-light action-btn me-1" title="Edit">
+                                                        <i class="fas fa-edit text-success"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-light action-btn delete-article" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#deleteModal" 
+                                                        data-id="<%= article.id %>" 
+                                                        data-title="<%= article.title %>"
+                                                        title="Hapus">
+                                                        <i class="fas fa-trash-alt text-danger"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="7" class="text-center py-5">
+                                                <div class="py-5">
+                                                    <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                                                    <h5>Tidak ada data berita ditemukan</h5>
+                                                    <p class="text-muted">Silakan tambahkan berita baru atau ubah filter pencarian</p>
+                                                    <a href="/admin/articles/create" class="btn btn-primary mt-2">
+                                                        Tambah Berita Baru
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <% if (pagination && pagination.totalPages > 1) { %>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div>
+                            <span class="text-muted">Menampilkan <%= (pagination.page-1) * pagination.limit + 1 %> - <%= Math.min(pagination.page * pagination.limit, pagination.totalItems) %> dari <%= pagination.totalItems %> berita</span>
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item <%= pagination.page <= 1 ? 'disabled' : '' %>">
+                                    <a class="page-link" href="<%= pagination.page <= 1 ? '#' : '/admin/articles?page=' + (pagination.page - 1) + (search ? '&search=' + search : '') %>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                
+                                <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+                                    <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                        <a class="page-link" href="/admin/articles?page=<%= i %><%= search ? '&search=' + search : '' %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                <% } %>
+                                
+                                <li class="page-item <%= pagination.page >= pagination.totalPages ? 'disabled' : '' %>">
+                                    <a class="page-link" href="<%= pagination.page >= pagination.totalPages ? '#' : '/admin/articles?page=' + (pagination.page + 1) + (search ? '&search=' + search : '') %>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                <% } %>
+                
+                <!-- Footer -->
+                <footer class="mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Copyright © <%= new Date().getFullYear() %> Kolegium Dokter Indonesia. All rights reserved.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-0">Admin Dashboard v1.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus berita <strong id="articleTitleToDelete"></strong>?</p>
+                    <p class="text-danger mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="deleteForm" action="" method="POST">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide preloader when page is fully loaded
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Initialize sidebar toggle
+            initSidebarToggle();
+            
+            // Check if table exists and initialize DataTable
+            $.fn.dataTable.ext.errMode = 'none'; // Disable error messages
+            const tableElement = document.getElementById('articlesTable');
+            if (tableElement && typeof $.fn.DataTable !== 'undefined') {
+                // Initialize DataTable
+                const dataTable = $(tableElement).DataTable({
+                    responsive: true,
+                    paging: false,
+                    searching: false,
+                    info: false,
+                    language: {
+                        emptyTable: "Tidak ada data berita ditemukan",
+                        zeroRecords: "Tidak ada data berita yang cocok dengan pencarian"
+                    }
+                });
+            } else {
+                // Setup manual sorting if DataTables isn't available
+                const headers = tableElement.querySelectorAll('thead th');
+                headers.forEach((header, index) => {
+                    // Don't add sorting to action column (last column)
+                    if (index === headers.length - 1) return;
+                    
+                    header.style.cursor = 'pointer';
+                    header.addEventListener('click', function() {
+                        sortTable(index);
+                    });
+                    
+                    // Add sort icon if not exists
+                    if (!header.querySelector('.sort-icon')) {
+                        const sortIcon = document.createElement('span');
+                        sortIcon.className = 'ms-1 text-muted sort-icon';
+                        sortIcon.innerHTML = '<i class="fas fa-sort"></i>';
+                        header.appendChild(sortIcon);
+                    }
+                });
+            }
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        document.getElementById('searchForm').submit();
+                    }
+                });
+            }
+            
+            // Delete article confirmation
+            const deleteButtons = document.querySelectorAll('.delete-article');
+            if (deleteButtons.length) {
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const articleId = this.getAttribute('data-id');
+                        const articleTitle = this.getAttribute('data-title');
+                        
+                        const articleTitleToDelete = document.getElementById('articleTitleToDelete');
+                        if (articleTitleToDelete) {
+                            articleTitleToDelete.textContent = articleTitle;
+                        }
+                        
+                        const deleteForm = document.getElementById('deleteForm');
+                        if (deleteForm) {
+                            deleteForm.action = `/admin/articles/delete/${articleId}`;
+                        }
+                    });
+                });
+            }
+        });
+        
+        // Function to sort table
+        function sortTable(columnIndex) {
+            const table = document.getElementById('articlesTable');
+            if (!table) return;
+            
+            const isAscending = !table.getAttribute('data-sort-asc') || 
+                                table.getAttribute('data-sort-asc') === 'false';
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            
+            // Remove sort indicators from all headers
+            const sortIcons = table.querySelectorAll('.sort-icon');
+            sortIcons.forEach(icon => {
+                icon.innerHTML = '<i class="fas fa-sort"></i>';
+            });
+            
+            // Set sort indicator on active header
+            const headers = table.querySelectorAll('thead th');
+            const sortIcon = headers[columnIndex].querySelector('.sort-icon');
+            if (sortIcon) {
+                sortIcon.innerHTML = isAscending ? 
+                    '<i class="fas fa-sort-up"></i>' : 
+                    '<i class="fas fa-sort-down"></i>';
+            }
+            
+            // Sort rows
+            rows.sort((rowA, rowB) => {
+                // Get values from the column being sorted
+                const cellA = rowA.querySelectorAll('td')[columnIndex];
+                const cellB = rowB.querySelectorAll('td')[columnIndex];
+                
+                if (!cellA || !cellB) return 0;
+                
+                let valueA = cellA.textContent.trim();
+                let valueB = cellB.textContent.trim();
+                
+                // Convert to date if format looks like a date
+                if (valueA.match(/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}$/)) {
+                    valueA = new Date(valueA);
+                    valueB = new Date(valueB);
+                }
+                // Convert to number if both values are numeric
+                else if (!isNaN(valueA) && !isNaN(valueB)) {
+                    valueA = parseFloat(valueA);
+                    valueB = parseFloat(valueB);
+                }
+                
+                // Perform comparison
+                if (valueA < valueB) return isAscending ? -1 : 1;
+                if (valueA > valueB) return isAscending ? 1 : -1;
+                return 0;
+            });
+            
+            // Update table with sorted rows
+            const tbody = table.querySelector('tbody');
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Update sorting attributes
+            table.setAttribute('data-sort-asc', isAscending.toString());
+            table.setAttribute('data-sort-col', columnIndex.toString());
+        }
+        
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const adminLayout = document.querySelector('.admin-layout');
+            
+            if (sidebarToggle && adminLayout) {
+                sidebarToggle.addEventListener('click', function() {
+                    adminLayout.classList.toggle('sidebar-collapsed');
+                    
+                    // Save state to localStorage
+                    const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check localStorage on load
+                const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                if (isCollapsed) {
+                    adminLayout.classList.add('sidebar-collapsed');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
